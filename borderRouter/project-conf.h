@@ -22,4 +22,6 @@
 #define UIP_CONF_TCP 1
 #endif
 
+#define COAP_OBSERVE_CLIENT 1
+
 #endif /* PROJECT_CONF_H_ */
