@@ -1,0 +1,25 @@
+#ifndef PROJECT_CONF_H_
+#define PROJECT_CONF_H_
+
+#define LOG_LEVEL_APP LOG_LEVEL_DBG
+
+#ifdef CONTIKI_TARGET_SKY
+/* Save some RAM and ROM */
+#define QUEUEBUF_CONF_NUM              4
+#define UIP_CONF_BUFFER_SIZE         140
+#define BORDER_ROUTER_CONF_WEBSERVER   0
+#endif
+
+#ifndef WEBSERVER_CONF_CFS_CONNS
+#define WEBSERVER_CONF_CFS_CONNS 2
+#endif
+
+#ifndef BORDER_ROUTER_CONF_WEBSERVER
+#define BORDER_ROUTER_CONF_WEBSERVER 1
+#endif
+
+#if BORDER_ROUTER_CONF_WEBSERVER
+#define UIP_CONF_TCP 1
+#endif
+
+#endif /* PROJECT_CONF_H_ */
