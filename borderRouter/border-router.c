@@ -57,6 +57,8 @@ static void notification_callback(coap_observee_t *obs, void *notification, coap
   }
 }
 
+extern coap_resource_t res_register;
+
 // Main process thread
 PROCESS_THREAD(coap_observe_client, ev, data) {
   static coap_endpoint_t server_ep;
@@ -67,6 +69,8 @@ PROCESS_THREAD(coap_observe_client, ev, data) {
   PROCESS_NAME(webserver_nogui_process);
   process_start(&webserver_nogui_process, NULL);
 #endif /* BORDER_ROUTER_CONF_WEBSERVER */
+
+  coap_activate_resource(&res_register, "register");
 
   // Parse server endpoint string into coap_endpoint_t structure
   coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);

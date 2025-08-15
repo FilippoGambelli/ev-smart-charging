@@ -16,7 +16,6 @@ AUTOSTART_PROCESSES(&sensor_server);
 PROCESS_THREAD(sensor_server, ev, data)
 {
   PROCESS_BEGIN();
-
   LOG_INFO("Starting Sensor Server");
   LOG_INFO_("\n");
 
