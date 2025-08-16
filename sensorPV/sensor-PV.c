@@ -7,6 +7,7 @@
 #define LOG_LEVEL LOG_LEVEL_APP
 
 extern coap_resource_t res_solar_obs;
+extern coap_resource_t res_power_obs;
 
 static struct etimer e_timer;
 
@@ -16,10 +17,12 @@ AUTOSTART_PROCESSES(&sensor_server);
 PROCESS_THREAD(sensor_server, ev, data)
 {
   PROCESS_BEGIN();
+
   LOG_INFO("Starting Sensor Server");
   LOG_INFO_("\n");
 
   coap_activate_resource(&res_solar_obs, "res_solar_obs");
+  coap_activate_resource(&res_power_obs, "res_power_obs");
 
   etimer_set(&e_timer, CLOCK_SECOND * 10);
 
@@ -29,6 +32,7 @@ PROCESS_THREAD(sensor_server, ev, data)
         LOG_INFO("Event triggered");
         LOG_INFO_("\n");
         res_solar_obs.trigger();
+        res_power_obs.trigger();
         etimer_reset(&e_timer);
     }
   }

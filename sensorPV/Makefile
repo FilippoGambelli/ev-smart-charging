@@ -14,4 +14,12 @@ MODULES += $(CONTIKI_NG_APP_LAYER_DIR)/coap
 include $(CONTIKI)/Makefile.identify-target
 MODULES_REL += $(TARGET)
 
+MODULES_REL += resources/solar-data
+
+MODULES_REL += /home/iot_ubuntu_intel/.local/lib/python3.10/site-packages/emlearn 
+
+TARGET_LIBFILES += -lm
+
+INC += /home/iot_ubuntu_intel/.local/lib/python3.10/site-packages/emlearn
+
 include $(CONTIKI)/Makefile.include
