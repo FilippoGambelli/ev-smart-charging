@@ -7,9 +7,11 @@
 #define LOG_LEVEL LOG_LEVEL_APP
 
 extern coap_resource_t res_solar_obs;
-extern coap_resource_t res_power_obs;
+extern coap_resource_t res_real_power_obs;
+extern coap_resource_t res_pred_power_obs;
 
-static struct etimer e_timer;
+static struct etimer e_timer_solar_data;
+static struct etimer e_timer_real_power_data;
 
 PROCESS(sensor_server, "Sensor Server");
 AUTOSTART_PROCESSES(&sensor_server);
@@ -22,18 +24,26 @@ PROCESS_THREAD(sensor_server, ev, data)
   LOG_INFO_("\n");
 
   coap_activate_resource(&res_solar_obs, "res_solar_obs");
-  coap_activate_resource(&res_power_obs, "res_power_obs");
+  coap_activate_resource(&res_real_power_obs, "res_real_power_obs");
+  coap_activate_resource(&res_pred_power_obs, "res_pred_power_obs");
 
-  etimer_set(&e_timer, CLOCK_SECOND * 10);
+  etimer_set(&e_timer_solar_data, CLOCK_SECOND * 20);
+  etimer_set(&e_timer_real_power_data, CLOCK_SECOND * 5);
 
   while(1) {
     PROCESS_WAIT_EVENT();
-    if(ev == PROCESS_EVENT_TIMER && data == &e_timer){
-        LOG_INFO("Event triggered");
-        LOG_INFO_("\n");
-        res_solar_obs.trigger();
-        res_power_obs.trigger();
-        etimer_reset(&e_timer);
+    if(ev == PROCESS_EVENT_TIMER && data == &e_timer_solar_data){
+      LOG_INFO("Event triggered - Solar Data");
+      LOG_INFO_("\n");
+      res_solar_obs.trigger();
+      res_pred_power_obs.trigger();
+      etimer_reset(&e_timer_solar_data);
+    }
+    else if(ev == PROCESS_EVENT_TIMER && data == &e_timer_real_power_data){
+      LOG_INFO("Event triggered - Real Power Data");
+      LOG_INFO_("\n");
+      res_real_power_obs.trigger();
+      etimer_reset(&e_timer_real_power_data);
     }
   }
 

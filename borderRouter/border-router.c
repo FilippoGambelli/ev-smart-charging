@@ -14,11 +14,12 @@ PROCESS(coap_observe_client, "CoAP Observe Client");
 // Automatically start the process at boot
 AUTOSTART_PROCESSES(&coap_observe_client);
 
-#define OBS_RESOURCE_URI "/res_solar_obs"  // Resource on server to observe
-#define RES_POWER_OBS_URI "/res_power_obs"  // Resource on server to observe
+#define RES_POWER_OBS_URI "/res_real_power_obs"  // Resource on server to observe
+#define RES_PRED_POWER_OBS_URI "/res_pred_power_obs"  // Resource on server to observe
 #define SERVER_EP "coap://[fd00::202:2:2:2]:5683"  // CoAP server endpoint
 
 static coap_observee_t *obs = NULL;  // Keeps track of the current observation
+static coap_observee_t *obs1 = NULL;  // Keeps track of the current observation
 
 // Callback function called when a notification from the server is received
 static void notification_callback(coap_observee_t *obs, void *notification, coap_notification_flag_t flag) {
@@ -82,6 +83,13 @@ PROCESS_THREAD(coap_observe_client, ev, data) {
   obs = coap_obs_request_registration(&server_ep, RES_POWER_OBS_URI, notification_callback, NULL);
 
   if(obs == NULL) {
+    LOG_INFO("Error registering observation");
+    LOG_INFO_("\n");
+  }
+
+  obs1 = coap_obs_request_registration(&server_ep, RES_PRED_POWER_OBS_URI, notification_callback, NULL);
+
+  if(obs1 == NULL) {
     LOG_INFO("Error registering observation");
     LOG_INFO_("\n");
   }

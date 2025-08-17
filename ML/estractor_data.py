@@ -42,7 +42,7 @@ with open("../sensorPV/resources/real-data/solar-data.c", 'w') as f:
             ) + '\n}'
             f.write(f"float {var}[] = {data_str};\n\n")
 
-    f.write('int solar_data_counter = 16;\n\n')
+    f.write('int solar_data_counter = 15;\n\n')
 
 
 
@@ -61,7 +61,7 @@ df_filtered = df[(df['time'] >= time_start) & (df['time'] <= time_finish)]
 print(f"Dati trovati: {len(df_filtered)} righe nel range {TIME_START} - {TIME_FINISH}")
 
 columns = ['time', 'P']
-variables = ['timestamp', 'P']
+variables = ['timestamp_power', 'P']
 
 with open("../sensorPV/resources/real-data/power-data.c", 'w') as f:
     f.write('#include "power-data.h"\n\n')
@@ -82,4 +82,4 @@ with open("../sensorPV/resources/real-data/power-data.c", 'w') as f:
             ) + '\n}'
             f.write(f"float {var}[] = {data_str};\n\n")
 
-    f.write('int power_data_counter = 16;\n\n')
+    f.write('int power_data_counter = 15;\n\n')
