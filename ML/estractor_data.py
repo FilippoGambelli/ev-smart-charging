@@ -21,7 +21,7 @@ df_filtered = df[(df['time'] >= time_start) & (df['time'] <= time_finish)]
 print(f"Dati trovati: {len(df_filtered)} righe nel range {TIME_START} - {TIME_FINISH}")
 
 columns = ['Gb(i)', 'Gd(i)', 'Gr(i)', 'H_sun', 'T2m', 'WS10m', 'time']
-variables = ['Gb', 'Gd', 'Gr', 'HSun', 'T', 'WS', 'timestamp']
+variables = ['Gb', 'Gd', 'Gr', 'HSun', 'T', 'WS', 'solar_data_timestamp']
 
 with open("../sensorPV/resources/real-data/solar-data.c", 'w') as f:
     f.write('#include "solar-data.h"\n\n')
@@ -61,7 +61,7 @@ df_filtered = df[(df['time'] >= time_start) & (df['time'] <= time_finish)]
 print(f"Dati trovati: {len(df_filtered)} righe nel range {TIME_START} - {TIME_FINISH}")
 
 columns = ['time', 'P']
-variables = ['timestamp_power', 'P']
+variables = ['power_data_timestamp', 'P']
 
 with open("../sensorPV/resources/real-data/power-data.c", 'w') as f:
     f.write('#include "power-data.h"\n\n')

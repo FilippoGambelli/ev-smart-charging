@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = coap-server
+CONTIKI_PROJECT = sensorPV-coap-server
 all: $(CONTIKI_PROJECT)
 
 # Do not try to build on Sky because of code size limitation
@@ -15,6 +15,7 @@ include $(CONTIKI)/Makefile.identify-target
 MODULES_REL += $(TARGET)
 
 MODULES_REL += resources/real-data
+MODULES_REL += resources/emlearn-utils
 
 MODULES_REL += /home/iot_ubuntu_intel/.local/lib/python3.10/site-packages/emlearn 
 

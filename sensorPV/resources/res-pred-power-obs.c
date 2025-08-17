@@ -6,31 +6,13 @@
 #include "eml_net.h"
 #include "coap-engine.h"
 #include "real-data/solar-data.h"
-#include "modelTiny.h"
+#include "emlearn-utils/data.h"
+#include "emlearn-utils/normalization.h"
+#include "emlearnModel.h"
 
 #include "sys/log.h"
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
-
-#define N_FEATURES 12
-#define SEQ_LEN 16
-#define HORIZON 16
-
-// Min e Max per le features
-static const float X_min[N_FEATURES] = {
-    0.0f, 0.0f, 0.0f, 0.0f, -3.29f, 0.0f,
-   -1.0f, -1.0f, -0.8660254f, -0.8660254f, -1.0f, -1.0f
-};
-
-static const float X_max[N_FEATURES] = {
-   973.99f, 436.64f, 20.4f, 69.63f, 34.07f, 11.38f,
-    1.0f, 1.0f, 0.8660254f, 0.8660254f, 1.0f, 1.0f
-};
-
-// Min e Max per l'output
-static const float y_min = 0.0f;
-static const float y_max = 111750.0f;
-
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_event_handler(void);
@@ -49,35 +31,30 @@ static void res_event_handler(void) {
   coap_notify_observers(&res_pred_power_obs);
 }
 
-// Funzioni di normalizzazione
-static float normalize(float val, float min_val, float max_val) {
-    return (val - min_val) / (max_val - min_val);
-}
-
-static float denormalize(float val, float min_val, float max_val) {
-    return val * (max_val - min_val) + min_val;
-}
-
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
-    float features[SEQ_LEN * N_FEATURES];
-    float outputs[HORIZON];
+    float features[SEQ_LEN * N_FEATURES]; // Array to hold normalized input features for the model
+    float outputs[HORIZON];               // Array to store the model's predictions
+
     time_t t;
 
-    // Creazione delle features normalizzate
+    // Create normalized features for the prediction sequence
     for (int i = 0; i < SEQ_LEN; i++) {
-        int idx = solar_data_counter - SEQ_LEN + i;  // correggo l’indice
+        int idx = solar_data_counter - SEQ_LEN + 1 + i; // Index into historical solar data
 
-        t = timestamp[idx];
-        struct tm *tm_info = localtime(&t);
+        t = solar_data_timestamp[idx]; // Get the timestamp for the current index
+        struct tm *tm_info = localtime(&t); // Convert timestamp to local time structure
 
+        // Extract hour, minute, and week-of-year (approximate)
         int hour   = tm_info->tm_hour;
         int minute = tm_info->tm_min;
-        int woy    = tm_info->tm_yday / 7;  // settimana dell’anno
+        int woy    = tm_info->tm_yday / 7; // Week of year (0-51)
 
+        // Convert time features to angles for circular encoding
         float hour_angle = 2.0f * M_PI * hour / 24.0f;
         float min_angle  = 2.0f * M_PI * minute / 60.0f;
         float woy_angle  = 2.0f * M_PI * woy / 52.0f;
 
+        // Compute sine and cosine for circular encoding of time features
         float hour_sin = sinf(hour_angle);
         float hour_cos = cosf(hour_angle);
         float min_sin  = sinf(min_angle);
@@ -85,6 +62,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
         float woy_sin  = sinf(woy_angle);
         float woy_cos  = cosf(woy_angle);
 
+        // Normalize input features using precomputed min/max values
         features[i * N_FEATURES + 0]  = normalize(Gb[idx],   X_min[0], X_max[0]);
         features[i * N_FEATURES + 1]  = normalize(Gd[idx],   X_min[1], X_max[1]);
         features[i * N_FEATURES + 2]  = normalize(Gr[idx],   X_min[2], X_max[2]);
@@ -99,38 +77,42 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
         features[i * N_FEATURES + 11] = normalize(woy_cos,   X_min[11], X_max[11]);
     }
 
-    // Predizione con il modello emlearn
-    eml_net_predict_proba(&modelTiny, features, SEQ_LEN * N_FEATURES, outputs, HORIZON);
+    // Predict using the emlearn TinyML model
+    eml_net_predict_proba(&emlearnModel, features, SEQ_LEN * N_FEATURES, outputs, HORIZON);
 
-    // Denormalizzo l’output
+    // Denormalize model outputs to original scale
     for (int i = 0; i < HORIZON; i++) {
         outputs[i] = denormalize(outputs[i], y_min, y_max);
+        if (outputs[i] < 0.0f) {
+            outputs[i] = 0.0f; // Set negative values to 0
+        }
     }
 
-    // Timestamp base (ultimo della sequenza)
-    time_t base_time = t;
-
     int offset_buf = 0;
-    offset_buf += snprintf((char *)buffer + offset_buf, preferred_size - offset_buf, "{");
+    offset_buf += snprintf((char *)buffer + offset_buf, preferred_size - offset_buf, "{"); // Start JSON payload
 
+    // Loop to format the predicted values as JSON
     for (int i = 0; i < HORIZON; i++) {
-        // aggiungo 15 minuti per ogni step
-        time_t pred_time = base_time + (i + 1) * 15 * 60;
-        struct tm *tm_info = localtime(&pred_time);
+        // Add 15 minutes per prediction step
+        time_t pred_time = t + (i + 1) * 15 * 60;
+        struct tm *tm_info = localtime(&pred_time); // Convert prediction time to local time
         char time_str[32];
-        strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info);
+        strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info); // Format time as string
 
+        // Append JSON object for each prediction
         offset_buf += snprintf((char *)buffer + offset_buf, preferred_size - offset_buf,
                                "\"%d\":{\"value\":%.4f,\"time\":\"%s\"}%s",
                                i + 1, outputs[i], time_str,
                                (i < HORIZON - 1) ? "," : "");
     }
 
-    offset_buf += snprintf((char *)buffer + offset_buf, preferred_size - offset_buf, "}");
+    offset_buf += snprintf((char *)buffer + offset_buf, preferred_size - offset_buf, "}"); // Close JSON payload
 
-    printf("%p\n", eml_net_activation_function_strs); // This is needed to avoid compiler error (warnings == errors)
+    // Prevent unused variable warnings (required by compiler settings)
+    printf("%p\n", eml_net_activation_function_strs);
     printf("%p\n", eml_error_str);
 
+    // Set CoAP response headers and payload
     coap_set_header_content_format(response, APPLICATION_JSON);
     coap_set_payload(response, buffer, offset_buf);
 }

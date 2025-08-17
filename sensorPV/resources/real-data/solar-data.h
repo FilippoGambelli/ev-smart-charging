@@ -3,7 +3,7 @@
 
 #include <time.h>
 
-extern time_t timestamp[];
+extern time_t solar_data_timestamp[];
 extern float Gb[];
 extern float Gd[];
 extern float Gr[];

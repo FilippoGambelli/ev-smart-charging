@@ -3,7 +3,7 @@
 
 #include <time.h>
 
-extern time_t timestamp_power[];
+extern time_t power_data_timestamp[];
 extern float P[];
 
 extern int power_data_counter;
