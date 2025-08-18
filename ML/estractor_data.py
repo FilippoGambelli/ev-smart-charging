@@ -9,7 +9,7 @@ italy_tz = pytz.timezone('Europe/Rome')
 df = pd.read_csv('dataset/test_radiation_data.csv')
 
 TIME_START = "2023-05-21"
-TIME_FINISH = "2023-05-25"
+TIME_FINISH = "2023-05-22"
 
 df['time'] = pd.to_datetime(df['time']).dt.tz_localize('UTC').dt.tz_convert(italy_tz)
 
@@ -82,4 +82,4 @@ with open("../sensorPV/resources/real-data/power-data.c", 'w') as f:
             ) + '\n}'
             f.write(f"float {var}[] = {data_str};\n\n")
 
-    f.write('int power_data_counter = 15;\n\n')
+    f.write('int power_data_counter = 60;\n\n')
