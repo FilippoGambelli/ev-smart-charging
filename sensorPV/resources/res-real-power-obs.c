@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 #include "coap-engine.h"
 #include "real-data/power-data.h"
 
@@ -27,6 +28,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 
     struct tm *t = localtime(&power_data_timestamp[power_data_counter]);
 
+    setlocale(LC_NUMERIC, "C");
     int length = snprintf((char *)buffer, preferred_size,
         "{\"Timestamp\":\"%02d-%02d-%04d %02d:%02d:%02d\",\"P\":%.4f}",
         t->tm_mday, t->tm_mon + 1, t->tm_year + 1900, t->tm_hour, t->tm_min, t->tm_sec,P[power_data_counter]);

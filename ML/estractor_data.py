@@ -8,8 +8,8 @@ italy_tz = pytz.timezone('Europe/Rome')
 
 df = pd.read_csv('dataset/test_radiation_data.csv')
 
-TIME_START = "2023-05-21"
-TIME_FINISH = "2023-05-22"
+TIME_START = "2023-05-21 09:00:00"
+TIME_FINISH = "2023-05-22 23:59:59"
 
 df['time'] = pd.to_datetime(df['time']).dt.tz_localize('UTC').dt.tz_convert(italy_tz)
 

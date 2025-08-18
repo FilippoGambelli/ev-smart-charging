@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 #include "coap-engine.h"
 #include "real-data/solar-data.h"
 
@@ -27,9 +28,15 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 
     struct tm *t = localtime(&solar_data_timestamp[solar_data_counter]);
 
+    setlocale(LC_NUMERIC, "C");
     int length = snprintf((char *)buffer, preferred_size,
-        "{\"Time\":%02d-%02d-%04d %02d:%02d:%02d,\"Gb\":%.4f,\"Gd\":%.4f,\"Gr\":%.4f,"
-        "\"HSun\":%.4f,\"T\":%.4f,\"WS\":%.4f}",
+        "{\"Time\":\"%02d-%02d-%04d %02d:%02d:%02d\","
+        "\"Gb\":%.4f,"
+        "\"Gd\":%.4f,"
+        "\"Gr\":%.4f,"
+        "\"HSun\":%.4f,"
+        "\"T\":%.4f,"
+        "\"WS\":%.4f}",
         t->tm_mday, t->tm_mon + 1, t->tm_year + 1900, t->tm_hour, t->tm_min, t->tm_sec,
         Gb[solar_data_counter], Gd[solar_data_counter], Gr[solar_data_counter], HSun[solar_data_counter], T[solar_data_counter], WS[solar_data_counter]);
 
