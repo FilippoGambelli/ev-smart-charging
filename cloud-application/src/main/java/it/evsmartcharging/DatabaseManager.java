@@ -18,6 +18,14 @@ public class DatabaseManager {
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "PASSWORD";
 
+    private Connection connection;
+
+    public DatabaseManager() throws SQLException {
+        logger.info("Initializing database connection");
+        this.connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        logger.info("Database connection established successfully");
+    }
+
     /**
      * Creates and returns a connection to the database
      */
@@ -28,9 +36,9 @@ public class DatabaseManager {
     /**
      * Inserts a record into the solarData table
      */
-    public void insertSolarData(Connection conn, Timestamp timestamp, float Gb, float Gd, float Gr, float H_sun, float T2m, float WS10m, float P) {
+    public void insertSolarData(Timestamp timestamp, float Gb, float Gd, float Gr, float H_sun, float T2m, float WS10m, float P) {
         String sql = "INSERT INTO solarData (timestamp, Gb, Gd, Gr, HSun, T, WS, P_predicted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setTimestamp(1, timestamp);
             pstmt.setFloat(2, Gb);
             pstmt.setFloat(3, Gd);
@@ -50,9 +58,9 @@ public class DatabaseManager {
     /**
      * Inserts a record into the realPower table
      */
-    public void insertRealPowerData(Connection conn, Timestamp timestamp, float P) {
+    public void insertRealPowerData(Timestamp timestamp, float P) {
         String sql = "INSERT INTO realPower (timestamp, P_real) VALUES (?, ?)";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setTimestamp(1, timestamp);
             pstmt.setFloat(2, P);
             pstmt.executeUpdate();
@@ -60,6 +68,22 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             logger.error("Insert failed: {}", e.getMessage(), e);
+        }
+    }
+
+    public int getPriorityByPlate(String plate){
+        String sql = "SELECT priority FROM plate_priority WHERE plate = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, plate);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("priority"); // ritorna 0 o 1
+            } else {
+                return -1; // default se la targa non è presente
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1; // fallback in caso di errore
         }
     }
 }

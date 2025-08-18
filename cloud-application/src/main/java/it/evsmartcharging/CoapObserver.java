@@ -18,11 +18,16 @@ import org.slf4j.LoggerFactory;
 public class CoapObserver {
 
     private static final Logger logger = LoggerFactory.getLogger(CoapObserver.class);
-
-    private DatabaseManager databaseConnection = new DatabaseManager();
     
+    private final DatabaseManager databaseConnection;
+
     private CoapObserveRelation relationSolarData;
     private CoapObserveRelation relationRealPowerData;
+    
+    public CoapObserver(DatabaseManager databaseManager) {
+        this.databaseConnection = databaseManager;
+    }
+
 
     public void startAllObservation(){
         startObservationSolarData();
@@ -74,7 +79,7 @@ public class CoapObserver {
                     float WS = obj.has("WS") && !obj.get("WS").isJsonNull()
                             ? obj.get("WS").getAsFloat() : null;
 
-                    databaseConnection.insertSolarData(databaseConnection.getConnection(), timestamp, Gb, Gd, Gr, HSun, T, WS, 0);
+                    databaseConnection.insertSolarData(timestamp, Gb, Gd, Gr, HSun, T, WS, 0);
                 } catch (Exception e) {
                     logger.error("Error parsing JSON: " + e.getMessage());
                 }
@@ -122,7 +127,7 @@ public class CoapObserver {
                     float P = obj.has("P") && !obj.get("P").isJsonNull()
                             ? obj.get("P").getAsFloat() : null;
 
-                    databaseConnection.insertRealPowerData(databaseConnection.getConnection(), timestamp, P);
+                    databaseConnection.insertRealPowerData(timestamp, P);
                 } catch (Exception e) {
                     logger.error("Error parsing JSON: " + e.getMessage());
                 }
