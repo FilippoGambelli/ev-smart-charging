@@ -59,7 +59,8 @@ static void notification_callback(coap_observee_t *obs, void *notification, coap
   }
 }
 
-extern coap_resource_t res_register;
+extern coap_resource_t res_car_reg;
+extern coap_resource_t res_charger_reg;
 
 // Main process thread
 PROCESS_THREAD(coap_observe_client, ev, data) {
@@ -67,12 +68,13 @@ PROCESS_THREAD(coap_observe_client, ev, data) {
 
   PROCESS_BEGIN();
 
-#if BORDER_ROUTER_CONF_WEBSERVER
-  PROCESS_NAME(webserver_nogui_process);
-  process_start(&webserver_nogui_process, NULL);
-#endif /* BORDER_ROUTER_CONF_WEBSERVER */
+  #if BORDER_ROUTER_CONF_WEBSERVER
+    PROCESS_NAME(webserver_nogui_process);
+    process_start(&webserver_nogui_process, NULL);
+  #endif /* BORDER_ROUTER_CONF_WEBSERVER */
 
-  coap_activate_resource(&res_register, "register");
+  coap_activate_resource(&res_charger_reg, "registration/charger");
+  coap_activate_resource(&res_car_reg, "registration/car");
 
   // Parse server endpoint string into coap_endpoint_t structure
   coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
