@@ -3,4 +3,7 @@
 
 #define LOG_LEVEL_APP LOG_LEVEL_DBG
 
+#undef REST_MAX_CHUNK_SIZE
+#define REST_MAX_CHUNK_SIZE 128
+
 #endif /* PROJECT_CONF_H_ */

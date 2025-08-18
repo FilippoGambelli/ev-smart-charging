@@ -3,6 +3,9 @@
 
 #define LOG_LEVEL_APP LOG_LEVEL_DBG
 
+#undef REST_MAX_CHUNK_SIZE
+#define REST_MAX_CHUNK_SIZE 128
+
 #ifdef CONTIKI_TARGET_SKY
 /* Save some RAM and ROM */
 #define QUEUEBUF_CONF_NUM              4

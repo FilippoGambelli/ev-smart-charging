@@ -6,6 +6,7 @@
 #include "coap-engine.h"
 #include "coap-blocking-api.h"
 #include "etimer.h"
+#include "os/dev/button-hal.h"
 
 /* Log configuration */
 #include "coap-log.h"
@@ -14,11 +15,20 @@
 
 // Address of the central node
 #define CENTRAL_NODE_EP "coap://[fd00::201:1:1:1]:5683"
-#define RES_REGISTER_URI "/register"
+#define RES_CHARGER_REGISTER_URI "/registration/charger"
+#define RES_CAR_REGISTER_URI "/registration/car"
+
+
+// EXAMPLE
+#define maxKW 22.0
+#define CAR_MAX_KW 22.0
+#define CURRENT_CHARGE 20.0
+#define DESIRED_CHARGE 80.0
+#define PARKING_TIME 120
 
 static uint8_t my_id = 0; // Stores the ID assigned by the server after registration
 
-// Callback function to handle the server's response to the registration request
+// Callback function to handle the server's response to the charger registration request
 static void client_chunk_handler(coap_message_t *response) {
   const uint8_t *chunk;
   if(response) {
@@ -27,8 +37,14 @@ static void client_chunk_handler(coap_message_t *response) {
       char id_str[4] = {0};
       memcpy(id_str, chunk, len < sizeof(id_str)-1 ? len : sizeof(id_str)-1);
       my_id = (uint8_t)atoi(id_str);
-      printf("Registered with ID=%u\n", my_id);
     }
+  }
+}
+
+// Callback function to handle the server's response to the car registration request
+static void vehicle_connection_handler(coap_message_t *response) {
+  if(response) {
+	printf("RICEVUTA RISPOSTA DAL SERVER PER REGISTRAZIONE VEICOLO\n");
   }
 }
 
@@ -36,40 +52,62 @@ PROCESS(charging_station_process, "Charging Station Node Process");
 AUTOSTART_PROCESSES(&charging_station_process);
 
 PROCESS_THREAD(charging_station_process, ev, data){
-  static coap_endpoint_t server_ep;
-  static coap_message_t request[1];
+    static coap_endpoint_t server_ep;
+    static coap_message_t request[1];
 
-  static struct etimer registration_timer;
+    static struct etimer registration_timer;
+    static char buffer_req[128];
 
-  PROCESS_BEGIN();
+    PROCESS_BEGIN();
 
-  LOG_INFO("Charging station node started");
-  LOG_INFO_("\n");
+    LOG_INFO("Charging station node started\n");
 
-  // Initialize the CoAP endpoint of the central node
-  coap_endpoint_parse(CENTRAL_NODE_EP, strlen(CENTRAL_NODE_EP), &server_ep);
+    // Initialize the CoAP server endpoint
+    coap_endpoint_parse(CENTRAL_NODE_EP, strlen(CENTRAL_NODE_EP), &server_ep);
 
-  etimer_set(&registration_timer, 5 * 60 * CLOCK_SECOND);
+    // Set the initial registration timer
+    etimer_set(&registration_timer, 5 * CLOCK_SECOND); // for testing, previously 5 minutes
 
-  while(my_id == 0) {
-    LOG_INFO("Sending registration request...\n");
+    while(1) {
+        // If not registered, attempt registration
+        if(my_id == 0 && etimer_expired(&registration_timer)) {
+            LOG_INFO("Sending registration request...\n");
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-    coap_set_header_uri_path(request, RES_REGISTER_URI);
+            coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+            coap_set_header_uri_path(request, RES_CHARGER_REGISTER_URI);
 
-    COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
+            snprintf(buffer_req, sizeof(buffer_req), "maxKW=%.2f", maxKW);
+            coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 
-    if(my_id > 0) {
-      LOG_INFO("Registration successful, ID=%u", my_id);
-      LOG_INFO_("\n");
-      break;
-    } else {
-      LOG_INFO("Registration failed, retrying in 5 minutes...");
-      LOG_INFO_("\n");
-      PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&registration_timer));
-      etimer_reset(&registration_timer);
+            COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
+
+            if(my_id > 0) {
+                LOG_INFO("Registration successful, ID=%u\n", my_id);
+            } else {
+                LOG_INFO("Registration failed, retrying in 5 minutes...\n");
+                etimer_set(&registration_timer, 5 * 60 * CLOCK_SECOND); // reset for retry
+            }
+        }
+
+        // Handle button press events
+        if(ev == button_hal_press_event && my_id > 0) {
+            LOG_INFO("Sending vehicle connection request......\n");
+
+            coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+            coap_set_header_uri_path(request, RES_CAR_REGISTER_URI);
+
+            // Build payload
+            snprintf(buffer_req, sizeof(buffer_req), 
+                "carMaxKW=%.2f&currentCharge=%.2f&desiredCharge=%.2f&parkingTime=%u",
+                CAR_MAX_KW, CURRENT_CHARGE, DESIRED_CHARGE, PARKING_TIME);
+	
+			      coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
+
+            COAP_BLOCKING_REQUEST(&server_ep, request, vehicle_connection_handler);
+        }
+
+        PROCESS_WAIT_EVENT(); // wait for the next event (timer, button, etc.)
     }
-  }
 
-  PROCESS_END();
+    PROCESS_END();
 }
