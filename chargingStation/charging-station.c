@@ -44,16 +44,16 @@ static void client_chunk_handler(coap_message_t *response) {
 }
 
 // Callback function to handle the server's response to the car registration request
-static void vehicle_connection_handler(coap_message_t *response) {
+static void vehicles_handler(coap_message_t *response) {
   if(response) {
     uint8_t code = response->code;
 
-    if(code == CREATED_2_01) {
+    if(code == CHANGED_2_04) {
       // Successfully registered the car
-      LOG_INFO("Car registration successful\n");
+      LOG_INFO("Update car status successful\n");
     } else {
       // Registration failed
-      LOG_INFO("Car registration failed with code: %u\n", code);
+      LOG_INFO("Update car status failed with code: %u\n", code);
     }
   }
 }
@@ -104,17 +104,34 @@ PROCESS_THREAD(charging_station_process, ev, data){
         if(ev == button_hal_press_event && my_id > 0) {
             LOG_INFO("Sending vehicle connection request......\n");
 
-            coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+            coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 0);
             coap_set_header_uri_path(request, RES_CAR_REGISTER_URI);
 
             // Build payload
             snprintf(buffer_req, sizeof(buffer_req), 
-                "carMaxKW=%.2f&carMaxCapacity=%u&currentCharge=%.2f&desiredCharge=%.2f&plate=%s",
+                "type=connection&carMaxKW=%.2f&carMaxCapacity=%u&currentCharge=%.2f&desiredCharge=%.2f&plate=%s",
                 CAR_maxKW, CAR_CAPACITY, CURRENT_CHARGE, DESIRED_CHARGE, PLATE);
 	
 			      coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 
-            COAP_BLOCKING_REQUEST(&server_ep, request, vehicle_connection_handler);
+            COAP_BLOCKING_REQUEST(&server_ep, request, vehicles_handler);
+        }
+
+        if(ev == button_hal_periodic_event && my_id > 0) {
+          button_hal_button_t *btn = (button_hal_button_t *)data;
+          if(btn->press_duration_seconds > 3) {
+            LOG_INFO("Sending vehicle disconnection request......\n");
+
+            coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 0);
+            coap_set_header_uri_path(request, RES_CAR_REGISTER_URI);
+
+            // Build payload
+            snprintf(buffer_req, sizeof(buffer_req), "type=disconnection");
+	
+			      coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
+
+            COAP_BLOCKING_REQUEST(&server_ep, request, vehicles_handler);
+          }
         }
 
         PROCESS_WAIT_EVENT(); // wait for the next event (timer, button, etc.)

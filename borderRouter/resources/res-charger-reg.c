@@ -54,8 +54,7 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
     if (len > 0) {
         float maxKW_val = strtof(text, NULL);
         EV_charger[idx].max_charging_power = maxKW_val; // Store the maximum charging power
-
-        EV_charger[idx].assigned_power = 0;
+        EV_charger[idx].car_registered = false;
 
         // Return the assigned ID in the response payload
         char id_str[4];

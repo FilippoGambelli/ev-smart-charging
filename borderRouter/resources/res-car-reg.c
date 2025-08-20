@@ -24,7 +24,7 @@ static int EV_charger_last_idx = -1;
 
 
 // Function prototypes
-static void res_connection_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
+static void res_connection_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static uint8_t get_device_id_by_addr(const uip_ipaddr_t *src_addr);
 
 void client_response_handler(coap_callback_request_state_t *callback_state) {
@@ -72,7 +72,7 @@ void client_response_handler(coap_callback_request_state_t *callback_state) {
 
         EV_charger[EV_charger_last_idx].estimated_charging_duration = estimated_charging_duration;
         EV_charger[EV_charger_last_idx].remaining_time_seconds = estimated_charging_duration;
-
+        
         // Mark charger as not currently charging
         EV_charger[EV_charger_last_idx].is_charging = false;
     }
@@ -83,12 +83,12 @@ void client_response_handler(coap_callback_request_state_t *callback_state) {
 RESOURCE(res_car_reg,
         "title=\"Register Car\";rt=\"Control\"",
         NULL,                         // GET handler (not used)
-        res_connection_post_handler,  // POST handler
-        NULL,                         // PUT handler (not used)
+        NULL,                         // POST handler
+        res_connection_put_handler,  // PUT handler (not used)
         NULL);                        // DELETE handler (not used)
   
 // Handler for POST requests to register a new device
-static void res_connection_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
+static void res_connection_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
     uip_ipaddr_t source_addr;
     uip_ipaddr_copy(&source_addr, &UIP_IP_BUF->srcipaddr);
 
@@ -112,6 +112,17 @@ static void res_connection_post_handler(coap_message_t *request, coap_message_t 
     char plate[12] = "";
 
     int param_count = 0;
+
+    const int idx = device_id - 1; // Adjust for zero-based index
+
+    len = coap_get_post_variable(request, "type", &text);
+    if (len > 0) {
+        if (strcmp(text, "disconnection") == 0) {
+            EV_charger[idx].car_registered = false;
+            coap_set_status_code(response, CHANGED_2_04);
+            return;
+        }
+    }
 
     // carMaxKW
     len = coap_get_post_variable(request, "carMaxKW", &text);
@@ -148,12 +159,11 @@ static void res_connection_post_handler(coap_message_t *request, coap_message_t 
         param_count++;
     }
 
-    const int idx = device_id - 1; // Adjust for zero-based index
-
     // Only update the device if all four parameters are present
     if (param_count == 5) {
         vehicle_count++;
 
+        EV_charger[idx].car_registered = true;
         EV_charger[idx].vehicle_max_charging_power = vehicle_max_power;
         EV_charger[idx].vehicle_max_capacity = vehicle_max_capacity;
         EV_charger[idx].soc_current = soc_current;
@@ -181,7 +191,7 @@ static void res_connection_post_handler(coap_message_t *request, coap_message_t 
 
         coap_send_request(&request_state, &cloud_application_ep, request, client_response_handler);
 
-        coap_set_status_code(response, CREATED_2_01);
+        coap_set_status_code(response, CHANGED_2_04);
     } else {
         LOG_INFO("Missing parameters, device not updated\n");
         coap_set_status_code(response, BAD_REQUEST_4_00);
