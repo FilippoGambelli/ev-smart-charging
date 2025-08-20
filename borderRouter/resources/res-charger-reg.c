@@ -80,9 +80,6 @@ static uint8_t register_device(const uip_ipaddr_t *src_addr) {
     uip_ipaddr_copy(&EV_charger[device_count].addr, src_addr);
     device_count++;
 
-    //uip_debug_ipaddr_print(src_addr);
-    LOG_INFO_6ADDR(src_addr);
-    LOG_INFO_("\n");
     return new_id;
   } else {
     return 0; // Registration failed

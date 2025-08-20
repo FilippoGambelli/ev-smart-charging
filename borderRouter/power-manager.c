@@ -47,9 +47,6 @@ void power_manager_update_charging_station(){
 
     // !! TODO: Per adesso sono dati a caso, dopo questa variabili saranno già definite con il dato corretto      
     float power_PV_pred = 150.0;  // kW
-    
-    LOG_INFO("\n !!Power prediction: %f kW\n", power_PV_real);
-
     float solar_available = (power_PV_real < power_PV_pred) ? power_PV_real : power_PV_pred;  // kW
 
 

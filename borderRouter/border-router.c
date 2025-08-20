@@ -91,8 +91,6 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
     len = coap_get_payload(notification, &payload);
   }
 
-  LOG_INFO("NOTIFICATION ARRIVED realPV: %*s\n", len, (char *)payload);
-
 
   // Handle different notification flags
   switch(flag) {
@@ -104,14 +102,10 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
         memcpy(buf, payload, len);
         buf[len] = '\0';
 
-        LOG_INFO("realPV: %f\n", power_PV_real);
-
         char *ptr = strstr(buf, "realPV=");
         if(ptr != NULL) {
             power_PV_real = strtof(ptr + 7, NULL);
         }
-
-        LOG_INFO("realPV: %f\n", power_PV_real);
 
         /*
         ptr = strstr(buf, "timestamp=");
@@ -159,9 +153,6 @@ PROCESS_THREAD(coap_observe_client, ev, data) {
     process_start(&webserver_nogui_process, NULL);
   #endif /* BORDER_ROUTER_CONF_WEBSERVER */
 
-  coap_activate_resource(&res_charger_reg, "registration/charger");
-  coap_activate_resource(&res_car_reg, "registration/car");
-
   // Parse server endpoint string into coap_endpoint_t structure
   coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 
@@ -181,6 +172,9 @@ PROCESS_THREAD(coap_observe_client, ev, data) {
     LOG_INFO("Error registering observation");
     LOG_INFO_("\n");
   }
+
+  coap_activate_resource(&res_charger_reg, "registration/charger");
+  coap_activate_resource(&res_car_reg, "registration/car");
 
   // Main loop: wait for events (notifications, timers, etc.)
   while(1) {
