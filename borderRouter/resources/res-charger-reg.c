@@ -4,7 +4,7 @@
 #include "coap-engine.h"
 #include "net/ipv6/uip.h"
 #include "net/ipv6/uip-debug.h"
-#include "info-charger-station.h"
+#include "info-charging-station.h"
 #include <math.h>
 #include <stdint.h> 
 
@@ -16,8 +16,9 @@
 static void res_register_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static uint8_t register_device(const uip_ipaddr_t *src_addr);
 
-struct device_info devices[MAX_DEVICES];
+struct charging_station EV_charger[MAX_DEVICES];
 uint8_t device_count = 0;
+uint8_t vehicle_count = 0;
 
 // Define the CoAP resource "res_register" for device registration
 RESOURCE(res_charger_reg,
@@ -45,12 +46,6 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
 
     const int idx = device_id - 1; // Adjust for zero-based index
 
-    // Initialize device fields
-    devices[idx].vehicle_max_charging_power = NAN;
-    devices[idx].soc_current = NAN;
-    devices[idx].soc_target = NAN;
-    devices[idx].parking_time_minutes = UINT32_MAX;
-
     // Check for maxKW parameter
     size_t len = 0;
     const char *text = NULL;
@@ -58,7 +53,9 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
 
     if (len > 0) {
         float maxKW_val = strtof(text, NULL);
-        devices[idx].max_charging_power = maxKW_val; // Store the maximum charging power
+        EV_charger[idx].max_charging_power = maxKW_val; // Store the maximum charging power
+
+        EV_charger[idx].assigned_power = 0;
 
         // Return the assigned ID in the response payload
         char id_str[4];
@@ -79,8 +76,8 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
 static uint8_t register_device(const uip_ipaddr_t *src_addr) {
   if(device_count < MAX_DEVICES) {
     uint8_t new_id = device_count + 1;
-    devices[device_count].id = new_id;
-    uip_ipaddr_copy(&devices[device_count].addr, src_addr);
+    EV_charger[device_count].id = new_id;
+    uip_ipaddr_copy(&EV_charger[device_count].addr, src_addr);
     device_count++;
 
     //uip_debug_ipaddr_print(src_addr);

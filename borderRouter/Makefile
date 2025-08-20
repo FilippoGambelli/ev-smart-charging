@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = coap-server
+CONTIKI_PROJECT = border-router
 all: $(CONTIKI_PROJECT)
 
 # Do not try to build on Sky because of code size limitation
@@ -7,6 +7,7 @@ PLATFORMS_EXCLUDE = sky z1
 CONTIKI = ../../..
 
 MODULES_REL += ./resources
+MODULES_REL += .		# power-manager.c
 
 # Include RPL BR module
 include $(CONTIKI)/Makefile.dir-variables

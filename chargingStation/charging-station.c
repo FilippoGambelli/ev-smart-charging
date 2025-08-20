@@ -20,11 +20,13 @@
 
 
 // EXAMPLE
-#define maxKW 22.0
-#define CAR_MAX_KW 22.0
+#define CHARGER_maxKW 22.0
+
+#define CAR_maxKW 22.0
+#define CAR_CAPACITY 70 
 #define CURRENT_CHARGE 20.0
 #define DESIRED_CHARGE 80.0
-#define PARKING_TIME 120
+#define PLATE "AB123CD"
 
 static uint8_t my_id = 0; // Stores the ID assigned by the server after registration
 
@@ -43,8 +45,13 @@ static void client_chunk_handler(coap_message_t *response) {
 
 // Callback function to handle the server's response to the car registration request
 static void vehicle_connection_handler(coap_message_t *response) {
+  const uint8_t *chunk;
   if(response) {
-	printf("RICEVUTA RISPOSTA DAL SERVER PER REGISTRAZIONE VEICOLO\n");
+    int len = coap_get_payload(response, &chunk);
+    if(len > 0) {
+      unsigned int duration_minutes = atoi((const char *)chunk);
+      LOG_INFO("Vehicle connection request successful, estimated charging duration: %u minutes\n", duration_minutes);
+    } 
   }
 }
 
@@ -76,7 +83,7 @@ PROCESS_THREAD(charging_station_process, ev, data){
             coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
             coap_set_header_uri_path(request, RES_CHARGER_REGISTER_URI);
 
-            snprintf(buffer_req, sizeof(buffer_req), "maxKW=%.2f", maxKW);
+            snprintf(buffer_req, sizeof(buffer_req), "maxKW=%.2f", CHARGER_maxKW);
             coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 
             COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
@@ -98,8 +105,8 @@ PROCESS_THREAD(charging_station_process, ev, data){
 
             // Build payload
             snprintf(buffer_req, sizeof(buffer_req), 
-                "carMaxKW=%.2f&currentCharge=%.2f&desiredCharge=%.2f&parkingTime=%u",
-                CAR_MAX_KW, CURRENT_CHARGE, DESIRED_CHARGE, PARKING_TIME);
+                "carMaxKW=%.2f&carMaxCapacity=%u&currentCharge=%.2f&desiredCharge=%.2f&plate=%s",
+                CAR_maxKW, CAR_CAPACITY, CURRENT_CHARGE, DESIRED_CHARGE, PLATE);
 	
 			      coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 
