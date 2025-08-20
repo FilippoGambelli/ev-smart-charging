@@ -2,6 +2,9 @@ package it.evsmartcharging;
 
 import java.util.Scanner;
 
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +31,7 @@ public class UserInterface {
     
         System.out.println("\n==== EV SMART CHARGING SYSTEM ====");
         System.out.println(++i + ". Add new table to database");
+        System.out.println(++i + ". Update ML prediction interval");
         System.out.println(++i + ". View Stored Data");
         System.out.println(++i + ". View Logs");
         System.out.println(++i + ". Exit");
@@ -75,6 +79,42 @@ public class UserInterface {
             System.out.println("Record inserted successfully!");
         } else {
             System.out.println("Insertion cancelled.");
+        }
+    }
+
+    public void updateMLPredInterval() {
+        System.out.print("\nEnter the new ML prediction interval in seconds: ");
+        String seconds = scanner.nextLine().trim();
+
+        System.out.print("Are you sure you want to modify the ML prediction interval to " + seconds + " seconds? (y/n): ");
+        String confirm = scanner.nextLine().trim().toLowerCase();
+
+        if (confirm.equals("y")) {
+            try {
+                // Create the CoAP client with the IPv6 address of your device
+                String uri = "coap://[fd00::202:2:2:2]:5683/res_ml_pred_interval";
+                CoapClient client = new CoapClient(uri);
+
+                // Prepare the request payload in key=value format as expected by the server
+                String payload = "mlPredInterval=" + seconds;
+
+                // Content-Format 4 = application/x-www-form-urlencoded
+                CoapResponse response = client.put(payload, 4);
+
+                if (response != null) {
+                    System.out.println(response.getResponseText());
+                } else {
+                    System.out.println("No response received from the server.");
+                }
+
+                client.shutdown();
+
+            } catch (Exception e) {
+                System.err.println("Error while sending CoAP request: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Update cancelled.");
         }
     }
 

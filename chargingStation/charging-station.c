@@ -7,6 +7,7 @@
 #include "coap-blocking-api.h"
 #include "etimer.h"
 #include "os/dev/button-hal.h"
+#include "car-pool/car-pool.h"
 
 /* Log configuration */
 #include "coap-log.h"
@@ -17,7 +18,6 @@
 #define CENTRAL_NODE_EP "coap://[fd00::201:1:1:1]:5683"
 #define RES_CHARGER_REGISTER_URI "/registration/charger"
 #define RES_CAR_REGISTER_URI "/registration/car"
-
 
 // EXAMPLE
 #define CHARGER_maxKW 22.0
@@ -58,6 +58,8 @@ static void vehicles_handler(coap_message_t *response) {
   }
 }
 
+extern coap_resource_t res_charging_status;
+
 
 PROCESS(charging_station_process, "Charging Station Node Process");
 AUTOSTART_PROCESSES(&charging_station_process);
@@ -72,6 +74,8 @@ PROCESS_THREAD(charging_station_process, ev, data){
     PROCESS_BEGIN();
 
     LOG_INFO("Charging station node started\n");
+
+    coap_activate_resource(&res_charging_status, "res_charging_status");
 
     // Initialize the CoAP server endpoint
     coap_endpoint_parse(CENTRAL_NODE_EP, strlen(CENTRAL_NODE_EP), &server_ep);
@@ -108,9 +112,11 @@ PROCESS_THREAD(charging_station_process, ev, data){
             coap_set_header_uri_path(request, RES_CAR_REGISTER_URI);
 
             // Build payload
+            const car_t* selected_car = get_random_car();
+
             snprintf(buffer_req, sizeof(buffer_req), 
-                "type=connection&carMaxKW=%.2f&carMaxCapacity=%u&currentCharge=%.2f&desiredCharge=%.2f&plate=%s",
-                CAR_maxKW, CAR_CAPACITY, CURRENT_CHARGE, DESIRED_CHARGE, PLATE);
+              "type=connection&carMaxKW=%.2f&carMaxCapacity=%u&currentCharge=%.2f&desiredCharge=%.2f&plate=%s",
+              selected_car->carMaxKW, selected_car->carCapacity, selected_car->currentCharge, selected_car->desiredCharge, selected_car->plate);
 	
 			      coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 

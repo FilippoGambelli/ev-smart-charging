@@ -8,6 +8,8 @@ CONTIKI = ../../..
 
 MODULES_REL += ./resources
 
+MODULES_REL += ./car-pool
+
 MODULES += $(CONTIKI_NG_APP_LAYER_DIR)/coap
 
 # Include optional target-specific module

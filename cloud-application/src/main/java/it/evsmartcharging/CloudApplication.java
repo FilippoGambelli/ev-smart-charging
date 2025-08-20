@@ -36,23 +36,28 @@ public class CloudApplication {
                 int choice = userInterface.getUserInput();
                 logger.info("User select option number {}", choice);
                 
-                switch (userInterface.getUserInput()) {
+                switch (choice) {
                     case 1:
                         logger.info("User selected to add a new table to the database.");
                         userInterface.addNewPlateToDatabase();
                         break;
 
                     case 2:
-                        logger.info("Option 2 selected - functionality not yet implemented.");
-                        // TODO: Implement functionality for option 2
+                        logger.info("User selected to update the ML prediction interval");
+                        userInterface.updateMLPredInterval();
                         break;
 
                     case 3:
                         logger.info("Option 3 selected - functionality not yet implemented.");
                         // TODO: Implement functionality for option 3
                         break;
-                    
+
                     case 4:
+                        logger.info("Option 4 selected - functionality not yet implemented.");
+                        // TODO: Implement functionality for option 3
+                        break;
+                    
+                    case 5:
                         logger.info("User selected to exit the application.");
                         coapObserver.stopAllObservation();  // Stop all CoAP observations
                         server.stop();  // Stop CoAP server

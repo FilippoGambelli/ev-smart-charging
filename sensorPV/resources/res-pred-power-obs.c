@@ -95,13 +95,11 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
     int trend = (trend_val >= 0.0f) ? 1 : -1;
 
     // Write the plain text response
-    int offset_buf = snprintf((char *)buffer, preferred_size, "trend=%d", trend);
+    int offset_buf = snprintf((char *)buffer, preferred_size, "trend=%d&firstPrediction=%.4f", trend, outputs[0]);
 
     // Prevent unused variable warnings (required by compiler settings)
-    //printf("%p\n", eml_net_activation_function_strs);
-    //printf("%p\n", eml_error_str);
-    (void)eml_net_activation_function_strs;
-    (void)eml_error_str;
+    (void)eml_net_activation_function_strs; //printf("%p\n", eml_net_activation_function_strs);
+    (void)eml_error_str;                    //printf("%p\n", eml_error_str);
 
     // Set CoAP response headers and payload as plain text
     coap_set_header_content_format(response, TEXT_PLAIN);

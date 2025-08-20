@@ -16,6 +16,7 @@ MODULES_REL += $(TARGET)
 
 MODULES_REL += resources/real-data
 MODULES_REL += resources/emlearn-utils
+MODULES_REL += config-ml
 
 MODULES_REL += /home/iot_ubuntu_intel/.local/lib/python3.10/site-packages/emlearn 
 
