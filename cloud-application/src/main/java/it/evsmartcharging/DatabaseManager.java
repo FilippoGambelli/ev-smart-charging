@@ -5,10 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
-/**
- * DatabaseManager provides reusable methods to interact with the evSmartCharging database.
- * It supports inserting, selecting, and deleting data from the solarData table.
- */
 public class DatabaseManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
@@ -26,16 +22,10 @@ public class DatabaseManager {
         logger.info("Database connection established successfully");
     }
 
-    /**
-     * Creates and returns a connection to the database
-     */
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    /**
-     * Inserts a record into the solarData table
-     */
     public void insertSolarData(Timestamp timestamp, float Gb, float Gd, float Gr, float H_sun, float T2m, float WS10m, float P) {
         String sql = "INSERT INTO solarData (timestamp, Gb, Gd, Gr, HSun, T, WS, P_predicted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -55,9 +45,6 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Inserts a record into the realPower table
-     */
     public void insertRealPowerData(Timestamp timestamp, float P) {
         String sql = "INSERT INTO realPower (timestamp, P_real) VALUES (?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -84,6 +71,29 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
             return -1; // fallback in caso di errore
+        }
+    }
+
+    public void insertPlatePriorityData(String plate, int priority) {
+        String sql = "INSERT INTO plate_priority (plate, priority) VALUES (?, ?)";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, plate);
+            pstmt.setInt(2, priority);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Insert failed: {}", e.getMessage(), e);
+        }
+    }
+
+    public void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+                logger.info("Database connection closed.");
+            } catch (SQLException e) {
+                logger.error("Error closing database connection: " + e.getMessage());
+            }
         }
     }
 }

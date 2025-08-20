@@ -4,46 +4,59 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CoAPResourcePlate extends CoapResource {
-	private final DatabaseManager databaseManager;
+
+    private static final Logger logger = LoggerFactory.getLogger(CoAPResourcePlate.class);
+
+    private final DatabaseManager databaseManager;
 
     public CoAPResourcePlate(String name, DatabaseManager databaseManager) {
         super(name);
         this.databaseManager = databaseManager;
+        logger.info("CoAPResourcePlate initialized with name: {}", name);
     }
 
- 	public void handleGET(CoapExchange exchange) {
+    @Override
+    public void handleGET(CoapExchange exchange) {
 
-		// Recupero la targa dal path o query
-        String plate = null;
+        // Retrieve the 'plate' parameter from the query string if present
+        String plate = exchange.getRequestOptions().getUriQuery().stream()
+                .filter(q -> q.startsWith("plate=")) // Filter for "plate" query
+                .map(q -> q.substring("plate=".length())) // Extract plate value
+                .findFirst()
+                .orElse(null); // Return null if not found
 
-        // Se la targa è passata come query string tipo: coap://server/plate?plate=AB123CD
-        plate = exchange.getRequestOptions().getUriQuery().stream()
-                        .filter(q -> q.startsWith("plate="))
-                        .map(q -> q.substring("plate=".length()))
-                        .findFirst()
-                        .orElse(null);
-
-		if (plate == null || plate.isEmpty()) {
+        // Validate plate parameter
+        if (plate == null || plate.isEmpty()) {
+            logger.warn("GET request missing 'plate' parameter from {}", exchange.getSourceAddress());
             exchange.respond(ResponseCode.BAD_REQUEST, "Missing plate parameter");
             return;
         }
 
-		int priority = databaseManager.getPriorityByPlate(plate);
+        logger.info("Received GET request for plate: {} from {}", plate, exchange.getSourceAddress());
 
-		Response response;
-		
-		if (priority == -1) {
-			// Targa non trovata o errore DB
-			response = new Response(ResponseCode.NOT_FOUND);
-			response.setPayload("priority not found or error");
-		} else {
-			// Risposta OK
-			response = new Response(ResponseCode.CONTENT);
-			response.setPayload("priority=" + priority);
-		}
+        // Query the database for priority associated with the plate
+        int priority = databaseManager.getPriorityByPlate(plate);
 
-		exchange.respond(response);
- 	}
+        Response response;
+
+        if (priority == -1) {
+            // Plate not found or database error
+            logger.warn("Priority not found for plate: {}", plate);
+            response = new Response(ResponseCode.NOT_FOUND);
+            response.setPayload("priority not found or error");
+        } else {
+            // Successful response with priority
+            logger.info("Returning priority {} for plate {}", priority, plate);
+            response = new Response(ResponseCode.CONTENT);
+            response.setPayload("priority=" + priority);
+        }
+
+        // Send the response back to the client
+        exchange.respond(response);
+        logger.debug("Response sent for plate {}: {}", plate, response.getCode());
+    }
 }
