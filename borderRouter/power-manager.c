@@ -12,7 +12,7 @@ time_t last_execution = 0;
 float available_energy_accumulator = 0;  // Assumption that the accumulator is initially empty
 float power_grid_used = 0;
 
-void power_manager_update_charging_station(char* prediction){
+void power_manager_update_charging_station(){
     if(vehicle_count == 0){  // NO Vehicle
         // TODO: assegnare tutta l'energia ai pannelli solari
         return;
@@ -46,10 +46,13 @@ void power_manager_update_charging_station(char* prediction){
 
 
     // !! TODO: Per adesso sono dati a caso, dopo questa variabili saranno già definite con il dato corretto      
-    bool power_PV_tred = 1;   // 1 -1
     float power_PV_pred = 150.0;  // kW
     
+    LOG_INFO("\n !!Power prediction: %f kW\n", power_PV_real);
+
     float solar_available = (power_PV_real < power_PV_pred) ? power_PV_real : power_PV_pred;  // kW
+
+
     power_grid_used = 0;
 
     //TO DO: ADESSO FACCIO UN CICLO FOR A CASO MA DEVE ESSERE IN ORDINE DI PRIORITA
@@ -59,7 +62,7 @@ void power_manager_update_charging_station(char* prediction){
         LOG_INFO("Charger %d \t soc_current = %f %% \t soc_target = %f %% \t remaining_energy = %f kWh \t remaining_time_secs = %u s \t vehicle_max_capacity= %u kWh \t assigned_power = %f kW \t "
             "required_power = %f kW \t solar_available = %f kW \t available_acc = %f kWh \t power_grid_used = %f kW \t power_PV_tred = %d \t power_PV_pred = %f kW \t power_PV_real = %f kW\n",
             i, EV_charger[i].soc_current, EV_charger[i].soc_target, EV_charger[i].remaining_energy, EV_charger[i].remaining_time_seconds, EV_charger[i].vehicle_max_capacity, EV_charger[i].assigned_power, required_power,
-            solar_available, available_energy_accumulator, power_grid_used, power_PV_tred, power_PV_pred, power_PV_real);
+            solar_available, available_energy_accumulator, power_grid_used, power_PV_trend, power_PV_pred, power_PV_real);
 
         if (solar_available >= required_power) {        // Caso 1: pannelli solari sufficienti
             EV_charger[i].assigned_power = required_power;
@@ -67,7 +70,7 @@ void power_manager_update_charging_station(char* prediction){
             solar_available -= required_power;
             LOG_INFO("DEBUG: Charger %d, caso 1\n", i);
         } else {                                        // Caso 2: pannelli solari insufficienti
-            if (power_PV_tred > 0) {                    // Caso 2.1: previsioni di incremento produzione -> assegno tutto ciò che c'è perchè prevedo aumento
+            if (power_PV_trend > 0) {                    // Caso 2.1: previsioni di incremento produzione -> assegno tutto ciò che c'è perchè prevedo aumento
                 EV_charger[i].assigned_power = solar_available;
                 EV_charger[i].is_charging = true;
 

@@ -12,7 +12,8 @@
 
 
 // Real dichiaration of extern variables
-float power_PV_real;
+float power_PV_real = 10;
+int power_PV_trend = 10;
 
 
 // Define a Contiki process for the CoAP observe client
@@ -43,7 +44,18 @@ void notification_prediction_callback(coap_observee_t *obs, void *notification, 
       LOG_INFO("NOTIFICATION OK: %*s", len, (char *)payload);
       LOG_INFO_("\n");
 
-      power_manager_update_charging_station((char *)payload);
+        if(len > 0 && payload != NULL) {
+          char buf[len + 1];
+          memcpy(buf, payload, len);
+          buf[len] = '\0';
+
+          char *ptr = strstr(buf, "trend=");
+          if(ptr != NULL) {
+              power_PV_trend = strtof(ptr + 7, NULL);
+          }
+        }
+
+      power_manager_update_charging_station();
       
       break;
     case OBSERVE_OK: /* server accepted observation request */
@@ -79,19 +91,27 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
     len = coap_get_payload(notification, &payload);
   }
 
+  LOG_INFO("NOTIFICATION ARRIVED realPV: %*s\n", len, (char *)payload);
+
+
   // Handle different notification flags
   switch(flag) {
     case NOTIFICATION_OK:
 
       if(len > 0 && payload != NULL) {
+
         char buf[len + 1];
         memcpy(buf, payload, len);
         buf[len] = '\0';
+
+        LOG_INFO("realPV: %f\n", power_PV_real);
 
         char *ptr = strstr(buf, "realPV=");
         if(ptr != NULL) {
             power_PV_real = strtof(ptr + 7, NULL);
         }
+
+        LOG_INFO("realPV: %f\n", power_PV_real);
 
         /*
         ptr = strstr(buf, "timestamp=");

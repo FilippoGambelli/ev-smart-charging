@@ -18,7 +18,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 static void res_event_handler(void);
 
 EVENT_RESOURCE(res_pred_power_obs,
-               "title=\"Predicted Power Data\";rt=\"application/json\";obs",
+               "title=\"Predicted Power Data\";rt=\"text/plain\";obs",
                res_get_handler,
                NULL,
                NULL,
@@ -31,6 +31,7 @@ static void res_event_handler(void) {
   coap_notify_observers(&res_pred_power_obs);
 }
 
+/* GET handler for the predicted power resource */
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
     float features[SEQ_LEN * N_FEATURES]; // Array to hold normalized input features for the model
     float outputs[HORIZON];               // Array to store the model's predictions
@@ -80,39 +81,29 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
     // Predict using the emlearn TinyML model
     eml_net_predict_proba(&emlearnModel, features, SEQ_LEN * N_FEATURES, outputs, HORIZON);
 
-    // Denormalize model outputs to original scale
+    // Denormalize the model outputs
     for (int i = 0; i < HORIZON; i++) {
         outputs[i] = denormalize(outputs[i], y_min, y_max);
-        if (outputs[i] < 0.0f) {
-            outputs[i] = 0.0f; // Set negative values to 0
-        }
     }
 
-    int offset_buf = 0;
-    offset_buf += snprintf((char *)buffer + offset_buf, preferred_size - offset_buf, "{"); // Start JSON payload
-
-    // Loop to format the predicted values as JSON
-    for (int i = 0; i < HORIZON; i++) {
-        // Add 15 minutes per prediction step
-        time_t pred_time = t + (i + 1) * 15 * 60;
-        struct tm *tm_info = localtime(&pred_time); // Convert prediction time to local time
-        char time_str[32];
-        strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info); // Format time as string
-
-        // Append JSON object for each prediction
-        offset_buf += snprintf((char *)buffer + offset_buf, preferred_size - offset_buf,
-                               "\"%d\":{\"value\":%.4f,\"time\":\"%s\"}%s",
-                               i + 1, outputs[i], time_str,
-                               (i < HORIZON - 1) ? "," : "");
+    // Compute the trend using weighted differences between consecutive predictions
+    float weights[HORIZON-1] = {0.35f, 0.25f, 0.15f, 0.10f, 0.08f, 0.05f, 0.02f};
+    float trend_val = 0.0f;
+    for (int i = 0; i < HORIZON-1; i++) {
+        trend_val += (outputs[i+1] - outputs[i]) * weights[i];
     }
+    int trend = (trend_val >= 0.0f) ? 1 : -1;
 
-    offset_buf += snprintf((char *)buffer + offset_buf, preferred_size - offset_buf, "}"); // Close JSON payload
+    // Write the plain text response
+    int offset_buf = snprintf((char *)buffer, preferred_size, "trend=%d", trend);
 
     // Prevent unused variable warnings (required by compiler settings)
-    printf("%p\n", eml_net_activation_function_strs);
-    printf("%p\n", eml_error_str);
+    //printf("%p\n", eml_net_activation_function_strs);
+    //printf("%p\n", eml_error_str);
+    (void)eml_net_activation_function_strs;
+    (void)eml_error_str;
 
-    // Set CoAP response headers and payload
-    coap_set_header_content_format(response, APPLICATION_JSON);
+    // Set CoAP response headers and payload as plain text
+    coap_set_header_content_format(response, TEXT_PLAIN);
     coap_set_payload(response, buffer, offset_buf);
 }

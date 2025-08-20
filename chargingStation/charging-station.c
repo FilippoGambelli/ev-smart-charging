@@ -26,7 +26,7 @@
 #define CAR_CAPACITY 70 
 #define CURRENT_CHARGE 20.0
 #define DESIRED_CHARGE 80.0
-#define PLATE "AB123CD"
+#define PLATE "XY987ZT"
 
 static uint8_t my_id = 0; // Stores the ID assigned by the server after registration
 
@@ -45,15 +45,19 @@ static void client_chunk_handler(coap_message_t *response) {
 
 // Callback function to handle the server's response to the car registration request
 static void vehicle_connection_handler(coap_message_t *response) {
-  const uint8_t *chunk;
   if(response) {
-    int len = coap_get_payload(response, &chunk);
-    if(len > 0) {
-      unsigned int duration_minutes = atoi((const char *)chunk);
-      LOG_INFO("Vehicle connection request successful, estimated charging duration: %u minutes\n", duration_minutes);
-    } 
+    uint8_t code = response->code;
+
+    if(code == CREATED_2_01) {
+      // Successfully registered the car
+      LOG_INFO("Car registration successful\n");
+    } else {
+      // Registration failed
+      LOG_INFO("Car registration failed with code: %u\n", code);
+    }
   }
 }
+
 
 PROCESS(charging_station_process, "Charging Station Node Process");
 AUTOSTART_PROCESSES(&charging_station_process);
