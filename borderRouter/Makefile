@@ -7,7 +7,7 @@ PLATFORMS_EXCLUDE = sky z1
 CONTIKI = ../../..
 
 MODULES_REL += ./resources
-MODULES_REL += .		# power-manager.c
+MODULES_REL += ./power-manager
 
 # Include RPL BR module
 include $(CONTIKI)/Makefile.dir-variables

@@ -10,6 +10,7 @@ struct charging_station {
 
     bool is_charging;                           // true => charging , false => no charging
     float assigned_power;                       // Power assigned to the device (kW)
+    float grid_power_used;                      // Power from the grid (kW)
 
     float vehicle_max_charging_power;           // Maximum charging power supported by the vehicle (kW)
     unsigned int vehicle_max_capacity;          // Vehicle battery capacity (kWh)

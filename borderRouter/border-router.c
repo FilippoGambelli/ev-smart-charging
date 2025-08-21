@@ -4,7 +4,7 @@
 #include "contiki.h"
 #include "contiki-net.h"
 #include "coap-engine.h"
-#include "power-manager.h"
+#include "power-manager/power-manager.h"
 
 #include "sys/log.h"
 #define LOG_MODULE "App"
@@ -12,8 +12,9 @@
 
 
 // Real dichiaration of extern variables
-float power_PV_real = 10;
-int power_PV_trend = 10;
+float power_PV_real;
+int power_PV_trend;
+float power_PV_pred;
 
 
 // Define a Contiki process for the CoAP observe client
@@ -50,8 +51,13 @@ void notification_prediction_callback(coap_observee_t *obs, void *notification, 
           buf[len] = '\0';
 
           char *ptr = strstr(buf, "trend=");
-          if(ptr != NULL) {
-              power_PV_trend = strtof(ptr + 7, NULL);
+          if (ptr != NULL) {
+              power_PV_trend = (int)strtof(ptr + 6, NULL);
+          }
+
+          ptr = strstr(buf, "firstPrediction=");
+          if (ptr != NULL) {
+              power_PV_pred = strtof(ptr + 7, NULL);
           }
         }
 
@@ -95,6 +101,8 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
   // Handle different notification flags
   switch(flag) {
     case NOTIFICATION_OK:
+      LOG_INFO("NOTIFICATION OK: %*s", len, (char *)payload);
+      LOG_INFO_("\n");
 
       if(len > 0 && payload != NULL) {
 
@@ -114,8 +122,6 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
         }*/
       }
       
-      LOG_INFO("NOTIFICATION OK: %*s", len, (char *)payload);
-      LOG_INFO_("\n");
       break;
     case OBSERVE_OK: /* server accepted observation request */
       LOG_INFO("OBSERVE_OK: %*s", len, (char *)payload);
