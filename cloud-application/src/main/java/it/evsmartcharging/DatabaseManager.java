@@ -1,8 +1,14 @@
 package it.evsmartcharging;
 
+import it.evsmartcharging.DatabaseModels.PlatePriority;
+import it.evsmartcharging.DatabaseModels.RealPower;
+import it.evsmartcharging.DatabaseModels.SolarData;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.*;
 
 public class DatabaseManager {
@@ -84,6 +90,66 @@ public class DatabaseManager {
         } catch (SQLException e) {
             logger.error("Insert failed: {}", e.getMessage(), e);
         }
+    }
+
+    // Select all rows from plate_priority
+    public List<PlatePriority> selectAllPlatePriority() {
+        List<PlatePriority> results = new ArrayList<>();
+        String sql = "SELECT plate, priority FROM plate_priority ORDER BY plate ASC";
+        try (Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String plate = rs.getString("plate");
+                int priority = rs.getInt("priority");
+                results.add(new PlatePriority(plate, priority));
+            }
+        } catch (SQLException e) {
+            logger.error("Select from plate_priority failed: {}", e.getMessage(), e);
+        }
+        return results;
+    }
+
+    // Select all rows from realPower ordered by timestamp
+    public List<RealPower> selectAllRealPower() {
+        List<RealPower> results = new ArrayList<>();
+        String sql = "SELECT timestamp, P_real FROM realPower ORDER BY timestamp ASC";
+        try (Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Timestamp timestamp = rs.getTimestamp("timestamp");
+                float pReal = rs.getFloat("P_real");
+                results.add(new RealPower(timestamp, pReal));
+            }
+        } catch (SQLException e) {
+            logger.error("Select from realPower failed: {}", e.getMessage(), e);
+        }
+        return results;
+    }
+
+    // Select all rows from solarData ordered by timestamp
+    public List<SolarData> selectAllSolarData() {
+        List<SolarData> results = new ArrayList<>();
+        String sql = "SELECT timestamp, Gb, Gd, Gr, HSun, T, WS, P_predicted FROM solarData ORDER BY timestamp ASC";
+        try (Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Timestamp timestamp = rs.getTimestamp("timestamp");
+                float gb = rs.getFloat("Gb");
+                float gd = rs.getFloat("Gd");
+                float gr = rs.getFloat("Gr");
+                float hsun = rs.getFloat("HSun");
+                float t = rs.getFloat("T");
+                float ws = rs.getFloat("WS");
+                float pPred = rs.getFloat("P_predicted");
+                results.add(new SolarData(timestamp, gb, gd, gr, hsun, t, ws, pPred));
+            }
+        } catch (SQLException e) {
+            logger.error("Select from solarData failed: {}", e.getMessage(), e);
+        }
+        return results;
     }
 
     public void closeConnection() {

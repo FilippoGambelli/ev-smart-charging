@@ -28,7 +28,7 @@ public class CloudApplication {
             logger.info("CoAP server started on default port 5683.");
 
             // Initialize user interface
-            UserInterface userInterface = new UserInterface();
+            UserInterface userInterface = new UserInterface(databaseManager);
 
             // Main application loop
             while(true) {
@@ -43,21 +43,26 @@ public class CloudApplication {
                         break;
 
                     case 2:
-                        logger.info("User selected to update the ML prediction interval");
+                        logger.info("User selected to update the ML prediction interval.");
                         userInterface.updateMLPredInterval();
                         break;
 
                     case 3:
-                        logger.info("Option 3 selected - functionality not yet implemented.");
-                        // TODO: Implement functionality for option 3
+                        logger.info("User selected to view the smart grid status.");
+                        userInterface.viewStatusSmartGrid();
                         break;
 
                     case 4:
-                        logger.info("Option 4 selected - functionality not yet implemented.");
-                        // TODO: Implement functionality for option 3
+                        logger.info("User selected to view the charging stations status.");
+                        userInterface.viewStatusChargingStations();
+                        break;
+
+                    case 5:
+                        logger.info("User selected to view storade data.");
+                        userInterface.viewStoredData();
                         break;
                     
-                    case 5:
+                    case 6:
                         logger.info("User selected to exit the application.");
                         coapObserver.stopAllObservation();  // Stop all CoAP observations
                         server.stop();  // Stop CoAP server
