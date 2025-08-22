@@ -5,6 +5,7 @@
 #include "contiki-net.h"
 #include "coap-engine.h"
 #include "power-manager/power-manager.h"
+#include "ipv6.h"
 
 #include "sys/log.h"
 #define LOG_MODULE "App"
@@ -24,7 +25,6 @@ AUTOSTART_PROCESSES(&coap_observe_client);
 
 #define RES_POWER_OBS_URI "/res_real_power_obs"  // Resource on server to observe
 #define RES_PRED_POWER_OBS_URI "/res_pred_power_obs"  // Resource on server to observe
-#define SERVER_EP "coap://[fd00::202:2:2:2]:5683"  // CoAP server endpoint
 
 static coap_observee_t *obs = NULL;  // Keeps track of the current observation
 static coap_observee_t *obs1 = NULL;  // Keeps track of the current observation
@@ -153,7 +153,7 @@ extern coap_resource_t res_charger_reg;
 
 // Main process thread
 PROCESS_THREAD(coap_observe_client, ev, data) {
-  static coap_endpoint_t server_ep;
+  static coap_endpoint_t sensor_pv_ep;
 
   PROCESS_BEGIN();
 
@@ -163,19 +163,19 @@ PROCESS_THREAD(coap_observe_client, ev, data) {
   #endif /* BORDER_ROUTER_CONF_WEBSERVER */
 
   // Parse server endpoint string into coap_endpoint_t structure
-  coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
+  coap_endpoint_parse(SENSOR_PV_EP, strlen(SENSOR_PV_EP), &sensor_pv_ep);
 
   LOG_INFO("Starting CoAP observation");
   LOG_INFO_("\n");
 
-  obs = coap_obs_request_registration(&server_ep, RES_POWER_OBS_URI, notification_realpower_callback, NULL);
+  obs = coap_obs_request_registration(&sensor_pv_ep, RES_POWER_OBS_URI, notification_realpower_callback, NULL);
 
   if(obs == NULL) {
     LOG_INFO("Error registering observation");
     LOG_INFO_("\n");
   }
 
-  obs1 = coap_obs_request_registration(&server_ep, RES_PRED_POWER_OBS_URI, notification_prediction_callback, NULL);
+  obs1 = coap_obs_request_registration(&sensor_pv_ep, RES_PRED_POWER_OBS_URI, notification_prediction_callback, NULL);
 
   if(obs1 == NULL) {
     LOG_INFO("Error registering observation");

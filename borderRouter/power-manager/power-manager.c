@@ -156,7 +156,7 @@ void send_grid_status(float power_grid, int grid_direction) {
     coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 0);
 
     // Set the endpoint for the smart grid resource
-    coap_endpoint_parse("coap://[fd00::203:3:3:3]:5683", strlen("coap://[fd00::203:3:3:3]:5683"), &smart_grid_ep);
+    coap_endpoint_parse(SMART_GRID_EP, strlen(SMART_GRID_EP), &smart_grid_ep);
 
 
     // Set the target URI path

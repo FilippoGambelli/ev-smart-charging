@@ -105,10 +105,10 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
     size_t len = 0;
     const char *text = NULL;
 
-    float vehicle_max_power;
-    uint8_t vehicle_max_capacity;
-    float soc_current;
-    float soc_target;
+    float vehicle_max_power = 0.0;
+    uint8_t vehicle_max_capacity = 0;
+    float soc_current = 0.0;
+    float soc_target = 0.0;
     char plate[12] = "";
 
     int param_count = 0;

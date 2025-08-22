@@ -21,7 +21,7 @@ struct charging_station {
     int priority;                               // Priority flag (1 for priority, 0 for standard)
 
     uint32_t estimated_charging_duration;       // Expected parking time (seconds)
-    uint32_t remaining_time_seconds;            // Expected parking time (seconds)
+    unsigned int remaining_time_seconds;            // Expected parking time (seconds)
     float remaining_energy;                     // Remaining energy to charge (kWh)
 };
 

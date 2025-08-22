@@ -47,7 +47,7 @@ public class CoapObserver {
 
     // Start observing solar data
     public void startObservationSolarData(){
-        String uri = "coap://[fd00::202:2:2:2]:5683/res_solar_obs";
+        String uri = Config.SENSOR_PV_EP + "/res_solar_obs";
         logger.info("Initializing CoAP client for solar data at {}", uri);
 
         CoapClient client = new CoapClient(uri);
@@ -124,7 +124,7 @@ public class CoapObserver {
 
     // Start observing real power data
     public void startObservationRealPowerData() {
-        String uri = "coap://[fd00::202:2:2:2]:5683/res_real_power_obs";
+        String uri = Config.SENSOR_PV_EP + "/res_real_power_obs";
         logger.info("Initializing CoAP client for real power data at {}", uri);
 
         CoapClient client = new CoapClient(uri);

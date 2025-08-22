@@ -6,6 +6,7 @@
 #include "net/ipv6/uip-debug.h"
 #include <stdlib.h>
 #include "coap-callback-api.h"
+#include "../ipv6.h"
 
 #include "sys/log.h"
 #define LOG_MODULE "App"

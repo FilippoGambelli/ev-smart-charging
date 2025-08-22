@@ -58,7 +58,7 @@ public class UserInterface {
         System.out.println("Charging Station Status");
         try {
             // Create the CoAP client with the IPv6 address of your device
-            String uri = "coap://[fd00::201:1:1:1]:5683/registration/charger";
+            String uri = Config.CENTRAL_NODE_EP + "/registration/charger";
             CoapClient client = new CoapClient(uri);
 
             // Perform GET request
@@ -113,7 +113,7 @@ public class UserInterface {
         System.out.println("Smart Grid Status");
         try {
             // Create the CoAP client with the IPv6 address of your device
-            String uri = "coap://[fd00::203:3:3:3]:5683/res_status_power_grid";
+            String uri = Config.SMART_GRID_EP + "/res_status_power_grid";
             CoapClient client = new CoapClient(uri);
 
             // Perform GET request
@@ -249,7 +249,7 @@ public class UserInterface {
         if (confirm.equals("y")) {
             try {
                 // Create the CoAP client with the IPv6 address of your device
-                String uri = "coap://[fd00::202:2:2:2]:5683/res_ml_pred_interval";
+                String uri = Config.SENSOR_PV_EP + "/res_ml_pred_interval";
                 CoapClient client = new CoapClient(uri);
 
                 // Prepare the request payload in key=value format as expected by the server

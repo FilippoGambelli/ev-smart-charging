@@ -8,6 +8,7 @@
 #include "etimer.h"
 #include "os/dev/button-hal.h"
 #include "car-pool/car-pool.h"
+#include "ipv6.h"
 
 /* Log configuration */
 #include "coap-log.h"
@@ -15,7 +16,6 @@
 #define LOG_LEVEL  LOG_LEVEL_APP
 
 // Address of the central node
-#define CENTRAL_NODE_EP "coap://[fd00::201:1:1:1]:5683"
 #define RES_CHARGER_REGISTER_URI "/registration/charger"
 #define RES_CAR_REGISTER_URI "/registration/car"
 
@@ -59,7 +59,7 @@ PROCESS(charging_station_process, "Charging Station Node Process");
 AUTOSTART_PROCESSES(&charging_station_process);
 
 PROCESS_THREAD(charging_station_process, ev, data){
-    static coap_endpoint_t server_ep;
+    static coap_endpoint_t central_node_ep;
     static coap_message_t request[1];
 
     static struct etimer registration_timer;
@@ -72,7 +72,7 @@ PROCESS_THREAD(charging_station_process, ev, data){
     coap_activate_resource(&res_charging_status, "res_charging_status");
 
     // Initialize the CoAP server endpoint
-    coap_endpoint_parse(CENTRAL_NODE_EP, strlen(CENTRAL_NODE_EP), &server_ep);
+    coap_endpoint_parse(CENTRAL_NODE_EP, strlen(CENTRAL_NODE_EP), &central_node_ep);
 
     // Set the initial registration timer
     etimer_set(&registration_timer, 5 * CLOCK_SECOND); // for testing, previously 5 minutes
@@ -88,7 +88,7 @@ PROCESS_THREAD(charging_station_process, ev, data){
             snprintf(buffer_req, sizeof(buffer_req), "maxKW=%.2f", CHARGER_maxKW);
             coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 
-            COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
+            COAP_BLOCKING_REQUEST(&central_node_ep, request, client_chunk_handler);
 
             if(my_id > 0) {
                 LOG_INFO("Registration successful, ID=%u\n", my_id);
@@ -119,7 +119,7 @@ PROCESS_THREAD(charging_station_process, ev, data){
 	
 			      coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 
-            COAP_BLOCKING_REQUEST(&server_ep, request, vehicles_handler);
+            COAP_BLOCKING_REQUEST(&central_node_ep, request, vehicles_handler);
         }
 
         if(ev == button_hal_periodic_event && my_id > 0) {
@@ -135,7 +135,7 @@ PROCESS_THREAD(charging_station_process, ev, data){
 	
 			      coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 
-            COAP_BLOCKING_REQUEST(&server_ep, request, vehicles_handler);
+            COAP_BLOCKING_REQUEST(&central_node_ep, request, vehicles_handler);
           }
         }
 

@@ -14,6 +14,8 @@
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
 
+int solar_data_counter = 360;
+
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_event_handler(void);
 
@@ -46,6 +48,9 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 
         t = solar_data_timestamp[idx]; // Get the timestamp for the current index
         struct tm *tm_info = localtime(&t); // Convert timestamp to local time structure
+
+        LOG_INFO("Index: %d, Timestamp: %02d-%02d-%04d %02d:%02d:%02d \n",
+            idx, tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900, tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec);
 
         // Extract hour, minute, and week-of-year (approximate)
         int hour   = tm_info->tm_hour;

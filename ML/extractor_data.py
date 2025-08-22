@@ -3,7 +3,7 @@ import pytz
 
 # Time range for filtering
 TIME_START = "2023-05-21 09:00:00"
-TIME_FINISH = "2023-05-22 23:59:59"
+TIME_FINISH = "2023-05-22 17:00:00"
 
 # Define timezone for Italy
 italy_tz = pytz.timezone('Europe/Rome')
@@ -35,11 +35,11 @@ def write_c_array(file_path, columns, variables, df_filtered, chunk_size=100, he
             chunks = [data_list[i:i+chunk_size] for i in range(0, len(data_list), chunk_size)]
             data_str = '{\n' + ',\n'.join(', '.join(map(str, chunk)) for chunk in chunks) + '\n}'
             
-            c_type = 'time_t' if col == 'time' else 'float'
+            c_type = 'static const time_t' if col == 'time' else 'static const float'
             f.write(f"{c_type} {var}[] = {data_str};\n\n")
         
         if counter_value is not None and counter_name is not None:
-            f.write(f'int {counter_name} = {counter_value};')
+            f.write(f'extern int {counter_name};')
 
 
 # --- SOLAR DATA ---
@@ -50,11 +50,11 @@ solar_columns = ['Gb(i)', 'Gd(i)', 'Gr(i)', 'H_sun', 'T2m', 'WS10m', 'time']
 solar_variables = ['Gb', 'Gd', 'Gr', 'HSun', 'T', 'WS', 'solar_data_timestamp']
 
 write_c_array(
-    file_path="../sensorPV/resources/real-data/solar-data.c",
+    file_path="../sensorPV/resources/real-data/solar-data.h",
     columns=solar_columns,
     variables=solar_variables,
     df_filtered=solar_df,
-    header_file="solar-data.h",
+    header_file="time.h",
     counter_value=360,
     counter_name="solar_data_counter"
 )
@@ -68,11 +68,11 @@ power_columns = ['time', 'P']
 power_variables = ['power_data_timestamp', 'P']
 
 write_c_array(
-    file_path="../sensorPV/resources/real-data/power-data.c",
+    file_path="../sensorPV/resources/real-data/power-data.h",
     columns=power_columns,
     variables=power_variables,
     df_filtered=power_df,
-    header_file="power-data.h",
+    header_file="time.h",
     counter_value=1440,
     counter_name="power_data_counter"
 )
