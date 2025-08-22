@@ -52,12 +52,14 @@ void notification_prediction_callback(coap_observee_t *obs, void *notification, 
 
           char *ptr = strstr(buf, "trend=");
           if (ptr != NULL) {
-              power_PV_trend = (int)strtof(ptr + 6, NULL);
+              ptr += strlen("trend=");              // shift after =
+              power_PV_trend = strtof(ptr, NULL);
           }
 
           ptr = strstr(buf, "firstPrediction=");
           if (ptr != NULL) {
-              power_PV_pred = strtof(ptr + 7, NULL);
+              ptr += strlen("firstPrediction=");    // shift after =
+              power_PV_pred = strtof(ptr, NULL)/1000;
           }
         }
 
@@ -112,7 +114,8 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
 
         char *ptr = strstr(buf, "realPV=");
         if(ptr != NULL) {
-            power_PV_real = strtof(ptr + 7, NULL);
+              ptr += strlen("realPV=");     // shift after =
+              power_PV_real = strtof(ptr, NULL)/1000;
         }
 
         /*

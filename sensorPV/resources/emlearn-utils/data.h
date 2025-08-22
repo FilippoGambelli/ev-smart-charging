@@ -2,8 +2,8 @@
 #define DATA_H
 
 #define N_FEATURES 12
-#define SEQ_LEN 16
-#define HORIZON 16
+#define SEQ_LEN 8
+#define HORIZON 8
 
 static const float X_min[N_FEATURES] = {
     0.0f, 0.0f, 0.0f, 0.0f, -3.29f, 0.0f,

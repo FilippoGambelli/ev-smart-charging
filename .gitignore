@@ -1,5 +1,6 @@
 build/
 
 cloud-application/target/
+!target/cloud-application-1.0-SNAPSHOT.jar
 
 ML/tmp

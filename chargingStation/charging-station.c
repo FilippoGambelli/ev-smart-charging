@@ -22,12 +22,6 @@
 // EXAMPLE
 #define CHARGER_maxKW 22.0
 
-#define CAR_maxKW 22.0
-#define CAR_CAPACITY 70 
-#define CURRENT_CHARGE 20.0
-#define DESIRED_CHARGE 80.0
-#define PLATE "XY987ZT"
-
 static uint8_t my_id = 0; // Stores the ID assigned by the server after registration
 
 // Callback function to handle the server's response to the charger registration request
@@ -114,9 +108,14 @@ PROCESS_THREAD(charging_station_process, ev, data){
             // Build payload
             const car_t* selected_car = get_random_car();
 
+            
             snprintf(buffer_req, sizeof(buffer_req), 
               "type=connection&carMaxKW=%.2f&carMaxCapacity=%u&currentCharge=%.2f&desiredCharge=%.2f&plate=%s",
               selected_car->carMaxKW, selected_car->carCapacity, selected_car->currentCharge, selected_car->desiredCharge, selected_car->plate);
+            
+            // For testing, use a fixed car configuration
+            // snprintf(buffer_req, sizeof(buffer_req), "type=connection&carMaxKW=%.2f&carMaxCapacity=%u&currentCharge=%.2f&desiredCharge=%.2f&plate=%s",
+            //  22.00, 1, 80.00, 82.00, "XY987ZT");
 	
 			      coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
 

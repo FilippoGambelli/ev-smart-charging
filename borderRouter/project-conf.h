@@ -27,6 +27,6 @@
 
 #define COAP_OBSERVE_CLIENT 1
 
-#define COAP_MAX_CHUNK_SIZE 512
+#define COAP_MAX_CHUNK_SIZE 1024
 
 #endif /* PROJECT_CONF_H_ */

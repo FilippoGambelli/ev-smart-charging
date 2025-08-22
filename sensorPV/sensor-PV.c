@@ -51,7 +51,6 @@ PROCESS_THREAD(sensor_server, ev, data){
             LOG_INFO("Event triggered - Solar Data");
             LOG_INFO_("\n");
             res_solar_obs.trigger();      // Notify observers of solar data
-            res_pred_power_obs.trigger(); // Notify observers of predicted power
             etimer_reset(&e_timer_solar_data);
         }
         // Handle real power data timer event

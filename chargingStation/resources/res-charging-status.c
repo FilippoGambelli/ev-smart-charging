@@ -4,6 +4,12 @@
 #include "coap-engine.h"
 #include "os/dev/leds.h"
 
+
+/* Log configuration */
+#include "coap-log.h"
+#define LOG_MODULE "App"
+#define LOG_LEVEL  LOG_LEVEL_APP
+
 // Helper macros to handle LEDs differently in Cooja vs real hardware
 #ifdef COOJA
   #define LED_ON(led) leds_on(LEDS_NUM_TO_MASK(led))
@@ -18,7 +24,7 @@
 #endif
 
 static float charging_power = 0;
-static bool energy_renewable = false;
+static float energy_renewable = 0;
 static bool charging_complete = false;
 
 // Forward declaration of the PUT handler
@@ -36,24 +42,39 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
 
     size_t len = 0;
     const char *text = NULL;
+    int params_received = 0;  // Contatore dei parametri validi
 
     // Get chargingPower from the request
     len = coap_get_post_variable(request, "chargingPower", &text);
     if(len > 0) {
         charging_power = strtof(text, NULL);
+        params_received++;
     }
 
     // Get energyRenewable flag
     len = coap_get_post_variable(request, "energyRenewable", &text);
     if(len > 0) {
-        energy_renewable = (text[0] == '1');
+        energy_renewable = strtof(text, NULL);
+        params_received++;
     }
 
     // Get chargingComplete flag
     len = coap_get_post_variable(request, "chargingComplete", &text);
     if(len > 0) {
         charging_complete = (text[0] == '1');
+        params_received++;
     }
+
+    // Controlla se tutti i parametri sono stati ricevuti
+    if(params_received == 3) {
+        LOG_INFO("Received PUT: chargingPower=%.4f, energyRenewable=%.4f, chargingComplete=%d\n",
+            charging_power, energy_renewable, charging_complete);
+        coap_set_status_code(response, CHANGED_2_04);
+    } else {
+        LOG_INFO("Missing parameters, device not updated\n");
+        coap_set_status_code(response, BAD_REQUEST_4_00);
+    }
+
 
     LED_OFF(LEDS_ALL);
     LED_SINGLE_OFF(LEDS_YELLOW);
@@ -67,7 +88,7 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
             LED_ON(LEDS_RED);
         }
 
-        if(energy_renewable) {
+        if(energy_renewable > 0) {
             LED_SINGLE_ON(LEDS_YELLOW);
         }
     }

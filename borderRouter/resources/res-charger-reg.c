@@ -16,6 +16,8 @@
 static void res_register_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static uint8_t register_device(const uip_ipaddr_t *src_addr);
 
+static void res_register_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
+
 struct charging_station EV_charger[MAX_DEVICES];
 uint8_t device_count = 0;
 uint8_t vehicle_count = 0;
@@ -23,7 +25,7 @@ uint8_t vehicle_count = 0;
 // Define the CoAP resource "res_register" for device registration
 RESOURCE(res_charger_reg,
         "title=\"Register Charger\";rt=\"Control\"",
-        NULL,                       // GET handler (not used)
+        res_register_get_handler,   // GET handler (not used)
         res_register_post_handler,  // POST handler
         NULL,                       // PUT handler (not used)
         NULL);                      // DELETE handler (not used)
@@ -68,6 +70,76 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
         LOG_INFO("Charger registered with ID %d, Max Power not specified\n", device_id);
         coap_set_status_code(response, BAD_REQUEST_4_00); // HTTP 400 Bad Request
     }
+}
+
+static void res_register_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
+    int len = 0;
+    char json_buf[1024]; // temporary buffer for JSON
+    int pos = 0;
+
+    // Start JSON array
+    pos += snprintf(&json_buf[pos], sizeof(json_buf) - pos, "[");
+
+    // Iterate over all registered devices
+    for (uint8_t i = 0; i < device_count; i++) {
+        struct charging_station *cs = &EV_charger[i];
+
+        // Add comma separator if not the first element
+        if (i > 0) {
+            pos += snprintf(&json_buf[pos], sizeof(json_buf) - pos, ",");
+        }
+
+        // Build JSON object for each charger (compact version)
+        pos += snprintf(&json_buf[pos], sizeof(json_buf) - pos,
+            "{"
+            "\"id\":%u,"
+            "\"maxP\":%.2f,"
+            "\"carReg\":%s,"
+            "\"isCh\":%s,"
+            "\"aP\":%.2f,"
+            "\"gP\":%.2f,"
+            "\"vMaxP\":%.2f,"
+            "\"vCap\":%u,"
+            "\"socCur\":%.2f,"
+            "\"socTgt\":%.2f,"
+            "\"plate\":\"%s\","
+            "\"prio\":%d,"
+            "\"estDur\":%lu,"
+            "\"remT\":%lu,"
+            "\"remE\":%.2f"
+            "}",
+            cs->id,
+            cs->max_charging_power,
+            cs->car_registered ? "true" : "false",
+            cs->is_charging ? "true" : "false",
+            cs->assigned_power,
+            cs->grid_power_used,
+            cs->vehicle_max_charging_power,
+            cs->vehicle_max_capacity,
+            cs->soc_current,
+            cs->soc_target,
+            cs->license_plate,
+            cs->priority,
+            (unsigned long)cs->estimated_charging_duration,
+            (unsigned long)cs->remaining_time_seconds,
+            cs->remaining_energy
+        );
+
+    }
+
+    // Close JSON array
+    pos += snprintf(&json_buf[pos], sizeof(json_buf) - pos, "]");
+
+    // Copy into CoAP response buffer
+    len = strlen(json_buf);
+    if(len > preferred_size) {
+        len = preferred_size; // truncate if too big
+    }
+    memcpy(buffer, json_buf, len);
+
+    // Set response
+    coap_set_header_content_format(response, APPLICATION_JSON);
+    coap_set_payload(response, buffer, len);
 }
 
 

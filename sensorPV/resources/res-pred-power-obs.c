@@ -40,7 +40,9 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 
     // Create normalized features for the prediction sequence
     for (int i = 0; i < SEQ_LEN; i++) {
-        int idx = solar_data_counter - SEQ_LEN + 1 + i; // Index into historical solar data
+
+         // 45 = (15 min * 60) / 20
+        int idx = solar_data_counter - SEQ_LEN*45 + (1+i)*45; // Index into historical solar data
 
         t = solar_data_timestamp[idx]; // Get the timestamp for the current index
         struct tm *tm_info = localtime(&t); // Convert timestamp to local time structure
