@@ -152,8 +152,6 @@ PROCESS_THREAD(coap_observe_client, ev, data) {
   coap_activate_resource(&res_car_reg, "registration/car");
   coap_activate_resource(&res_ml_pred_interval, "res_ml_pred_interval");
 
-  static struct etimer e_timer_ml_pred;
-
   etimer_set(&e_timer_ml_pred, CLOCK_SECOND * ml_pred_interval);
 
   static coap_message_t request[1];

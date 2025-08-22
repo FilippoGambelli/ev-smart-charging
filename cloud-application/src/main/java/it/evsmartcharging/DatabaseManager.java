@@ -152,6 +152,35 @@ public class DatabaseManager {
         return results;
     }
 
+    public int countTrailingZerosInRealPower() {
+        String sql = "SELECT P_real FROM realPower ORDER BY timestamp ASC";
+        int trailingZeros = 0;
+
+        try (Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+
+            // Read all values into a list
+            List<Float> pValues = new ArrayList<>();
+            while (rs.next()) {
+                pValues.add(rs.getFloat("P_real"));
+            }
+
+            // Count trailing zeros starting from the end
+            for (int i = pValues.size() - 1; i >= 0; i--) {
+                if (pValues.get(i) == 0.0f) {
+                    trailingZeros++;
+                } else {
+                    break; // Stop counting when a non-zero value is found
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.error("Select from realPower failed: {}", e.getMessage(), e);
+        }
+
+        return trailingZeros;
+    }
+
     public void closeConnection() {
         if (connection != null) {
             try {

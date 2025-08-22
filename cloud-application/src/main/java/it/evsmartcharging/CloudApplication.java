@@ -61,8 +61,18 @@ public class CloudApplication {
                         logger.info("User selected to view storade data.");
                         userInterface.viewStoredData();
                         break;
-                    
+
                     case 6:
+                        logger.info("User selected to view if the ML model is running.");
+                        if(coapObserver.getIfMLRunning()){
+                            System.out.println("ML Model is running!");
+                        }
+                        else {
+                            System.out.println("ML Model is not running!");
+                        }
+                        break;
+                    
+                    case 7:
                         logger.info("User selected to exit the application.");
                         coapObserver.stopAllObservation();  // Stop all CoAP observations
                         server.stop();  // Stop CoAP server
@@ -75,6 +85,7 @@ public class CloudApplication {
                     default:
                         break;
                 }
+                Thread.sleep(50000);
             }
         } catch (Exception e) {
             logger.error("Failed to start application: {}", e.getMessage(), e);

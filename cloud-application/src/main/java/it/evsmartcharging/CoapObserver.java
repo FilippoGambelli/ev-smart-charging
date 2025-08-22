@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 public class CoapObserver {
 
     private static final Logger logger = LoggerFactory.getLogger(CoapObserver.class);
+
+    private boolean ML_RUNNING = true;
     
     private final DatabaseManager databaseConnection;
 
@@ -178,6 +180,50 @@ public class CoapObserver {
                         logger.warn("Incomplete real power data received: {}", content);
                     }
 
+                    if(realPV > 0){
+                        ML_RUNNING = true;
+                        try {
+                            String mlUri = Config.CENTRAL_NODE_EP + "/res_ml_pred_interval";
+                            CoapClient mlClient = new CoapClient(mlUri);
+
+                            // Prepare payload
+                            String payload = "runMLModel=1&mlPredInterval=";
+                            logger.info("Sending PUT to {} with payload: {}", mlUri, payload);
+
+                            // Execute PUT
+                            CoapResponse mlResponse = mlClient.put(payload, 0); // 0 = text/plain
+                            if (mlResponse != null) {
+                                logger.info("PUT response from {}: {}", mlUri, mlResponse.getResponseText());
+                            } else {
+                                logger.warn("No response received from {}", mlUri);
+                            }
+
+                        } catch (Exception e) {
+                            logger.error("Error sending PUT to ML prediction interval: {}", e.getMessage(), e);
+                        }
+                    }
+                    else if (databaseConnection.countTrailingZerosInRealPower() >= 360) {
+                        ML_RUNNING = false;
+                        try {
+                            String mlUri = Config.CENTRAL_NODE_EP + "/res_ml_pred_interval";
+                            CoapClient mlClient = new CoapClient(mlUri);
+
+                            // Prepare payload
+                            String payload = "runMLModel=0";
+                            logger.info("Sending PUT to {} with payload: {}", mlUri, payload);
+
+                            // Execute PUT
+                            CoapResponse mlResponse = mlClient.put(payload, 0); // 0 = text/plain
+                            if (mlResponse != null) {
+                                logger.info("PUT response from {}: {}", mlUri, mlResponse.getResponseText());
+                            } else {
+                                logger.warn("No response received from {}", mlUri);
+                            }
+
+                        } catch (Exception e) {
+                            logger.error("Error sending PUT to ML prediction interval: {}", e.getMessage(), e);
+                        }
+                    }
                 } catch (Exception e) {
                     logger.error("Error parsing real power observation data: {}", e.getMessage(), e);
                 }
@@ -201,5 +247,9 @@ public class CoapObserver {
         } else {
             logger.warn("No active real power observation to cancel");
         }
+    }
+
+    public boolean getIfMLRunning(){
+        return ML_RUNNING;
     }
 }

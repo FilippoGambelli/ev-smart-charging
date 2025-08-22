@@ -48,6 +48,7 @@ public class UserInterface {
         System.out.println(++i + ". View status smart grid");
         System.out.println(++i + ". View status charging stations");
         System.out.println(++i + ". View Stored Data");
+        System.out.println(++i + ". Check if the ML model is running");
         System.out.println(++i + ". Exit");
         System.out.print("Choose an option (1-" + i + "): ");
 
