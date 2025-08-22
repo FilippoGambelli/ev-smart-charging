@@ -8,6 +8,7 @@ CONTIKI = ../../..
 
 MODULES_REL += ./resources
 MODULES_REL += ./power-manager
+MODULES_REL += ./config-ml
 
 # Include RPL BR module
 include $(CONTIKI)/Makefile.dir-variables

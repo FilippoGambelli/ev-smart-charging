@@ -17,22 +17,14 @@
 int solar_data_counter = 360;
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
-static void res_event_handler(void);
 
-EVENT_RESOURCE(res_pred_power_obs,
-               "title=\"Predicted Power Data\";rt=\"text/plain\";obs",
-               res_get_handler,
-               NULL,
-               NULL,
-               NULL,
-               res_event_handler);
-
-/* Event handler is called when the resource state changes*/
-static void res_event_handler(void) {
-  // Notify all observers that data has changed
-  coap_notify_observers(&res_pred_power_obs);
-}
-
+RESOURCE(res_pred_power,
+         "title=\"Predicted Power Data\";rt=\"text/plain\"",
+         res_get_handler,
+         NULL,
+         NULL,
+         NULL);
+         
 /* GET handler for the predicted power resource */
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
     float features[SEQ_LEN * N_FEATURES]; // Array to hold normalized input features for the model

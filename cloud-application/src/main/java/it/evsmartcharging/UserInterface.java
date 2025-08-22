@@ -249,7 +249,7 @@ public class UserInterface {
         if (confirm.equals("y")) {
             try {
                 // Create the CoAP client with the IPv6 address of your device
-                String uri = Config.SENSOR_PV_EP + "/res_ml_pred_interval";
+                String uri = Config.CENTRAL_NODE_EP + "/res_ml_pred_interval";
                 CoapClient client = new CoapClient(uri);
 
                 // Prepare the request payload in key=value format as expected by the server
