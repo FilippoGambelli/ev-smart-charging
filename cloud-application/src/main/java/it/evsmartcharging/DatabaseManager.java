@@ -32,30 +32,29 @@ public class DatabaseManager {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    public void insertSolarData(Timestamp timestamp, float Gb, float Gd, float Gr, float H_sun, float T2m, float WS10m, float P) {
-        String sql = "INSERT INTO solarData (timestamp, Gb, Gd, Gr, HSun, T, WS, P_predicted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public void insertSolarData(Timestamp timestamp, int Gb, int Gd, int Gr, int H_sun, int T2m, int WS10m) {
+        String sql = "INSERT INTO solarData (timestamp, Gb, Gd, Gr, HSun, T, WS) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setTimestamp(1, timestamp);
-            pstmt.setFloat(2, Gb);
-            pstmt.setFloat(3, Gd);
-            pstmt.setFloat(4, Gr);
-            pstmt.setFloat(5, H_sun);
-            pstmt.setFloat(6, T2m);
-            pstmt.setFloat(7, WS10m);
-            pstmt.setFloat(8, P);
+            pstmt.setInt(2, Gb);
+            pstmt.setInt(3, Gd);
+            pstmt.setInt(4, Gr);
+            pstmt.setInt(5, H_sun);
+            pstmt.setInt(6, T2m);
+            pstmt.setInt(7, WS10m);
             pstmt.executeUpdate();
-            logger.info("Inserted row into solarData: timestamp={}, Gb={}, Gd={}, Gr={}, HSun={}, T={}, WS={}, P_predicted={}", timestamp, Gb, Gd, Gr, H_sun, T2m, WS10m, P);
+            logger.info("Inserted row into solarData: timestamp={}, Gb={}, Gd={}, Gr={}, HSun={}, T={}, WS={}", timestamp, Gb, Gd, Gr, H_sun, T2m, WS10m);
 
         } catch (SQLException e) {
             logger.error("Insert failed: {}", e.getMessage(), e);
         }
     }
 
-    public void insertRealPowerData(Timestamp timestamp, float P) {
+    public void insertRealPowerData(Timestamp timestamp, int P) {
         String sql = "INSERT INTO realPower (timestamp, P_real) VALUES (?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setTimestamp(1, timestamp);
-            pstmt.setFloat(2, P);
+            pstmt.setInt(2, P);
             pstmt.executeUpdate();
             logger.info("Inserted row into realPower: timestamp={}, P_real={}", timestamp, P);
 
@@ -70,13 +69,13 @@ public class DatabaseManager {
             pstmt.setString(1, plate);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt("priority"); // ritorna 0 o 1
+                return rs.getInt("priority"); // return 0 or 1
             } else {
-                return -1; // default se la targa non è presente
+                return -1; // default if the plate is not present
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return -1; // fallback in caso di errore
+            return -1;
         }
     }
 
@@ -119,7 +118,7 @@ public class DatabaseManager {
 
             while (rs.next()) {
                 Timestamp timestamp = rs.getTimestamp("timestamp");
-                float pReal = rs.getFloat("P_real");
+                Integer pReal = rs.getInt("P_real");
                 results.add(new RealPower(timestamp, pReal));
             }
         } catch (SQLException e) {
@@ -131,20 +130,19 @@ public class DatabaseManager {
     // Select all rows from solarData ordered by timestamp
     public List<SolarData> selectAllSolarData() {
         List<SolarData> results = new ArrayList<>();
-        String sql = "SELECT timestamp, Gb, Gd, Gr, HSun, T, WS, P_predicted FROM solarData ORDER BY timestamp ASC";
+        String sql = "SELECT timestamp, Gb, Gd, Gr, HSun, T, WS FROM solarData ORDER BY timestamp ASC";
         try (Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Timestamp timestamp = rs.getTimestamp("timestamp");
-                float gb = rs.getFloat("Gb");
-                float gd = rs.getFloat("Gd");
-                float gr = rs.getFloat("Gr");
-                float hsun = rs.getFloat("HSun");
-                float t = rs.getFloat("T");
-                float ws = rs.getFloat("WS");
-                float pPred = rs.getFloat("P_predicted");
-                results.add(new SolarData(timestamp, gb, gd, gr, hsun, t, ws, pPred));
+                int gb = rs.getInt("Gb");
+                int gd = rs.getInt("Gd");
+                int gr = rs.getInt("Gr");
+                int hsun = rs.getInt("HSun");
+                int t = rs.getInt("T");
+                int ws = rs.getInt("WS");
+                results.add(new SolarData(timestamp, gb, gd, gr, hsun, t, ws));
             }
         } catch (SQLException e) {
             logger.error("Select from solarData failed: {}", e.getMessage(), e);
@@ -160,17 +158,17 @@ public class DatabaseManager {
             ResultSet rs = stmt.executeQuery(sql)) {
 
             // Read all values into a list
-            List<Float> pValues = new ArrayList<>();
+            List<Integer> pValues = new ArrayList<>();
             while (rs.next()) {
-                pValues.add(rs.getFloat("P_real"));
+                pValues.add(rs.getInt("P_real"));
             }
 
             // Count trailing zeros starting from the end
             for (int i = pValues.size() - 1; i >= 0; i--) {
-                if (pValues.get(i) == 0.0f) {
+                if (pValues.get(i) == 0) {
                     trailingZeros++;
                 } else {
-                    break; // Stop counting when a non-zero value is found
+                    break;
                 }
             }
 

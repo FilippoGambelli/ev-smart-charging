@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-// Definizione di un “pool” di auto realistiche
+// Definition of a pool of realistic cars
 static car_t car_pool[] = {
-    {22.0, 70, 20.0, 80.0, "XY987ZT"},
-    {11.0, 40, 10.0, 50.0, "AB123CD"},
-    {50.0, 85, 30.0, 90.0, "ZZ999YY"},
-    {7.4, 35, 5.0, 25.0, "LM456OP"},
-    {22.0, 60, 15.0, 75.0, "GH789JK"}
+    {22000, 70000, 20, 80, "XY987ZT"},
+    {11000, 40000, 10, 50, "AB123CD"},
+    {5000, 85000, 30, 90, "ZZ999YY"},
+    {700, 35000, 5, 25, "LM456OP"},
+    {2200, 60000, 15, 75, "GH789JK"}
 };
 
 #define CAR_POOL_SIZE (sizeof(car_pool)/sizeof(car_pool[0]))

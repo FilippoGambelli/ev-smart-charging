@@ -4,14 +4,13 @@
 #include <stdint.h>
 
 typedef struct {
-    double carMaxKW;
-    unsigned int carCapacity;
-    double currentCharge;
-    double desiredCharge;
+    int carMaxPower;    // in W
+    unsigned int carCapacity;   // in Wh
+    int currentCharge;
+    int desiredCharge;
     const char* plate;
 } car_t;
 
-// Restituisce un puntatore a un auto casuale
 const car_t* get_random_car(void);
 
 #endif // CAR_POOL_H

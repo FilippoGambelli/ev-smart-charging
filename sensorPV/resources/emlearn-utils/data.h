@@ -2,20 +2,22 @@
 #define DATA_H
 
 #define N_FEATURES 12
-#define SEQ_LEN 8
-#define HORIZON 8
+#define SEQ_LEN     8
+#define HORIZON     8
 
 static const float X_min[N_FEATURES] = {
-    0.0f, 0.0f, 0.0f, 0.0f, -3.29f, 0.0f,
-   -1.0f, -1.0f, -0.8660254f, -0.8660254f, -1.0f, -1.0f
+     0.0f,  0.0f,  0.0f,  0.0f,
+    -3.0f,  0.0f, -1.0f, -1.0f,
+    -0.8660254f, -0.8660254f, -1.0f, -1.0f
 };
 
 static const float X_max[N_FEATURES] = {
-    973.99f, 436.64f, 20.4f, 69.63f, 34.07f, 11.38f,
-    1.0f, 1.0f, 0.8660254f, 0.8660254f, 1.0f, 1.0f
+   974.0f, 437.0f,  20.0f,  70.0f,
+    34.0f,  11.0f,   1.0f,   1.0f,
+     0.8660254f,  0.8660254f,  1.0f,  1.0f
 };
 
 static const float y_min = 0.0f;
 static const float y_max = 111750.0f;
 
-#endif
+#endif /* DATA_H */

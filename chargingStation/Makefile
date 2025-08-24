@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = coap-server
+CONTIKI_PROJECT = charging_station
 all: $(CONTIKI_PROJECT)
 
 # Do not try to build on Sky because of code size limitation
@@ -7,7 +7,6 @@ PLATFORMS_EXCLUDE = sky z1
 CONTIKI = ../../..
 
 MODULES_REL += ./resources
-
 MODULES_REL += ./car-pool
 
 MODULES += $(CONTIKI_NG_APP_LAYER_DIR)/coap

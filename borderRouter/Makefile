@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = border-router
+CONTIKI_PROJECT = border_router
 all: $(CONTIKI_PROJECT)
 
 # Do not try to build on Sky because of code size limitation
@@ -13,8 +13,6 @@ MODULES_REL += ./config-ml
 # Include RPL BR module
 include $(CONTIKI)/Makefile.dir-variables
 MODULES += $(CONTIKI_NG_SERVICES_DIR)/rpl-border-router
-# Include webserver module
-MODULES_REL += webserver
 
 MODULES += $(CONTIKI_NG_APP_LAYER_DIR)/coap
 

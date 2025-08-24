@@ -79,22 +79,22 @@ public class UserInterface {
                 for (JsonElement elem : chargers) {
                     JsonObject obj = elem.getAsJsonObject();
 
-                    System.out.printf("%-3d %-6.2f %-6s %-6s %-5.2f %-5.2f %-6.2f %-5d %-6.2f %-6.2f %-8s %-4d %-8d %-8d %-6.2f\n",
+                    System.out.printf("%-3d %-6d %-6s %-6s %-5d %-5d %-6d %-5d %-6d %-6d %-8s %-4d %-8d %-8d %-6d\n",
                         obj.get("id").getAsInt(),
-                        obj.get("maxP").getAsFloat(),
+                        obj.get("maxP").getAsInt(),
                         obj.get("carReg").getAsBoolean() ? "true" : "false",
                         obj.get("isCh").getAsBoolean() ? "true" : "false",
-                        obj.get("aP").getAsFloat(),
-                        obj.get("gP").getAsFloat(),
-                        obj.get("vMaxP").getAsFloat(),
+                        obj.get("aP").getAsInt(),
+                        obj.get("gP").getAsInt(),
+                        obj.get("vMaxP").getAsInt(),
                         obj.get("vCap").getAsInt(),
-                        obj.get("socCur").getAsFloat(),
-                        obj.get("socTgt").getAsFloat(),
+                        obj.get("socCur").getAsInt(),
+                        obj.get("socTgt").getAsInt(),
                         obj.get("plate").getAsString(),
                         obj.get("prio").getAsInt(),
-                        obj.get("estDur").getAsLong(),
-                        obj.get("remT").getAsLong(),
-                        obj.get("remE").getAsFloat()
+                        obj.get("estDur").getAsInt(),
+                        obj.get("remT").getAsInt(),
+                        obj.get("remE").getAsInt()
                     );
                 }
 
@@ -126,17 +126,17 @@ public class UserInterface {
                 // Parse the JSON response
                 JsonObject obj = JsonParser.parseString(content).getAsJsonObject();
 
-                float energyFromGridNow = obj.get("energy_from_grid_now").getAsFloat();
-                float energyToGridNow = obj.get("energy_to_grid_now").getAsFloat();
-                float energyFromGridTotal = obj.get("energy_from_grid_total").getAsFloat();
-                float energyToGridTotal = obj.get("energy_to_grid_total").getAsFloat();
+                int energyFromGridNow = obj.get("energy_from_grid").getAsInt();
+                int energyToGridNow = obj.get("energy_to_grid").getAsInt();
+                int energyFromGridTotal = obj.get("energy_from_grid_total").getAsInt();
+                int energyToGridTotal = obj.get("energy_to_grid_total").getAsInt();
 
                 // Economic calculations
-                float costNow = energyFromGridNow * COST_PER_KWH_FROM_GRID;
-                float earningNow = energyToGridNow * EARNING_PER_KWH_TO_GRID;
+                float costNow = energyFromGridNow * COST_PER_KWH_FROM_GRID / 1000;
+                float earningNow = energyToGridNow * EARNING_PER_KWH_TO_GRID / 1000;
 
-                float totalCost = energyFromGridTotal * COST_PER_KWH_FROM_GRID;
-                float totalEarning = energyToGridTotal * EARNING_PER_KWH_TO_GRID;
+                float totalCost = energyFromGridTotal * COST_PER_KWH_FROM_GRID / 1000;
+                float totalEarning = energyToGridTotal * EARNING_PER_KWH_TO_GRID / 1000;
                 float totalBalance = totalEarning - totalCost;
 
                 // Print current status
@@ -178,7 +178,7 @@ public class UserInterface {
         System.out.println("\nWhat data would you like to see?");
         System.out.println("1 - Real power data");
         System.out.println("2 - Solar irradiation data");
-        System.out.println("3 - Targets stored in the database");
+        System.out.println("3 - Plates stored in the database");
         System.out.print("Enter your choice (1, 2, or 3): ");
 
         String choice = scanner.nextLine().trim();
@@ -188,15 +188,15 @@ public class UserInterface {
             List<RealPower> realPowerData = databaseManager.selectAllRealPower();
             System.out.println("\n--- Real Power Data ---");
             for (RealPower rp : realPowerData) {
-                System.out.printf("Timestamp: %s | P_real: %.4f\n", rp.getTimestamp(), rp.getPReal());
+                System.out.printf("Timestamp: %s | P_real: %d\n", rp.getTimestamp(), rp.getPReal());
             }
         } else if (choice.equals("2")) {
             // Get all solar irradiation data and print
             List<SolarData> solarDataList = databaseManager.selectAllSolarData();
             System.out.println("\n--- Solar Irradiation Data ---");
             for (SolarData sd : solarDataList) {
-                System.out.printf("Timestamp: %s | Gb: %.4f | Gd: %.4f | Gr: %.4f | HSun: %.4f | T: %.4f | WS: %.4f | P_predicted: %.4f\n",
-                        sd.getTimestamp(), sd.getGb(), sd.getGd(), sd.getGr(), sd.getHSun(), sd.getT(), sd.getWS(), sd.getPPredicted());
+                System.out.printf("Timestamp: %s | Gb: %d | Gd: %d | Gr: %d | HSun: %d | T: %d | WS: %d\n",
+                        sd.getTimestamp(), sd.getGb(), sd.getGd(), sd.getGr(), sd.getHSun(), sd.getT(), sd.getWS());
             }
         } else if (choice.equals("3")) {
             // Get all plate priority data and print
@@ -254,7 +254,7 @@ public class UserInterface {
                 CoapClient client = new CoapClient(uri);
 
                 // Prepare the request payload in key=value format as expected by the server
-                String payload = "mlPredInterval=" + seconds;
+                String payload = "runMLModel=1&mlPredInterval=" + seconds;
 
                 // Content-Format 4 = application/x-www-form-urlencoded
                 CoapResponse response = client.put(payload, 4);

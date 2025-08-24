@@ -21,6 +21,8 @@ PROCESS_THREAD(smart_grid, ev, data){
     // Activate CoAP resources
     coap_activate_resource(&res_status_power_grid, "res_status_power_grid");
 
+    LOG_INFO("CoAP resources activated\n");
+
     while(1) {
         PROCESS_WAIT_EVENT();
     }

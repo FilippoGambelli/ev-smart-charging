@@ -4,7 +4,6 @@
 #include "coap-engine.h"
 #include "os/dev/leds.h"
 
-
 /* Log configuration */
 #include "coap-log.h"
 #define LOG_MODULE "App"
@@ -23,8 +22,8 @@
   #define LED_SINGLE_OFF(led) leds_single_off(led)
 #endif
 
-static float charging_power = 0;
-static float energy_renewable = 0;
+static int charging_power = 0;      // in Watts
+static int energy_renewable = 0;    // in Watts
 static bool charging_complete = false;
 
 // Forward declaration of the PUT handler
@@ -32,17 +31,16 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
 
 // Define the CoAP resource
 RESOURCE(res_charging_status,
-         "title=\"Charging Status\";rt=\"charging-status\"",
-         NULL,   // GET handler
-         NULL,   // POST handler
-         res_put_handler, // PUT handler
-         NULL);  // DELETE handler
+        "title=\"Charging Status\";rt=\"text/plain\"",
+        NULL,               // GET handler
+        NULL,               // POST handler
+        res_put_handler,    // PUT handler
+        NULL);              // DELETE handler
 
 static void res_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
-
     size_t len = 0;
     const char *text = NULL;
-    int params_received = 0;  // Contatore dei parametri validi
+    int params_received = 0;
 
     // Get chargingPower from the request
     len = coap_get_post_variable(request, "chargingPower", &text);
@@ -65,9 +63,9 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
         params_received++;
     }
 
-    // Controlla se tutti i parametri sono stati ricevuti
+    // Check if all parameters were received
     if(params_received == 3) {
-        LOG_INFO("Received PUT: chargingPower=%.4f, energyRenewable=%.4f, chargingComplete=%d\n",
+        LOG_INFO("Received PUT - Charging status - chargingPower=%d | energyRenewable=%d | chargingComplete=%d\n",
             charging_power, energy_renewable, charging_complete);
         coap_set_status_code(response, CHANGED_2_04);
     } else {

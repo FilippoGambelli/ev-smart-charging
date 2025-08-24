@@ -35,7 +35,7 @@ def write_c_array(file_path, columns, variables, df_filtered, chunk_size=100, he
             chunks = [data_list[i:i+chunk_size] for i in range(0, len(data_list), chunk_size)]
             data_str = '{\n' + ',\n'.join(', '.join(map(str, chunk)) for chunk in chunks) + '\n}'
             
-            c_type = 'static const time_t' if col == 'time' else 'static const float'
+            c_type = 'static const time_t' if col == 'time' else 'static const int'
             f.write(f"{c_type} {var}[] = {data_str};\n\n")
         
         if counter_value is not None and counter_name is not None:

@@ -59,7 +59,7 @@ public class CoapObserver {
             @Override
             public void onLoad(CoapResponse response) {
                 String content = response.getResponseText();
-                logger.debug("Received solar observation: {}", content);
+                logger.info("Received solar observation: {}", content);
 
                 try {
                     // Parse the JSON response
@@ -72,30 +72,29 @@ public class CoapObserver {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
                         LocalDateTime ldt = LocalDateTime.parse(tsString, formatter);
                         timestamp = Timestamp.valueOf(ldt);
-                        logger.debug("Parsed solar timestamp: {}", timestamp);
                     }
 
                     // Parse solar parameters, default to null if missing
-                    Float Gb = obj.has("Gb") && !obj.get("Gb").isJsonNull()
-                            ? obj.get("Gb").getAsFloat() : null;
+                    Integer Gb = obj.has("Gb") && !obj.get("Gb").isJsonNull()
+                            ? obj.get("Gb").getAsInt() : null;
 
-                    Float Gd = obj.has("Gd") && !obj.get("Gd").isJsonNull()
-                            ? obj.get("Gd").getAsFloat() : null;
+                    Integer Gd = obj.has("Gd") && !obj.get("Gd").isJsonNull()
+                            ? obj.get("Gd").getAsInt() : null;
 
-                    Float Gr = obj.has("Gr") && !obj.get("Gr").isJsonNull()
-                            ? obj.get("Gr").getAsFloat() : null;
+                    Integer Gr = obj.has("Gr") && !obj.get("Gr").isJsonNull()
+                            ? obj.get("Gr").getAsInt() : null;
 
-                    Float HSun = obj.has("HSun") && !obj.get("HSun").isJsonNull()
-                            ? obj.get("HSun").getAsFloat() : null;
+                    Integer HSun = obj.has("HSun") && !obj.get("HSun").isJsonNull()
+                            ? obj.get("HSun").getAsInt() : null;
 
-                    Float T = obj.has("T") && !obj.get("T").isJsonNull()
-                            ? obj.get("T").getAsFloat() : null;
+                    Integer T = obj.has("T") && !obj.get("T").isJsonNull()
+                            ? obj.get("T").getAsInt() : null;
 
-                    Float WS = obj.has("WS") && !obj.get("WS").isJsonNull()
-                            ? obj.get("WS").getAsFloat() : null;
+                    Integer WS = obj.has("WS") && !obj.get("WS").isJsonNull()
+                            ? obj.get("WS").getAsInt() : null;
 
                     // Insert the parsed data into the database
-                    databaseConnection.insertSolarData(timestamp, Gb, Gd, Gr, HSun, T, WS, 0);
+                    databaseConnection.insertSolarData(timestamp, Gb, Gd, Gr, HSun, T, WS);
                     logger.info("Inserted solar data into database: timestamp={}, Gb={}, Gd={}, Gr={}, HSun={}, T={}, WS={}",
                             timestamp, Gb, Gd, Gr, HSun, T, WS);
 
@@ -136,13 +135,13 @@ public class CoapObserver {
             @Override
             public void onLoad(CoapResponse response) {
                 String content = response.getResponseText();
-                logger.debug("Received real power observation: {}", content);
+                logger.info("Received real power observation: {}", content);
 
                 try {
                     // Example content format: "timestamp=1692541800&realPV=123.45"
                     String[] params = content.split("&");
                     Timestamp timestamp = null;
-                    Float realPV = null;
+                    Integer realPV = null;
 
                     // Parse key-value pairs from response
                     for (String param : params) {
@@ -158,12 +157,10 @@ public class CoapObserver {
                                 long epochSeconds = Long.parseLong(value);
                                 LocalDateTime ldt = LocalDateTime.ofEpochSecond(epochSeconds, 0, ZoneOffset.UTC);
                                 timestamp = Timestamp.valueOf(ldt);
-                                logger.debug("Parsed real power timestamp: {}", timestamp);
                                 break;
 
                             case "realPV":
-                                realPV = Float.parseFloat(value);
-                                logger.debug("Parsed real power value: {}", realPV);
+                                realPV = Integer.parseInt(value);
                                 break;
 
                             default:
@@ -202,14 +199,14 @@ public class CoapObserver {
                             logger.error("Error sending PUT to ML prediction interval: {}", e.getMessage(), e);
                         }
                     }
-                    else if (databaseConnection.countTrailingZerosInRealPower() >= 360) {
+                    else if (ML_RUNNING && databaseConnection.countTrailingZerosInRealPower() >= 360) {       // 30 minutes of zeros
                         ML_RUNNING = false;
                         try {
                             String mlUri = Config.CENTRAL_NODE_EP + "/res_ml_pred_interval";
                             CoapClient mlClient = new CoapClient(mlUri);
 
                             // Prepare payload
-                            String payload = "runMLModel=0";
+                            String payload = "runMLModel=0&mlPredInterval=";
                             logger.info("Sending PUT to {} with payload: {}", mlUri, payload);
 
                             // Execute PUT

@@ -74,18 +74,17 @@ public class CloudApplication {
                     
                     case 7:
                         logger.info("User selected to exit the application.");
-                        coapObserver.stopAllObservation();  // Stop all CoAP observations
-                        server.stop();  // Stop CoAP server
-                        server.destroy();   // Destroy CoAP server
-                        databaseManager.closeConnection();  // Close database connection
-                        userInterface.closeScanner();   // Close user interface scanner
+                        coapObserver.stopAllObservation();
+                        server.stop();
+                        server.destroy();
+                        databaseManager.closeConnection();
+                        userInterface.closeScanner();
                         logger.info("System shutting down. Goodbye!");
                         return;
                 
                     default:
                         break;
                 }
-                Thread.sleep(50000);
             }
         } catch (Exception e) {
             logger.error("Failed to start application: {}", e.getMessage(), e);

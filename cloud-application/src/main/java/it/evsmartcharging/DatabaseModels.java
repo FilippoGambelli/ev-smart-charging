@@ -2,9 +2,6 @@ package it.evsmartcharging;
 
 import java.sql.Timestamp;
 
-/**
- * DTO classes for database entities used by DatabaseManager
- */
 public class DatabaseModels {
 
     // Represents a row from the plate_priority table
@@ -34,9 +31,9 @@ public class DatabaseModels {
     // Represents a row from the realPower table
     public static class RealPower {
         private final Timestamp timestamp;
-        private final float pReal;
+        private final int pReal;
 
-        public RealPower(Timestamp timestamp, float pReal) {
+        public RealPower(Timestamp timestamp, int pReal) {
             this.timestamp = timestamp;
             this.pReal = pReal;
         }
@@ -45,7 +42,7 @@ public class DatabaseModels {
             return timestamp;
         }
 
-        public float getPReal() {
+        public int getPReal() {
             return pReal;
         }
 
@@ -58,15 +55,14 @@ public class DatabaseModels {
     // Represents a row from the solarData table
     public static class SolarData {
         private final Timestamp timestamp;
-        private final float Gb;
-        private final float Gd;
-        private final float Gr;
-        private final float HSun;
-        private final float T;
-        private final float WS;
-        private final float pPredicted;
+        private final int Gb;
+        private final int Gd;
+        private final int Gr;
+        private final int HSun;
+        private final int T;
+        private final int WS;
 
-        public SolarData(Timestamp timestamp, float Gb, float Gd, float Gr, float HSun, float T, float WS, float pPredicted) {
+        public SolarData(Timestamp timestamp, int Gb, int Gd, int Gr, int HSun, int T, int WS) {
             this.timestamp = timestamp;
             this.Gb = Gb;
             this.Gd = Gd;
@@ -74,17 +70,15 @@ public class DatabaseModels {
             this.HSun = HSun;
             this.T = T;
             this.WS = WS;
-            this.pPredicted = pPredicted;
         }
 
         public Timestamp getTimestamp() { return timestamp; }
-        public float getGb() { return Gb; }
-        public float getGd() { return Gd; }
-        public float getGr() { return Gr; }
-        public float getHSun() { return HSun; }
-        public float getT() { return T; }
-        public float getWS() { return WS; }
-        public float getPPredicted() { return pPredicted; }
+        public int getGb() { return Gb; }
+        public int getGd() { return Gd; }
+        public int getGr() { return Gr; }
+        public int getHSun() { return HSun; }
+        public int getT() { return T; }
+        public int getWS() { return WS; }
 
         @Override
         public String toString() {
@@ -95,7 +89,7 @@ public class DatabaseModels {
                    ", HSun=" + HSun +
                    ", T=" + T +
                    ", WS=" + WS +
-                   ", P_predicted=" + pPredicted + "}";
+                   "}";
         }
     }
 }

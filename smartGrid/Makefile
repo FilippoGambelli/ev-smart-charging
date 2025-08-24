@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = sensorPV-coap-server
+CONTIKI_PROJECT = smart_grid
 all: $(CONTIKI_PROJECT)
 
 # Do not try to build on Sky because of code size limitation

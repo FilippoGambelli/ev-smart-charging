@@ -31,12 +31,12 @@ public class CoAPResourcePlate extends CoapResource {
 
         // Validate plate parameter
         if (plate == null || plate.isEmpty()) {
-            logger.warn("GET request missing 'plate' parameter from {}", exchange.getSourceAddress());
+            logger.warn("GET request missing 'plate' parameter");
             exchange.respond(ResponseCode.BAD_REQUEST, "Missing plate parameter");
             return;
         }
 
-        logger.info("Received GET request for plate: {} from {}", plate, exchange.getSourceAddress());
+        logger.info("Received GET request for plate: {}", plate);
 
         // Query the database for priority associated with the plate
         int priority = databaseManager.getPriorityByPlate(plate);
@@ -44,10 +44,9 @@ public class CoAPResourcePlate extends CoapResource {
         Response response;
 
         if (priority == -1) {
-            // Plate not found or database error
-            logger.warn("Priority not found for plate: {}", plate);
-            response = new Response(ResponseCode.NOT_FOUND);
-            response.setPayload("priority not found or error");
+            logger.info("Priority not found for plate: {}", plate);
+            response = new Response(ResponseCode.CONTENT);
+            response.setPayload("priority=0");
         } else {
             // Successful response with priority
             logger.info("Returning priority {} for plate {}", priority, plate);
@@ -57,6 +56,6 @@ public class CoAPResourcePlate extends CoapResource {
 
         // Send the response back to the client
         exchange.respond(response);
-        logger.debug("Response sent for plate {}: {}", plate, response.getCode());
+        logger.info("Response sent for plate {}: {}", plate, response.getCode());
     }
 }

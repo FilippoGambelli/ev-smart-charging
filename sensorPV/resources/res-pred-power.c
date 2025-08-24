@@ -7,24 +7,33 @@
 #include "coap-engine.h"
 #include "real-data/solar-data.h"
 #include "emlearn-utils/data.h"
-#include "emlearn-utils/normalization.h"
 #include "emlearnModel.h"
 
 #include "sys/log.h"
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
 
+// Declarations in solar-data.h
 int solar_data_counter = 360;
 
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 
 RESOURCE(res_pred_power,
-         "title=\"Predicted Power Data\";rt=\"text/plain\"",
-         res_get_handler,
-         NULL,
-         NULL,
-         NULL);
+        "title=\"Predicted Power Data\";rt=\"text/plain\"",
+        res_get_handler,
+        NULL,
+        NULL,
+        NULL);
          
+
+float normalize(float val, float min_val, float max_val) {
+    return (val - min_val) / (max_val - min_val);
+}
+
+float denormalize(float val, float min_val, float max_val) {
+    return val * (max_val - min_val) + min_val;
+}
+
 /* GET handler for the predicted power resource */
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
     float features[SEQ_LEN * N_FEATURES]; // Array to hold normalized input features for the model
@@ -40,9 +49,6 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
 
         t = solar_data_timestamp[idx]; // Get the timestamp for the current index
         struct tm *tm_info = localtime(&t); // Convert timestamp to local time structure
-
-        LOG_INFO("Index: %d, Timestamp: %02d-%02d-%04d %02d:%02d:%02d \n",
-            idx, tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900, tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec);
 
         // Extract hour, minute, and week-of-year (approximate)
         int hour   = tm_info->tm_hour;
@@ -94,7 +100,9 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
     int trend = (trend_val >= 0.0f) ? 1 : -1;
 
     // Write the plain text response
-    int offset_buf = snprintf((char *)buffer, preferred_size, "trend=%d&firstPrediction=%.4f", trend, outputs[0]);
+    int offset_buf = snprintf((char *)buffer, preferred_size, "trend=%d&firstPrediction=%d", trend, (int)outputs[0]);
+
+    LOG_INFO("Received GET - Pred Power Data - Data sent: Trend=%d | First Prediction=%d\n", trend, (int)outputs[0]);
 
     // Prevent unused variable warnings (required by compiler settings)
     (void)eml_net_activation_function_strs; //printf("%p\n", eml_net_activation_function_strs);
@@ -103,4 +111,5 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
     // Set CoAP response headers and payload as plain text
     coap_set_header_content_format(response, TEXT_PLAIN);
     coap_set_payload(response, buffer, offset_buf);
+    coap_set_status_code(response, CONTENT_2_05);
 }
