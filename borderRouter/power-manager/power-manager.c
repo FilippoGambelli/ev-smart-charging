@@ -4,8 +4,8 @@ static coap_endpoint_t charging_station_ep;
 static coap_endpoint_t smart_grid_ep;
 
 time_t last_execution = 0;
-int total_power_grid_used = 0;
-int solar_available = 0;
+float total_power_grid_used = 0;
+float solar_available = 0;
 
 void power_manager_update_charging_station(){
 
@@ -39,12 +39,14 @@ void power_manager_update_charging_station(){
         }
 
         // Calculate remaining energy and time
-        EV_charger[i].remaining_energy = (int)(EV_charger[i].vehicle_max_capacity * (EV_charger[i].soc_target - EV_charger[i].soc_current) / 100);  // Wh
+        EV_charger[i].remaining_energy = (EV_charger[i].vehicle_max_capacity * (EV_charger[i].soc_target - EV_charger[i].soc_current) / 100);  // Wh
         EV_charger[i].remaining_time_seconds -= elapsed_time;  // seconds
     }
 
-    solar_available = (power_PV_real < power_PV_pred) ? power_PV_real : power_PV_pred;  // W
+    solar_available = (power_PV_real < power_PV_pred) ? power_PV_real : power_PV_pred;
     total_power_grid_used = 0;
+
+    LOG_INFO("Solar power available: %d,%04d kW\n", (int)solar_available, (int)((solar_available - (int)solar_available) * 10000));
 
     // Sort EV_charger array based on priority and remaining_time_seconds
     qsort(EV_charger, device_count, sizeof(struct charging_station), compare_charging_stations);
@@ -57,14 +59,9 @@ void power_manager_update_charging_station(){
         float remaining_time_hours = EV_charger[i].remaining_time_seconds / 3600.0f;
         float required_power = EV_charger[i].remaining_energy / remaining_time_hours;       // W
 
-        LOG_INFO("\n Charger %u \n soc_current = %.2f %% \n soc_target = %d %% \n remaining_energy = %d Wh \n remaining_time_secs = %d s \n vehicle_max_capacity= %u Wh \n "
-            "required_power = %.2f W \n\n power_PV_real = %d kW\n power_PV_pred = %d kW \n solar_available = %d kW \n power_PV_trend = %d \n\n",
-            EV_charger[i].id, EV_charger[i].soc_current, EV_charger[i].soc_target, EV_charger[i].remaining_energy, EV_charger[i].remaining_time_seconds, EV_charger[i].vehicle_max_capacity, required_power,
-            power_PV_real, power_PV_pred, solar_available, power_PV_trend);
-
         if (solar_available >= required_power) {    // Sufficient solar panels
-            EV_charger[i].assigned_power = (int)required_power;
-            solar_available -= (int)required_power;
+            EV_charger[i].assigned_power = required_power;
+            solar_available -= required_power;
 
         } else {                            // Insufficient solar panels
             if (power_PV_trend == 1) {      // Assign the available energy: first use only the solar panel energy, and then the required amount from the grid to reach the target
@@ -72,7 +69,7 @@ void power_manager_update_charging_station(){
 
                 solar_available = 0;
 
-                int max_charging = (EV_charger[i].max_charging_power < EV_charger[i].vehicle_max_charging_power)? EV_charger[i].max_charging_power : EV_charger[i].vehicle_max_charging_power;
+                float max_charging = (EV_charger[i].max_charging_power < EV_charger[i].vehicle_max_charging_power)? EV_charger[i].max_charging_power : EV_charger[i].vehicle_max_charging_power;
                 if(max_charging * (EV_charger[i].remaining_time_seconds / 3600.0) < EV_charger[i].remaining_energy) {
                     
                     // The energy required to reach the target with the available max_charging, not considering the energy already supplied by the solar panels
@@ -93,9 +90,25 @@ void power_manager_update_charging_station(){
 
         send_charging_status(&EV_charger[i].addr, EV_charger[i].assigned_power, EV_charger[i].assigned_power-EV_charger[i].grid_power_used, 0);
 
-        LOG_INFO("Charger ID: %u - Power Assigned: %d | Renewable energy: %d | Current SOC: %d.%d\n",
-            EV_charger[i].id, EV_charger[i].assigned_power, EV_charger[i].assigned_power - EV_charger[i].grid_power_used,
-            (int)EV_charger[i].soc_current, (int)((EV_charger[i].soc_current - (int)EV_charger[i].soc_current) * 10)
+        LOG_INFO("Charger %u:\n"
+            "\t\t\t SOC current: %d,%04d %% \t\t SOC target: %d,%04d %%\n"
+            "\t\t\t Remaining energy: %d,%04d kWh \t\t Remaining time: %d s\n"
+            "\t\t\t Vehicle max capacity: %d,%04d kWh \t Required power: %d,%04d kW\n"
+            "\t\t\t Power PV real: %d,%04d kW \t\t Power PV pred: %d,%04d kW\n"
+            "\t\t\t Power PV trend: %s \t\t Power Assigned: %d,%04d kW\n"
+            "\t\t\t Renewable energy: %d,%04d kW\n\n",
+            EV_charger[i].id,
+            (int)EV_charger[i].soc_current, (int)((EV_charger[i].soc_current - (int)EV_charger[i].soc_current) * 10000),
+            (int)EV_charger[i].soc_target, (int)((EV_charger[i].soc_target - (int)EV_charger[i].soc_target) * 10000),
+            (int)EV_charger[i].remaining_energy, (int)((EV_charger[i].remaining_energy - (int)EV_charger[i].remaining_energy) * 10000),
+            EV_charger[i].remaining_time_seconds,
+            (int)EV_charger[i].vehicle_max_capacity, (int)((EV_charger[i].vehicle_max_capacity - (int)EV_charger[i].vehicle_max_capacity) * 10000),
+            (int)required_power, (int)((required_power - (int)required_power) * 10000),
+            (int)power_PV_real, (int)((power_PV_real - (int)power_PV_real) * 10000),
+            (int)power_PV_pred, (int)((power_PV_pred - (int)power_PV_pred) * 10000),
+            power_PV_trend == 1 ? "increasing" : "decreasing",
+            (int)EV_charger[i].assigned_power, (int)((EV_charger[i].assigned_power - (int)EV_charger[i].assigned_power) * 10000),
+            (int)(EV_charger[i].assigned_power - EV_charger[i].grid_power_used), (int)((EV_charger[i].assigned_power - EV_charger[i].grid_power_used - (int)(EV_charger[i].assigned_power - EV_charger[i].grid_power_used)) * 10000)
         );
     }
 
@@ -108,7 +121,7 @@ void power_manager_update_charging_station(){
 
 }
 
-void send_charging_status(uip_ipaddr_t *addr, int assigned_power, int renewable_energy, int charging_complete) {
+void send_charging_status(uip_ipaddr_t *addr, float assigned_power, float renewable_energy, int charging_complete) {
     static coap_message_t request[1];          
     char buffer_req[128];                          
     static coap_callback_request_state_t request_state;
@@ -116,37 +129,41 @@ void send_charging_status(uip_ipaddr_t *addr, int assigned_power, int renewable_
     memcpy(&charging_station_ep.ipaddr, addr, sizeof(uip_ipaddr_t));
     charging_station_ep.port = UIP_HTONS(5683);
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 0);
+    coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 1);
     coap_set_header_uri_path(request, RES_CHARGING_STATUS_URI);
 
     snprintf(buffer_req, sizeof(buffer_req),
-             "chargingPower=%d&energyRenewable=%d&chargingComplete=%d",
-             assigned_power, renewable_energy, charging_complete);
+            "chargingPower=%d,%04d&energyRenewable=%d,%04d&chargingComplete=%d",
+            (int)assigned_power, (int)((assigned_power - (int)assigned_power) * 10000),
+            (int)renewable_energy, (int)((renewable_energy - (int)renewable_energy) * 10000),
+            charging_complete);
 
+    coap_set_header_content_format(request, TEXT_PLAIN);
     coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
     coap_send_request(&request_state, &charging_station_ep, request, response_handler);
 }
 
-void send_grid_status(int power_grid, int grid_direction) {
+void send_grid_status(float power_grid, int grid_direction) {
     static coap_message_t request[1];          
     char buffer_req[32];                          
     static coap_callback_request_state_t request_state;
     
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 0);
+    coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 2);
     coap_endpoint_parse(SMART_GRID_EP, strlen(SMART_GRID_EP), &smart_grid_ep);
 
     coap_set_header_uri_path(request, RES_SMART_GRID_URI);
 
     // Prepare the payload: power value and direction (-1 = input, 1 = output)
     if(grid_direction == 1){
-        snprintf(buffer_req, sizeof(buffer_req), "energy_to_grid_now=%d",  power_grid);
-        LOG_INFO("Sent PUT - Energy to grid now: %d W\n", power_grid);
+        snprintf(buffer_req, sizeof(buffer_req), "power_to_grid_now=%d,%04d",  (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
+        LOG_INFO("Sent PUT - Power to grid now: %d,%04d kW\n", (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
     } else {
-        snprintf(buffer_req, sizeof(buffer_req), "energy_from_grid_now=%d",  power_grid);
-        LOG_INFO("Sent PUT - Energy from grid now: %d W\n", power_grid);
+        snprintf(buffer_req, sizeof(buffer_req), "power_from_grid_now=%d,%04d",  (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
+        LOG_INFO("Sent PUT - Power from grid now: %d,%04d kW\n", (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
     }
 
+    coap_set_header_content_format(request, TEXT_PLAIN);
     coap_set_payload(request, (uint8_t *)buffer_req, strlen(buffer_req));
     coap_send_request(&request_state, &smart_grid_ep, request, response_handler);
 

@@ -4,13 +4,17 @@
 #include <stdint.h>
 
 typedef struct {
-    int carMaxPower;    // in W
-    unsigned int carCapacity;   // in Wh
-    int currentCharge;
-    int desiredCharge;
-    const char* plate;
+    float carMaxPower;      // in kW
+    float carCapacity;      // in kWh
+    float currentCharge;    // in kWh
+    float desiredCharge;    // in kWh
+    const char* plate;      // license plate
 } car_t;
 
+// Returns a random car from the pool
 const car_t* get_random_car(void);
+
+// Returns the next car in the pool (cyclic)
+const car_t* get_next_car(uint8_t id);
 
 #endif // CAR_POOL_H

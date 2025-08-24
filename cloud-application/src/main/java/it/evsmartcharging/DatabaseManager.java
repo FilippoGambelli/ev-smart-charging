@@ -32,16 +32,16 @@ public class DatabaseManager {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    public void insertSolarData(Timestamp timestamp, int Gb, int Gd, int Gr, int H_sun, int T2m, int WS10m) {
+    public void insertSolarData(Timestamp timestamp, Float Gb, Float Gd, Float Gr, Float H_sun, Float T2m, Float WS10m) {
         String sql = "INSERT INTO solarData (timestamp, Gb, Gd, Gr, HSun, T, WS) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setTimestamp(1, timestamp);
-            pstmt.setInt(2, Gb);
-            pstmt.setInt(3, Gd);
-            pstmt.setInt(4, Gr);
-            pstmt.setInt(5, H_sun);
-            pstmt.setInt(6, T2m);
-            pstmt.setInt(7, WS10m);
+            pstmt.setFloat(2, Gb);
+            pstmt.setFloat(3, Gd);
+            pstmt.setFloat(4, Gr);
+            pstmt.setFloat(5, H_sun);
+            pstmt.setFloat(6, T2m);
+            pstmt.setFloat(7, WS10m);
             pstmt.executeUpdate();
             logger.info("Inserted row into solarData: timestamp={}, Gb={}, Gd={}, Gr={}, HSun={}, T={}, WS={}", timestamp, Gb, Gd, Gr, H_sun, T2m, WS10m);
 
@@ -50,13 +50,13 @@ public class DatabaseManager {
         }
     }
 
-    public void insertRealPowerData(Timestamp timestamp, int P) {
-        String sql = "INSERT INTO realPower (timestamp, P_real) VALUES (?, ?)";
+    public void insertRealPowerData(Timestamp timestamp, Float realPower) {
+        String sql = "INSERT INTO realPower (timestamp, realPower) VALUES (?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setTimestamp(1, timestamp);
-            pstmt.setInt(2, P);
+            pstmt.setFloat(2, realPower);
             pstmt.executeUpdate();
-            logger.info("Inserted row into realPower: timestamp={}, P_real={}", timestamp, P);
+            logger.info("Inserted row into realPower: timestamp={}, realPower={}", timestamp, realPower);
 
         } catch (SQLException e) {
             logger.error("Insert failed: {}", e.getMessage(), e);
@@ -64,7 +64,7 @@ public class DatabaseManager {
     }
 
     public int getPriorityByPlate(String plate){
-        String sql = "SELECT priority FROM plate_priority WHERE plate = ?";
+        String sql = "SELECT priority FROM platePriority WHERE plate = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, plate);
             ResultSet rs = pstmt.executeQuery();
@@ -80,7 +80,7 @@ public class DatabaseManager {
     }
 
     public void insertPlatePriorityData(String plate, int priority) {
-        String sql = "INSERT INTO plate_priority (plate, priority) VALUES (?, ?)";
+        String sql = "INSERT INTO platePriority (plate, priority) VALUES (?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, plate);
@@ -91,10 +91,10 @@ public class DatabaseManager {
         }
     }
 
-    // Select all rows from plate_priority
+    // Select all rows from platePriority
     public List<PlatePriority> selectAllPlatePriority() {
         List<PlatePriority> results = new ArrayList<>();
-        String sql = "SELECT plate, priority FROM plate_priority ORDER BY plate ASC";
+        String sql = "SELECT plate, priority FROM platePriority ORDER BY plate ASC";
         try (Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -104,22 +104,23 @@ public class DatabaseManager {
                 results.add(new PlatePriority(plate, priority));
             }
         } catch (SQLException e) {
-            logger.error("Select from plate_priority failed: {}", e.getMessage(), e);
+            logger.error("Select from platePriority failed: {}", e.getMessage(), e);
         }
         return results;
     }
 
-    // Select all rows from realPower ordered by timestamp
-    public List<RealPower> selectAllRealPower() {
+    // Select the last N rows from realPower ordered by timestamp DESC
+    public List<RealPower> selectRealPower(int limit) {
         List<RealPower> results = new ArrayList<>();
-        String sql = "SELECT timestamp, P_real FROM realPower ORDER BY timestamp ASC";
-        try (Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                Timestamp timestamp = rs.getTimestamp("timestamp");
-                Integer pReal = rs.getInt("P_real");
-                results.add(new RealPower(timestamp, pReal));
+        String sql = "SELECT timestamp, realPower FROM realPower ORDER BY timestamp DESC LIMIT ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, limit); // Set the number of records to retrieve
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Timestamp timestamp = rs.getTimestamp("timestamp");
+                    Float realPower = rs.getFloat("realPower");
+                    results.add(new RealPower(timestamp, realPower));
+                }
             }
         } catch (SQLException e) {
             logger.error("Select from realPower failed: {}", e.getMessage(), e);
@@ -127,22 +128,23 @@ public class DatabaseManager {
         return results;
     }
 
-    // Select all rows from solarData ordered by timestamp
-    public List<SolarData> selectAllSolarData() {
+    // Select the last N rows from solarData ordered by timestamp DESC
+    public List<SolarData> selectSolarData(int limit) {
         List<SolarData> results = new ArrayList<>();
-        String sql = "SELECT timestamp, Gb, Gd, Gr, HSun, T, WS FROM solarData ORDER BY timestamp ASC";
-        try (Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                Timestamp timestamp = rs.getTimestamp("timestamp");
-                int gb = rs.getInt("Gb");
-                int gd = rs.getInt("Gd");
-                int gr = rs.getInt("Gr");
-                int hsun = rs.getInt("HSun");
-                int t = rs.getInt("T");
-                int ws = rs.getInt("WS");
-                results.add(new SolarData(timestamp, gb, gd, gr, hsun, t, ws));
+        String sql = "SELECT timestamp, Gb, Gd, Gr, HSun, T, WS FROM solarData ORDER BY timestamp DESC LIMIT ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, limit); // Set the number of records to retrieve
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Timestamp timestamp = rs.getTimestamp("timestamp");
+                    Float gb = rs.getFloat("Gb");
+                    Float gd = rs.getFloat("Gd");
+                    Float gr = rs.getFloat("Gr");
+                    Float hsun = rs.getFloat("HSun");
+                    Float t = rs.getFloat("T");
+                    Float ws = rs.getFloat("WS");
+                    results.add(new SolarData(timestamp, gb, gd, gr, hsun, t, ws));
+                }
             }
         } catch (SQLException e) {
             logger.error("Select from solarData failed: {}", e.getMessage(), e);
@@ -151,16 +153,16 @@ public class DatabaseManager {
     }
 
     public int countTrailingZerosInRealPower() {
-        String sql = "SELECT P_real FROM realPower ORDER BY timestamp ASC";
+        String sql = "SELECT realPower FROM realPower ORDER BY timestamp ASC";
         int trailingZeros = 0;
 
         try (Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql)) {
 
             // Read all values into a list
-            List<Integer> pValues = new ArrayList<>();
+            List<Float> pValues = new ArrayList<>();
             while (rs.next()) {
-                pValues.add(rs.getInt("P_real"));
+                pValues.add(rs.getFloat("realPower"));
             }
 
             // Count trailing zeros starting from the end

@@ -22,8 +22,8 @@
   #define LED_SINGLE_OFF(led) leds_single_off(led)
 #endif
 
-static int charging_power = 0;      // in Watts
-static int energy_renewable = 0;    // in Watts
+static float charging_power = 0;      // in Watts
+static float energy_renewable = 0;    // in Watts
 static bool charging_complete = false;
 
 // Forward declaration of the PUT handler
@@ -65,14 +65,15 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
 
     // Check if all parameters were received
     if(params_received == 3) {
-        LOG_INFO("Received PUT - Charging status - chargingPower=%d | energyRenewable=%d | chargingComplete=%d\n",
-            charging_power, energy_renewable, charging_complete);
+        LOG_INFO("Received PUT - Charging status - chargingPower: %d,%04d kW | energyRenewable: %d,%04d kW | chargingComplete: %s\n",
+            (int)charging_power, (int)((charging_power - (int)charging_power) * 10000),
+            (int)energy_renewable, (int)((energy_renewable - (int)energy_renewable) * 10000),
+            charging_complete ? "true" : "false");
         coap_set_status_code(response, CHANGED_2_04);
     } else {
         LOG_INFO("Missing parameters, device not updated\n");
         coap_set_status_code(response, BAD_REQUEST_4_00);
     }
-
 
     LED_OFF(LEDS_ALL);
     LED_SINGLE_OFF(LEDS_YELLOW);

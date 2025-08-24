@@ -56,7 +56,7 @@ public class UserInterface {
     }
 
     public void viewStatusChargingStations() {
-        System.out.println("Charging Station Status");
+        System.out.println("\nCharging Station Status\n");
         try {
             // Create the CoAP client with the IPv6 address of your device
             String uri = Config.CENTRAL_NODE_EP + "/registration/charger";
@@ -72,29 +72,33 @@ public class UserInterface {
                 JsonArray chargers = JsonParser.parseString(content).getAsJsonArray();
 
                 // Print table header
-                System.out.printf("%-3s %-6s %-6s %-6s %-5s %-5s %-6s %-5s %-6s %-6s %-8s %-4s %-8s %-8s %-6s\n",
-                    "ID", "maxP", "carR", "isCh", "aP", "gP", "vMaxP", "vCap", "socC", "socT", "plate", "Prio", "estDur", "remT", "remE");
-
+                System.out.printf(
+                    "%-3s %-8s %-6s %-6s %-8s %-8s %-8s %-8s %-8s %-8s %-10s %-6s %-8s %-8s %-8s%n",
+                    "ID", "maxP", "carR", "isCh", "aP", "gP", "vMaxP", "vCap", "socC", "socT", "plate", "prio", "estDur", "remT", "remE"
+                );
+                
                 // Iterate over each charging station and print row
                 for (JsonElement elem : chargers) {
+                    System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
                     JsonObject obj = elem.getAsJsonObject();
 
-                    System.out.printf("%-3d %-6d %-6s %-6s %-5d %-5d %-6d %-5d %-6d %-6d %-8s %-4d %-8d %-8d %-6d\n",
+                    System.out.printf(
+                        "%-3d %-8.2f %-6s %-6s %-8.2f %-8.2f %-8.2f %-8.2f %-8.2f %-8.2f %-10s %-6d %-8d %-8d %-8.2f%n",
                         obj.get("id").getAsInt(),
-                        obj.get("maxP").getAsInt(),
+                        obj.get("maxP").getAsFloat(),
                         obj.get("carReg").getAsBoolean() ? "true" : "false",
                         obj.get("isCh").getAsBoolean() ? "true" : "false",
-                        obj.get("aP").getAsInt(),
-                        obj.get("gP").getAsInt(),
-                        obj.get("vMaxP").getAsInt(),
-                        obj.get("vCap").getAsInt(),
-                        obj.get("socCur").getAsInt(),
-                        obj.get("socTgt").getAsInt(),
+                        obj.get("aP").getAsFloat(),
+                        obj.get("gP").getAsFloat(),
+                        obj.get("vMaxP").getAsFloat(),
+                        obj.get("vCap").getAsFloat(),
+                        obj.get("socCur").getAsFloat(),
+                        obj.get("socTgt").getAsFloat(),
                         obj.get("plate").getAsString(),
                         obj.get("prio").getAsInt(),
                         obj.get("estDur").getAsInt(),
                         obj.get("remT").getAsInt(),
-                        obj.get("remE").getAsInt()
+                        obj.get("remE").getAsFloat()
                     );
                 }
 
@@ -111,10 +115,10 @@ public class UserInterface {
     }
 
     public void viewStatusSmartGrid() {
-        System.out.println("Smart Grid Status");
+        System.out.println("\nSmart Grid Status");
         try {
             // Create the CoAP client with the IPv6 address of your device
-            String uri = Config.SMART_GRID_EP + "/res_status_power_grid";
+            String uri = Config.SMART_GRID_EP + "/status_smart_grid";
             CoapClient client = new CoapClient(uri);
 
             // Perform GET request
@@ -126,23 +130,19 @@ public class UserInterface {
                 // Parse the JSON response
                 JsonObject obj = JsonParser.parseString(content).getAsJsonObject();
 
-                int energyFromGridNow = obj.get("energy_from_grid").getAsInt();
-                int energyToGridNow = obj.get("energy_to_grid").getAsInt();
-                int energyFromGridTotal = obj.get("energy_from_grid_total").getAsInt();
-                int energyToGridTotal = obj.get("energy_to_grid_total").getAsInt();
+                Float powerFromGridNow = obj.get("power_from_grid").getAsFloat();
+                Float powerToGridNow = obj.get("power_to_grid").getAsFloat();
+                Float energyFromGridTotal = obj.get("energy_from_grid_total").getAsFloat();
+                Float energyToGridTotal = obj.get("energy_to_grid_total").getAsFloat();
 
-                // Economic calculations
-                float costNow = energyFromGridNow * COST_PER_KWH_FROM_GRID / 1000;
-                float earningNow = energyToGridNow * EARNING_PER_KWH_TO_GRID / 1000;
-
-                float totalCost = energyFromGridTotal * COST_PER_KWH_FROM_GRID / 1000;
-                float totalEarning = energyToGridTotal * EARNING_PER_KWH_TO_GRID / 1000;
-                float totalBalance = totalEarning - totalCost;
+                Float totalCost = energyFromGridTotal * COST_PER_KWH_FROM_GRID;
+                Float totalEarning = energyToGridTotal * EARNING_PER_KWH_TO_GRID;
+                Float totalBalance = totalEarning - totalCost;
 
                 // Print current status
                 System.out.println("Current status:");
-                System.out.println(" - Energy from grid now: " + energyFromGridNow + " kWh (Cost: €" + String.format("%.2f", costNow) + ")");
-                System.out.println(" - Energy to grid now: " + energyToGridNow + " kWh (Earning: €" + String.format("%.2f", earningNow) + ")");
+                System.out.println(" - Power from grid now: " + powerFromGridNow + " kW");
+                System.out.println(" - Power to grid now: " + powerToGridNow + " kW");
 
                 // Print total status
                 System.out.println("Total status:");
@@ -174,7 +174,7 @@ public class UserInterface {
         }
     }
 
-    public void viewStoredData(){
+    public void viewStoredData() {
         System.out.println("\nWhat data would you like to see?");
         System.out.println("1 - Real power data");
         System.out.println("2 - Solar irradiation data");
@@ -184,22 +184,32 @@ public class UserInterface {
         String choice = scanner.nextLine().trim();
 
         if (choice.equals("1")) {
-            // Get all real power data and print
-            List<RealPower> realPowerData = databaseManager.selectAllRealPower();
+            // Ask how many records to display
+            System.out.print("How many real power records would you like to see? ");
+            int limit = Integer.parseInt(scanner.nextLine().trim());
+
+            List<RealPower> realPowerData = databaseManager.selectRealPower(limit);
             System.out.println("\n--- Real Power Data ---");
             for (RealPower rp : realPowerData) {
-                System.out.printf("Timestamp: %s | P_real: %d\n", rp.getTimestamp(), rp.getPReal());
+                System.out.printf("Timestamp: %s | Real power: %.4f\n", rp.getTimestamp(), rp.getPReal());
             }
+
         } else if (choice.equals("2")) {
-            // Get all solar irradiation data and print
-            List<SolarData> solarDataList = databaseManager.selectAllSolarData();
+            // Ask how many records to display
+            System.out.print("How many solar irradiation records would you like to see? ");
+            int limit = Integer.parseInt(scanner.nextLine().trim());
+
+            List<SolarData> solarDataList = databaseManager.selectSolarData(limit);
             System.out.println("\n--- Solar Irradiation Data ---");
             for (SolarData sd : solarDataList) {
-                System.out.printf("Timestamp: %s | Gb: %d | Gd: %d | Gr: %d | HSun: %d | T: %d | WS: %d\n",
-                        sd.getTimestamp(), sd.getGb(), sd.getGd(), sd.getGr(), sd.getHSun(), sd.getT(), sd.getWS());
+                System.out.printf(
+                    "Timestamp: %s | Gb: %.4f | Gd: %.4f | Gr: %.4f | HSun: %.4f | T: %.4f | WS: %.4f\n",
+                    sd.getTimestamp(), sd.getGb(), sd.getGd(), sd.getGr(),
+                    sd.getHSun(), sd.getT(), sd.getWS()
+                );
             }
+
         } else if (choice.equals("3")) {
-            // Get all plate priority data and print
             List<PlatePriority> platePriorities = databaseManager.selectAllPlatePriority();
             System.out.println("\n--- Plate Priority Data ---");
             for (PlatePriority pp : platePriorities) {
@@ -250,11 +260,11 @@ public class UserInterface {
         if (confirm.equals("y")) {
             try {
                 // Create the CoAP client with the IPv6 address of your device
-                String uri = Config.CENTRAL_NODE_EP + "/res_ml_pred_interval";
+                String uri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
                 CoapClient client = new CoapClient(uri);
 
                 // Prepare the request payload in key=value format as expected by the server
-                String payload = "runMLModel=1&mlPredInterval=" + seconds;
+                String payload = "mlPredInterval=" + seconds;
 
                 // Content-Format 4 = application/x-www-form-urlencoded
                 CoapResponse response = client.put(payload, 4);

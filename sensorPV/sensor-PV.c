@@ -30,9 +30,9 @@ PROCESS_THREAD(sensorPV, ev, data){
     LOG_INFO("Starting Sensor PV\n");
 
     // Activate CoAP resources
-    coap_activate_resource(&res_solar_obs, "res_solar_obs");
-    coap_activate_resource(&res_real_power_obs, "res_real_power_obs");
-    coap_activate_resource(&res_pred_power, "res_pred_power");
+    coap_activate_resource(&res_solar_obs, "solar_obs");
+    coap_activate_resource(&res_real_power_obs, "real_power_obs");
+    coap_activate_resource(&res_pred_power, "pred_power");
 
     LOG_INFO("CoAP resources activated\n");
 

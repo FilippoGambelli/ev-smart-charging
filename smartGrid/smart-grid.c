@@ -7,7 +7,7 @@
 #define LOG_LEVEL LOG_LEVEL_APP
 
 // CoAP resources
-extern coap_resource_t res_status_power_grid;
+extern coap_resource_t res_status_smart_grid;
 
 PROCESS(smart_grid, "Smart Grid");
 AUTOSTART_PROCESSES(&smart_grid);
@@ -19,7 +19,7 @@ PROCESS_THREAD(smart_grid, ev, data){
     LOG_INFO("Starting Smart Grid\n");
 
     // Activate CoAP resources
-    coap_activate_resource(&res_status_power_grid, "res_status_power_grid");
+    coap_activate_resource(&res_status_smart_grid, "status_smart_grid");
 
     LOG_INFO("CoAP resources activated\n");
 

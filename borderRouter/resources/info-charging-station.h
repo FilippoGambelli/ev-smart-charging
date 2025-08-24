@@ -7,25 +7,25 @@
 struct charging_station {
     uint8_t id;                                 // Device ID
     uip_ipaddr_t addr;                          // Device IPv6 address
-    int max_charging_power;                     // Maximum charging power in W
+    float max_charging_power;                   // Maximum charging power in W
 
     bool car_registered;                        // true => car registered , false => no car registered
 
     bool is_charging;                           // true => charging , false => no charging
-    int assigned_power;                         // Power assigned to the device (W)
-    int grid_power_used;                        // Power from the grid (W)
+    float assigned_power;                       // Power assigned to the device (W)
+    float grid_power_used;                      // Power from the grid (W)
 
-    int vehicle_max_charging_power;             // Maximum charging power supported by the vehicle (W)
-    int vehicle_max_capacity;                   // Vehicle battery capacity (Wh)
-    float soc_current;                            // Current state of charge (%)
-    int soc_target;                             // Desired state of charge (%)
+    float vehicle_max_charging_power;           // Maximum charging power supported by the vehicle (W)
+    float vehicle_max_capacity;                 // Vehicle battery capacity (Wh)
+    float soc_current;                          // Current state of charge (%)
+    float soc_target;                           // Desired state of charge (%)
     char license_plate[12];                     // Vehicle license plate    
     
     int priority;                               // Priority flag (1 for priority, 0 for standard)
 
     int estimated_charging_duration;            // Expected parking time (seconds)
     int remaining_time_seconds;                 // Remaining time (seconds)
-    int remaining_energy;                       // Remaining energy to charge (Wh)
+    float remaining_energy;                     // Remaining energy to charge (Wh)
 };
 
 

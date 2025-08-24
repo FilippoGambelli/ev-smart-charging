@@ -172,9 +172,10 @@
       <skin>org.contikios.cooja.plugins.skins.GridVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
+      <skin>org.contikios.cooja.plugins.skins.LEDVisualizerSkin</skin>
       <viewport>5.015078641527055 0.0 0.0 5.015078641527055 17.929577732704715 -103.74655142572567</viewport>
     </plugin_config>
-    <bounds x="1" y="1" height="400" width="400" z="2" />
+    <bounds x="1" y="1" height="400" width="400" z="1" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.LogListener
@@ -183,7 +184,7 @@
       <formatted_time />
       <coloring />
     </plugin_config>
-    <bounds x="400" y="160" height="497" width="1448" />
+    <bounds x="400" y="107" height="714" width="1448" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.TimeLine
@@ -199,7 +200,7 @@
       <showLEDs />
       <zoomfactor>500.0</zoomfactor>
     </plugin_config>
-    <bounds x="0" y="657" height="166" width="1848" z="4" />
+    <bounds x="0" y="0" height="823" width="1848" z="-1" minimized="true" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.Notes
@@ -210,7 +211,7 @@ ID 3 -&gt; Smart grid
 ID 4, ID 5, ID 6 -&gt; Charging station</notes>
       <decorations>true</decorations>
     </plugin_config>
-    <bounds x="400" y="0" height="160" width="1448" z="3" />
+    <bounds x="400" y="0" height="106" width="1448" z="2" />
   </plugin>
   <plugin>
     org.contikios.cooja.serialsocket.SerialSocketServer
@@ -219,6 +220,6 @@ ID 4, ID 5, ID 6 -&gt; Charging station</notes>
       <port>60001</port>
       <bound>true</bound>
     </plugin_config>
-    <bounds x="20" y="450" height="116" width="362" z="1" />
+    <bounds x="20" y="450" height="116" width="362" z="3" />
   </plugin>
 </simconf>

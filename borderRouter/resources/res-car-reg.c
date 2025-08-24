@@ -53,10 +53,10 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
     size_t len = 0;
     const char *text = NULL;
 
-    int vehicle_max_power = 0;
-    int vehicle_max_capacity = 0;
+    float vehicle_max_power = 0;
+    float vehicle_max_capacity = 0;
     float soc_current = 0.0;
-    int soc_target = 0;
+    float soc_target = 0;
     char plate[12] = "";
 
     int param_count = 0;
@@ -66,6 +66,18 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
         if (strcmp(text, "disconnection") == 0) {
             EV_charger[idx].car_registered = false;
             EV_charger[idx].is_charging = false;
+            EV_charger[idx].assigned_power = 0;
+            EV_charger[idx].grid_power_used = 0;
+            EV_charger[idx].vehicle_max_charging_power = 0;
+            EV_charger[idx].vehicle_max_capacity = 0;
+            EV_charger[idx].soc_current = 0;
+            EV_charger[idx].soc_target = 0;
+            EV_charger[idx].license_plate[0] = '\0';
+            EV_charger[idx].priority = 0;
+            EV_charger[idx].estimated_charging_duration = 0;
+            EV_charger[idx].remaining_time_seconds = 0;
+            EV_charger[idx].remaining_energy = 0;
+
             coap_set_status_code(response, CHANGED_2_04);
             vehicle_count--;
 
@@ -79,14 +91,14 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
     // carMaxW
     len = coap_get_post_variable(request, "carMaxPower", &text);
     if (len > 0) {
-        vehicle_max_power = atoi(text);
+        vehicle_max_power = strtof(text, NULL);
         param_count++;
     }
 
     // carMaxCapacity
     len = coap_get_post_variable(request, "carMaxCapacity", &text);
     if (len > 0) {
-        vehicle_max_capacity = atoi(text);
+        vehicle_max_capacity = strtof(text, NULL);
         param_count++;
     }
 
@@ -100,7 +112,7 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
     // desiredCharge
     len = coap_get_post_variable(request, "desiredCharge", &text);
     if (len > 0) {
-        soc_target = atoi(text);
+        soc_target = strtof(text, NULL);
         param_count++;
     }
 
@@ -130,7 +142,7 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
         static char query[32];
         static coap_callback_request_state_t request_state;
 
-        coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+        coap_init_message(request, COAP_TYPE_CON, COAP_GET, 3);
         coap_set_header_uri_path(request, "plate");
         
         snprintf(query, sizeof(query), "plate=%s", plate);
@@ -201,13 +213,18 @@ static void cloud_response_handler(coap_callback_request_state_t *callback_state
     // Estimated charging duration in seconds
     float estimated_charging_duration = charging_duration * factor;
 
-    EV_charger[EV_charger_last_idx].estimated_charging_duration = (int)estimated_charging_duration;
-    EV_charger[EV_charger_last_idx].remaining_time_seconds = (int)estimated_charging_duration;
+    EV_charger[EV_charger_last_idx].estimated_charging_duration = estimated_charging_duration;
+    EV_charger[EV_charger_last_idx].remaining_time_seconds = estimated_charging_duration;
 
-    LOG_INFO("Vehicle registered - ID: %d | Vehicle Max Power: %d W | Vehicle Capacity: %d Wh | SOC: %d.%d %% | Target SOC: %d %% | Plate: %s | Priority: %d | Remaining Charging Duration: %d s\n",
-    EV_charger[EV_charger_last_idx].id, EV_charger[EV_charger_last_idx].vehicle_max_charging_power, EV_charger[EV_charger_last_idx].vehicle_max_capacity,
-    (int)EV_charger[EV_charger_last_idx].soc_current, (int)((EV_charger[EV_charger_last_idx].soc_current - (int)EV_charger[EV_charger_last_idx].soc_current) * 10),
-    EV_charger[EV_charger_last_idx].soc_target, EV_charger[EV_charger_last_idx].license_plate, EV_charger[EV_charger_last_idx].priority, EV_charger[EV_charger_last_idx].remaining_time_seconds);
+    LOG_INFO("Vehicle registered - ID: %d | Vehicle Max Power: %d,%04d kW | Vehicle Capacity: %d,%04d kWh | SOC: %d,%02d %% | Target SOC: %d,%02d %% | Plate: %s | Priority: %d | Remaining Charging Duration: %d s\n",
+        EV_charger[EV_charger_last_idx].id, 
+        (int)EV_charger[EV_charger_last_idx].vehicle_max_charging_power, (int)((EV_charger[EV_charger_last_idx].vehicle_max_charging_power - (int)EV_charger[EV_charger_last_idx].vehicle_max_charging_power) * 10000),
+        (int)EV_charger[EV_charger_last_idx].vehicle_max_capacity, (int)((EV_charger[EV_charger_last_idx].vehicle_max_capacity - (int)EV_charger[EV_charger_last_idx].vehicle_max_capacity) * 10000),
+        (int)EV_charger[EV_charger_last_idx].soc_current, (int)((EV_charger[EV_charger_last_idx].soc_current - (int)EV_charger[EV_charger_last_idx].soc_current) * 100),
+        (int)EV_charger[EV_charger_last_idx].soc_target, (int)((EV_charger[EV_charger_last_idx].soc_target - (int)EV_charger[EV_charger_last_idx].soc_target) * 100),
+        EV_charger[EV_charger_last_idx].license_plate, 
+        EV_charger[EV_charger_last_idx].priority, 
+        EV_charger[EV_charger_last_idx].remaining_time_seconds);
 
 
     // New vehicle registered, update charging stations

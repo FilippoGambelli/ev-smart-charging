@@ -49,7 +49,7 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
     len = coap_get_post_variable(request, "maxPower", &text);
 
     if (len > 0) {
-        int maxW_value = atoi(text);
+        float maxW_value = strtof(text, NULL);
         EV_charger[idx].max_charging_power = maxW_value; // Store the maximum charging power
         EV_charger[idx].car_registered = false;
 
@@ -59,15 +59,14 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
         coap_set_payload(response, buffer, offset_buf);
         coap_set_status_code(response, CREATED_2_01); // HTTP 201 Created
 
-        LOG_INFO("Charger registered with ID %d | Max Power: %d W\n", device_id, maxW_value);
+        LOG_INFO("Charger registered with ID %d | Max Power: %d,%04d kW\n", device_id, (int)maxW_value, (int)((maxW_value - (int)maxW_value) * 10000));
     } else {
         LOG_INFO("Charger registered with ID %d, Max Power not specified\n", device_id);
         coap_set_status_code(response, BAD_REQUEST_4_00); // HTTP 400 Bad Request
     }
 }
 
-static void res_register_get_handler(coap_message_t *request, coap_message_t *response,
-                                    uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
+static void res_register_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
     int pos = 0;
 
     // Start the JSON array
@@ -84,15 +83,22 @@ static void res_register_get_handler(coap_message_t *request, coap_message_t *re
 
         // Append JSON object for the current charging station
         pos += snprintf((char *)buffer + pos, preferred_size - pos,
-            "{\"id\":%u,\"maxP\":%d,\"carReg\":%s,\"isCh\":%s,\"aP\":%d,\"gP\":%d,\"vMaxP\":%d,"
-            "\"vCap\":%u,\"socCur\":%d.%d,\"socTgt\":%d,\"plate\":\"%s\",\"prio\":%d,"
-            "\"estDur\":%d,\"remT\":%d,\"remE\":%d}",
-            cs->id, cs->max_charging_power, cs->car_registered ? "true" : "false",
-            cs->is_charging ? "true" : "false", cs->assigned_power, cs->grid_power_used,
-            cs->vehicle_max_charging_power, cs->vehicle_max_capacity,
-            (int)cs->soc_current, (int)((cs->soc_current - (int)cs->soc_current) * 10),
-            cs->soc_target, cs->license_plate, cs->priority, cs->estimated_charging_duration,
-            cs->remaining_time_seconds, cs->remaining_energy);
+            "{\"id\":%u,\"maxP\":%d.%04d,\"carReg\":%s,\"isCh\":%s,\"aP\":%d.%04d,\"gP\":%d.%04d,\"vMaxP\":%d.%04d,"
+            "\"vCap\":%d.%04d,\"socCur\":%d.%04d,\"socTgt\":%d.%04d,\"plate\":\"%s\",\"prio\":%d,"
+            "\"estDur\":%d,\"remT\":%d,\"remE\":%d.%04d}",
+            cs->id,
+            (int)cs->max_charging_power, (int)((cs->max_charging_power - (int)cs->max_charging_power) * 10000),
+            cs->car_registered ? "true" : "false",
+            cs->is_charging ? "true" : "false", 
+            (int)cs->assigned_power, (int)((cs->assigned_power - (int)cs->assigned_power) * 10000),
+            (int)cs->grid_power_used, (int)((cs->grid_power_used - (int)cs->grid_power_used) * 10000),
+            (int)cs->vehicle_max_charging_power, (int)((cs->vehicle_max_charging_power - (int)cs->vehicle_max_charging_power) * 10000),
+            (int)cs->vehicle_max_capacity, (int)((cs->vehicle_max_capacity - (int)cs->vehicle_max_capacity) * 10000),
+            (int)cs->soc_current, (int)((cs->soc_current - (int)cs->soc_current) * 10000),
+            (int)cs->soc_target, (int)((cs->soc_target - (int)cs->soc_target) * 10000),
+            cs->license_plate, cs->priority, cs->estimated_charging_duration,
+            cs->remaining_time_seconds,
+            (int)cs->remaining_energy, (int)((cs->remaining_energy - (int)cs->remaining_energy) * 10000));
 
 
         // Stop writing if buffer space is exhausted
@@ -114,8 +120,6 @@ static void res_register_get_handler(coap_message_t *request, coap_message_t *re
 
     LOG_INFO("Received GET - Charger Registration - All Chargers Info Sent\n");
 }
-
-
 
 // Register a device by storing its IP address and assigning an ID
 static uint8_t register_device(const uip_ipaddr_t *src_addr) {

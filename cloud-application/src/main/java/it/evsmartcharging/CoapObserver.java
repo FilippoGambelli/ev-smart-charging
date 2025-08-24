@@ -1,8 +1,8 @@
 package it.evsmartcharging;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import org.eclipse.californium.core.CoapClient;
@@ -49,7 +49,7 @@ public class CoapObserver {
 
     // Start observing solar data
     public void startObservationSolarData(){
-        String uri = Config.SENSOR_PV_EP + "/res_solar_obs";
+        String uri = Config.SENSOR_PV_EP + "/solar_obs";
         logger.info("Initializing CoAP client for solar data at {}", uri);
 
         CoapClient client = new CoapClient(uri);
@@ -59,7 +59,6 @@ public class CoapObserver {
             @Override
             public void onLoad(CoapResponse response) {
                 String content = response.getResponseText();
-                logger.info("Received solar observation: {}", content);
 
                 try {
                     // Parse the JSON response
@@ -75,28 +74,26 @@ public class CoapObserver {
                     }
 
                     // Parse solar parameters, default to null if missing
-                    Integer Gb = obj.has("Gb") && !obj.get("Gb").isJsonNull()
-                            ? obj.get("Gb").getAsInt() : null;
+                    Float Gb = obj.has("Gb") && !obj.get("Gb").isJsonNull()
+                            ? obj.get("Gb").getAsFloat() : null;
 
-                    Integer Gd = obj.has("Gd") && !obj.get("Gd").isJsonNull()
-                            ? obj.get("Gd").getAsInt() : null;
+                    Float Gd = obj.has("Gd") && !obj.get("Gd").isJsonNull()
+                            ? obj.get("Gd").getAsFloat() : null;
 
-                    Integer Gr = obj.has("Gr") && !obj.get("Gr").isJsonNull()
-                            ? obj.get("Gr").getAsInt() : null;
+                    Float Gr = obj.has("Gr") && !obj.get("Gr").isJsonNull()
+                            ? obj.get("Gr").getAsFloat() : null;
 
-                    Integer HSun = obj.has("HSun") && !obj.get("HSun").isJsonNull()
-                            ? obj.get("HSun").getAsInt() : null;
+                    Float HSun = obj.has("HSun") && !obj.get("HSun").isJsonNull()
+                            ? obj.get("HSun").getAsFloat() : null;
 
-                    Integer T = obj.has("T") && !obj.get("T").isJsonNull()
-                            ? obj.get("T").getAsInt() : null;
+                    Float T = obj.has("T") && !obj.get("T").isJsonNull()
+                            ? obj.get("T").getAsFloat() : null;
 
-                    Integer WS = obj.has("WS") && !obj.get("WS").isJsonNull()
-                            ? obj.get("WS").getAsInt() : null;
+                    Float WS = obj.has("WS") && !obj.get("WS").isJsonNull()
+                            ? obj.get("WS").getAsFloat() : null;
 
                     // Insert the parsed data into the database
                     databaseConnection.insertSolarData(timestamp, Gb, Gd, Gr, HSun, T, WS);
-                    logger.info("Inserted solar data into database: timestamp={}, Gb={}, Gd={}, Gr={}, HSun={}, T={}, WS={}",
-                            timestamp, Gb, Gd, Gr, HSun, T, WS);
 
                 } catch (Exception e) {
                     logger.error("Error parsing JSON for solar data: {}", e.getMessage(), e);
@@ -109,14 +106,14 @@ public class CoapObserver {
             }
         });
 
-        logger.info("Started observation for /res_solar_obs");
+        logger.info("Started observation for /solar_obs");
     }
 
     // Stop observing solar data
     public void stopObservationSolarData(){
         if (relationSolarData != null) {
             relationSolarData.proactiveCancel();
-            logger.info("Observation canceled for /res_solar_obs");
+            logger.info("Observation canceled for /solar_obs");
             relationSolarData = null;
         } else {
             logger.warn("No active solar observation to cancel");
@@ -125,7 +122,7 @@ public class CoapObserver {
 
     // Start observing real power data
     public void startObservationRealPowerData() {
-        String uri = Config.SENSOR_PV_EP + "/res_real_power_obs";
+        String uri = Config.SENSOR_PV_EP + "/real_power_obs";
         logger.info("Initializing CoAP client for real power data at {}", uri);
 
         CoapClient client = new CoapClient(uri);
@@ -135,13 +132,12 @@ public class CoapObserver {
             @Override
             public void onLoad(CoapResponse response) {
                 String content = response.getResponseText();
-                logger.info("Received real power observation: {}", content);
 
                 try {
                     // Example content format: "timestamp=1692541800&realPV=123.45"
                     String[] params = content.split("&");
                     Timestamp timestamp = null;
-                    Integer realPV = null;
+                    Float realPV = null;
 
                     // Parse key-value pairs from response
                     for (String param : params) {
@@ -153,14 +149,14 @@ public class CoapObserver {
 
                         switch (key) {
                             case "timestamp":
-                                // Convert epoch seconds to LocalDateTime
                                 long epochSeconds = Long.parseLong(value);
-                                LocalDateTime ldt = LocalDateTime.ofEpochSecond(epochSeconds, 0, ZoneOffset.UTC);
-                                timestamp = Timestamp.valueOf(ldt);
+                                Instant instant = Instant.ofEpochSecond(epochSeconds);
+                                timestamp = Timestamp.from(instant);
+
                                 break;
 
                             case "realPV":
-                                realPV = Integer.parseInt(value);
+                                realPV = Float.parseFloat(value);
                                 break;
 
                             default:
@@ -172,19 +168,18 @@ public class CoapObserver {
                     // Insert valid data into the database
                     if (timestamp != null && realPV != null) {
                         databaseConnection.insertRealPowerData(timestamp, realPV);
-                        logger.info("Inserted real power data into database: timestamp={}, realPV={}", timestamp, realPV);
                     } else {
                         logger.warn("Incomplete real power data received: {}", content);
                     }
 
-                    if(realPV > 0){
+                    if(!ML_RUNNING && realPV > 0){
                         ML_RUNNING = true;
                         try {
-                            String mlUri = Config.CENTRAL_NODE_EP + "/res_ml_pred_interval";
+                            String mlUri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
                             CoapClient mlClient = new CoapClient(mlUri);
 
                             // Prepare payload
-                            String payload = "runMLModel=1&mlPredInterval=";
+                            String payload = "runMLModel=1";
                             logger.info("Sending PUT to {} with payload: {}", mlUri, payload);
 
                             // Execute PUT
@@ -202,11 +197,11 @@ public class CoapObserver {
                     else if (ML_RUNNING && databaseConnection.countTrailingZerosInRealPower() >= 360) {       // 30 minutes of zeros
                         ML_RUNNING = false;
                         try {
-                            String mlUri = Config.CENTRAL_NODE_EP + "/res_ml_pred_interval";
+                            String mlUri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
                             CoapClient mlClient = new CoapClient(mlUri);
 
                             // Prepare payload
-                            String payload = "runMLModel=0&mlPredInterval=";
+                            String payload = "runMLModel=0";
                             logger.info("Sending PUT to {} with payload: {}", mlUri, payload);
 
                             // Execute PUT
@@ -228,18 +223,18 @@ public class CoapObserver {
 
             @Override
             public void onError() {
-                logger.error("Error during observation for /res_real_power_obs!");
+                logger.error("Error during observation for /real_power_obs!");
             }
         });
 
-        logger.info("Started observation for /res_real_power_obs");
+        logger.info("Started observation for /real_power_obs");
     }
 
     // Stop observing real power data
     public void stopObservationRealPowerData(){
         if (relationRealPowerData != null) {
             relationRealPowerData.proactiveCancel();
-            logger.info("Observation canceled for /res_real_power_obs");
+            logger.info("Observation canceled for /real_power_obs");
             relationRealPowerData = null;
         } else {
             logger.warn("No active real power observation to cancel");

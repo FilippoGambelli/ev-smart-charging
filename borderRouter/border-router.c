@@ -13,12 +13,12 @@
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
 
-#define RES_POWER_OBS_URI "/res_real_power_obs"  // Resource on server to observe
+#define RES_POWER_OBS_URI "real_power_obs"  // Resource on server to observe
 
 // Real dichiaration of extern variables
-int power_PV_real;
+float power_PV_real;
 int power_PV_trend;
-int power_PV_pred;
+float power_PV_pred;
 
 static coap_observee_t *obs = NULL;  // Keeps track of the current observation
 
@@ -39,7 +39,7 @@ PROCESS_THREAD(border_router, ev, data) {
 
     coap_activate_resource(&res_charger_reg, "registration/charger");
     coap_activate_resource(&res_car_reg, "registration/car");
-    coap_activate_resource(&res_ml_pred_interval, "res_ml_pred_interval");
+    coap_activate_resource(&res_ml_pred_interval, "ml_pred_interval");
 
     LOG_INFO("CoAP resources activated\n");
 
@@ -64,15 +64,13 @@ PROCESS_THREAD(border_router, ev, data) {
         PROCESS_WAIT_EVENT();
 
         if(ev == PROCESS_EVENT_TIMER && data == &e_timer_ml_pred){
-            
-            coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
-            coap_set_header_uri_path(request, "/res_pred_power");
-
-            coap_send_request(&request_state, &sensor_pv_ep, request, response_handler_pred_power);
-
-            LOG_INFO("Sent GET request to obtain Predicted Power\n");
-
-            etimer_set(&e_timer_ml_pred, CLOCK_SECOND * ml_pred_interval);
+            if(run_ml_model) {
+                coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+                coap_set_header_uri_path(request, "pred_power");
+                coap_send_request(&request_state, &sensor_pv_ep, request, response_handler_pred_power);
+                LOG_INFO("Sent GET request to obtain Predicted Power\n");
+                etimer_set(&e_timer_ml_pred, CLOCK_SECOND * ml_pred_interval);
+            }
         }
     }
 
@@ -97,10 +95,10 @@ static void response_handler_pred_power(coap_callback_request_state_t *callback_
             ptr = strstr((char *)payload, "firstPrediction=");
             if(ptr != NULL) {
                 ptr += strlen("firstPrediction=");
-                power_PV_pred = atoi(ptr);      // in W
+                power_PV_pred = strtof(ptr, NULL)/1000;      // in W
             }
 
-            LOG_INFO("Received Predicted power - trend: %d | firstPrediction: %d W\n", power_PV_trend, power_PV_pred);
+            LOG_INFO("Received Predicted power - Trend: %d | First prediction: %d,%04d kW\n", power_PV_trend, (int)power_PV_pred, (int)((power_PV_pred - (int)power_PV_pred) * 10000));
 
             power_manager_update_charging_station();
         }
@@ -123,7 +121,7 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
                 char *ptr = strstr((char *)payload, "realPV=");
                 if(ptr != NULL) {
                     ptr += strlen("realPV=");
-                    power_PV_real = atoi(ptr);  // In W
+                    power_PV_real = strtof(ptr, NULL)/1000;  // In W
                 }
                 
                 time_t timestamp;
@@ -140,8 +138,8 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
                     power_manager_update_charging_station();
                 }
                 
-                LOG_INFO("NOTIFICATION OK - Timestamp: %02d-%02d-%04d %02d:%02d:%02d | Real PV: %d W\n",
-                    tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900, tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec, power_PV_real);
+                LOG_INFO("NOTIFICATION OK - Timestamp: %02d-%02d-%04d %02d:%02d:%02d | Real PV: %d,%04d kW\n",
+                    tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900, tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec, (int)power_PV_real, (int)((power_PV_real - (int)power_PV_real) * 10000));
             }
             break;
 
@@ -151,7 +149,7 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
                 char *ptr = strstr((char *)payload, "realPV=");
                 if(ptr != NULL) {
                     ptr += strlen("realPV=");
-                    power_PV_real = atoi(ptr);  // In W
+                    power_PV_real = strtof(ptr, NULL)/1000;  // In W
                 }
                 
                 time_t timestamp;
@@ -168,8 +166,8 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
                     power_manager_update_charging_station();
                 }
                 
-                LOG_INFO("OBSERVE OK - Timestamp: %02d-%02d-%04d %02d:%02d:%02d | Real PV: %d W\n",
-                    tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900, tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec, power_PV_real);
+                LOG_INFO("OBSERVE OK - Timestamp: %02d-%02d-%04d %02d:%02d:%02d | Real PV: %d,%04d kW\n",
+                    tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900, tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec, (int)power_PV_real, (int)((power_PV_real - (int)power_PV_real) * 10000));
             }
             break;
 

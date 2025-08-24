@@ -25,7 +25,7 @@ EVENT_RESOURCE(res_real_power_obs,
 
 /* Event handler is called when the resource state changes*/
 static void res_event_handler(void) {
-    power_data_counter++;
+    power_data_counter = (power_data_counter + 1) % POWER_DATA_TIMESTAMP_LEN;
 
     // Notify all observers that data has changed
     coap_notify_observers(&res_real_power_obs);
@@ -34,13 +34,16 @@ static void res_event_handler(void) {
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset) {
 
     int length = snprintf((char *)buffer, preferred_size,
-        "timestamp=%ld&realPV=%d",
-        (long) power_data_timestamp[power_data_counter], P[power_data_counter]);
+        "timestamp=%ld&realPV=%d.%04d",
+        (long) power_data_timestamp[power_data_counter],
+        (int)P[power_data_counter],
+        (int)((P[power_data_counter] - (int)P[power_data_counter]) * 10000));
 
     struct tm *tm_info = localtime(&power_data_timestamp[power_data_counter]);
-    LOG_INFO("Timestamp: %02d-%02d-%04d %02d:%02d:%02d | Real PV: %d W\n",
+    LOG_INFO("Timestamp: %02d-%02d-%04d %02d:%02d:%02d | Real PV: %d.%04d kW\n",
         tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900, tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec,
-        (int)P[power_data_counter]);
+        (int)P[power_data_counter]/1000,
+        (int)((P[power_data_counter]/1000 - (int)P[power_data_counter]/1000)* 10000));
 
     coap_set_header_content_format(response, TEXT_PLAIN);
     coap_set_payload(response, buffer, length);

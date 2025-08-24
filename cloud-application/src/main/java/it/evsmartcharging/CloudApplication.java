@@ -65,10 +65,10 @@ public class CloudApplication {
                     case 6:
                         logger.info("User selected to view if the ML model is running.");
                         if(coapObserver.getIfMLRunning()){
-                            System.out.println("ML Model is running!");
+                            System.out.println("\nML Model is running!");
                         }
                         else {
-                            System.out.println("ML Model is not running!");
+                            System.out.println("\nML Model is not running!");
                         }
                         break;
                     

@@ -21,7 +21,7 @@
 #define RES_CHARGER_REGISTER_URI "/registration/charger"
 #define RES_CAR_REGISTER_URI "/registration/car"
 
-#define CHARGER_MAX_POWER 22000 // In Wh
+#define CHARGER_MAX_POWER 22.0 // In Wh
 
 static uint8_t my_id = 0;   // Stores the ID assigned by the server after registration
 
@@ -50,7 +50,7 @@ PROCESS_THREAD(charging_station, ev, data){
 
     LOG_INFO("Charging station started\n");
 
-    coap_activate_resource(&res_charging_status, "res_charging_status");
+    coap_activate_resource(&res_charging_status, "charging_status");
     LOG_INFO("CoAP resources activated\n");
 
     // Initialize the CoAP server endpoint
@@ -63,13 +63,14 @@ PROCESS_THREAD(charging_station, ev, data){
         if(my_id == 0 && etimer_expired(&registration_timer)) {
             LOG_INFO("Sending registration request....\n");
 
-            coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+            coap_init_message(request, COAP_TYPE_CON, COAP_POST, 4);
             coap_set_header_uri_path(request, RES_CHARGER_REGISTER_URI);
 
-            snprintf(buffer, sizeof(buffer), "maxPower=%d", CHARGER_MAX_POWER);
+            snprintf(buffer, sizeof(buffer), "maxPower=%d,%04d", (int)CHARGER_MAX_POWER, (int)((CHARGER_MAX_POWER - (int)CHARGER_MAX_POWER) * 10000));
 
-            LOG_INFO("Data: maxPower=%d\n", CHARGER_MAX_POWER);
+            LOG_INFO("Data: maxPower: %d,%04d kW\n", (int)CHARGER_MAX_POWER, (int)((CHARGER_MAX_POWER - (int)CHARGER_MAX_POWER) * 10000));
 
+            coap_set_header_content_format(request, TEXT_PLAIN);
             coap_set_payload(request, (uint8_t *)buffer, strlen(buffer));
             COAP_BLOCKING_REQUEST(&central_node_ep, request, charging_station_handler);
         }
@@ -78,23 +79,32 @@ PROCESS_THREAD(charging_station, ev, data){
         if(ev == button_hal_press_event && my_id > 0) {
             LOG_INFO("Sending vehicle connection request....\n");
 
-            coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 0);
+            coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 5);
             coap_set_header_uri_path(request, RES_CAR_REGISTER_URI);
 
             // Build payload
-            const car_t* selected_car = get_random_car();
+            const car_t* selected_car = get_next_car(my_id);
             
             snprintf(buffer, sizeof(buffer), 
-                "type=connection&carMaxPower=%d&carMaxCapacity=%u&currentCharge=%d&desiredCharge=%d&plate=%s",
-                selected_car->carMaxPower, selected_car->carCapacity, selected_car->currentCharge, selected_car->desiredCharge, selected_car->plate);
+                "type=connection&carMaxPower=%d,%04d&carMaxCapacity=%d,%04d&currentCharge=%d,%04d&desiredCharge=%d,%04d&plate=%s",
+                (int)selected_car->carMaxPower, (int)((selected_car->carMaxPower - (int)selected_car->carMaxPower) * 10000),
+                (int)selected_car->carCapacity, (int)((selected_car->carCapacity - (int)selected_car->carCapacity) * 10000),
+                (int)selected_car->currentCharge, (int)((selected_car->currentCharge - (int)selected_car->currentCharge) * 10000),
+                (int)selected_car->desiredCharge, (int)((selected_car->desiredCharge - (int)selected_car->desiredCharge) * 10000),
+                selected_car->plate);
 
             // For testing, use a fixed car configuration
             // snprintf(buffer, sizeof(buffer), "type=connection&carMaxKW=%.2f&carMaxCapacity=%u&currentCharge=%.2f&desiredCharge=%.2f&plate=%s",
             //  22.00, 1, 80.00, 82.00, "XY987ZT");
 
-            LOG_INFO("Data: type=connection | carMaxPower=%d | carMaxCapacity=%u | currentCharge=%d | desiredCharge=%d | plate=%s\n",
-                selected_car->carMaxPower, selected_car->carCapacity, selected_car->currentCharge, selected_car->desiredCharge, selected_car->plate);
-    
+            LOG_INFO("Data - Type: connection | Car max power: %d,%04d kW | Car max capacity: %d,%04d kWh | Current charge: %d,%02d %% | Desired charge: %d,%02d %% | Plate: %s\n",
+                (int)selected_car->carMaxPower, (int)((selected_car->carMaxPower - (int)selected_car->carMaxPower) * 10000),
+                (int)selected_car->carCapacity, (int)((selected_car->carCapacity - (int)selected_car->carCapacity) * 10000),
+                (int)selected_car->currentCharge, (int)((selected_car->currentCharge - (int)selected_car->currentCharge) * 100),
+                (int)selected_car->desiredCharge, (int)((selected_car->desiredCharge - (int)selected_car->desiredCharge) * 100),
+                selected_car->plate);
+
+            coap_set_header_content_format(request, TEXT_PLAIN);
             coap_set_payload(request, (uint8_t *)buffer, strlen(buffer));
 
             COAP_BLOCKING_REQUEST(&central_node_ep, request, vehicles_handler); 
@@ -105,7 +115,7 @@ PROCESS_THREAD(charging_station, ev, data){
             if(btn->press_duration_seconds > 3) {
                 LOG_INFO("Sending vehicle disconnection request....\n");
 
-                coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 0);
+                coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 6);
                 coap_set_header_uri_path(request, RES_CAR_REGISTER_URI);
 
                 // Build payload
@@ -113,8 +123,8 @@ PROCESS_THREAD(charging_station, ev, data){
 
                 LOG_INFO("Data: type=disconnection\n");
         
+                coap_set_header_content_format(request, TEXT_PLAIN);
                 coap_set_payload(request, (uint8_t *)buffer, strlen(buffer));
-
                 COAP_BLOCKING_REQUEST(&central_node_ep, request, vehicles_handler);
             }
         }
@@ -141,7 +151,7 @@ static void charging_station_handler(coap_message_t *response) {
             if (eq_pos) {
                 my_id = (uint8_t)atoi(eq_pos + 1);
                 etimer_stop(&registration_timer);
-                LOG_INFO("Registration successful - ID=%u\n", my_id);
+                LOG_INFO("Registration successful - ID: %u\n", my_id);
 
                 return;
             }
