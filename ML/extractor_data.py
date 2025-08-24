@@ -38,9 +38,11 @@ def write_c_array(file_path, columns, variables, df_filtered, chunk_size=100, he
             c_type = 'static const time_t' if col == 'time' else 'static const int'
             f.write(f"{c_type} {var}[] = {data_str};\n\n")
         
+        time_var = variables[columns.index('time')]
+        f.write(f"#define {time_var.upper()}_LEN (sizeof({time_var})/sizeof({time_var}[0]))\n\n")
+        
         if counter_value is not None and counter_name is not None:
-            f.write(f'extern int {counter_name};')
-
+            f.write(f'extern int {counter_name};\n')
 
 # --- SOLAR DATA ---
 solar_df = load_and_filter_csv('dataset/radiation_data_20sec.csv')
