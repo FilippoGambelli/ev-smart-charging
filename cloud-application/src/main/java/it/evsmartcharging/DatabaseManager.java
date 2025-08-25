@@ -8,8 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.sql.*;
+import java.time.ZoneOffset;
 
 public class DatabaseManager {
 
@@ -35,7 +38,7 @@ public class DatabaseManager {
     public void insertSolarData(Timestamp timestamp, Float Gb, Float Gd, Float Gr, Float H_sun, Float T2m, Float WS10m) {
         String sql = "INSERT INTO solarData (timestamp, Gb, Gd, Gr, HSun, T, WS) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setTimestamp(1, timestamp);
+            pstmt.setTimestamp(1, timestamp, Calendar.getInstance(TimeZone.getTimeZone("UTC")));
             pstmt.setFloat(2, Gb);
             pstmt.setFloat(3, Gd);
             pstmt.setFloat(4, Gr);
@@ -43,7 +46,7 @@ public class DatabaseManager {
             pstmt.setFloat(6, T2m);
             pstmt.setFloat(7, WS10m);
             pstmt.executeUpdate();
-            logger.info("Inserted row into solarData: timestamp={}, Gb={}, Gd={}, Gr={}, HSun={}, T={}, WS={}", timestamp, Gb, Gd, Gr, H_sun, T2m, WS10m);
+            logger.info("Inserted row into solarData: timestamp={}, Gb={}, Gd={}, Gr={}, HSun={}, T={}, WS={}", timestamp.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime(), Gb, Gd, Gr, H_sun, T2m, WS10m);
 
         } catch (SQLException e) {
             logger.error("Insert failed: {}", e.getMessage(), e);
@@ -53,10 +56,10 @@ public class DatabaseManager {
     public void insertRealPowerData(Timestamp timestamp, Float realPower) {
         String sql = "INSERT INTO realPower (timestamp, realPower) VALUES (?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setTimestamp(1, timestamp);
+            pstmt.setTimestamp(1, timestamp, Calendar.getInstance(TimeZone.getTimeZone("UTC")));
             pstmt.setFloat(2, realPower);
             pstmt.executeUpdate();
-            logger.info("Inserted row into realPower: timestamp={}, realPower={}", timestamp, realPower);
+            logger.info("Inserted row into realPower: timestamp={}, realPower={}", timestamp.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime(), realPower);
 
         } catch (SQLException e) {
             logger.error("Insert failed: {}", e.getMessage(), e);

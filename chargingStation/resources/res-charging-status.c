@@ -22,9 +22,9 @@
   #define LED_SINGLE_OFF(led) leds_single_off(led)
 #endif
 
-static float charging_power = 0;        // in Watts
-static float energy_renewable = 0;      // in Watts
-static int time_remaining = 0;          // s
+static float charging_power = 0;        // in kW
+static float energy_renewable = 0;      // in kW
+static int time_remaining = 0;          // seconds
 static bool charging_complete = false;
 
 // Forward declaration of the PUT handler

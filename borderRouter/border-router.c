@@ -131,7 +131,7 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
                     timestamp = (time_t)atoi(ptr);
                 }
 
-                struct tm *tm_info = localtime(&timestamp);
+                struct tm *tm_info = gmtime(&timestamp);
 
                 // real power received, update charging stations if real power is less than available solar power
                 if(power_PV_real < solar_available) {
@@ -149,7 +149,7 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
                 char *ptr = strstr((char *)payload, "realPV=");
                 if(ptr != NULL) {
                     ptr += strlen("realPV=");
-                    power_PV_real = strtof(ptr, NULL)/1000;  // In W
+                    power_PV_real = strtof(ptr, NULL)/1000;
                 }
                 
                 time_t timestamp;
@@ -159,7 +159,7 @@ static void notification_realpower_callback(coap_observee_t *obs, void *notifica
                     timestamp = (time_t)atoi(ptr);
                 }
 
-                struct tm *tm_info = localtime(&timestamp);
+                struct tm *tm_info = gmtime(&timestamp);
 
                 // real power received, update charging stations if real power is less than available solar power
                 if(power_PV_real < solar_available) {

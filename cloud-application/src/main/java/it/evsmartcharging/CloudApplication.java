@@ -43,26 +43,31 @@ public class CloudApplication {
                         break;
 
                     case 2:
+                        logger.info("User selected to start/stop ML model");
+                        userInterface.startStopMLModel(coapObserver);
+                        break;
+
+                    case 3:
                         logger.info("User selected to update the ML prediction interval.");
                         userInterface.updateMLPredInterval();
                         break;
 
-                    case 3:
+                    case 4:
                         logger.info("User selected to view the smart grid status.");
                         userInterface.viewStatusSmartGrid();
                         break;
 
-                    case 4:
+                    case 5:
                         logger.info("User selected to view the charging stations status.");
                         userInterface.viewStatusChargingStations();
                         break;
 
-                    case 5:
+                    case 6:
                         logger.info("User selected to view storade data.");
                         userInterface.viewStoredData();
                         break;
 
-                    case 6:
+                    case 7:
                         logger.info("User selected to view if the ML model is running.");
                         if(coapObserver.getIfMLRunning()){
                             System.out.println("\nML Model is running!");
@@ -71,8 +76,8 @@ public class CloudApplication {
                             System.out.println("\nML Model is not running!");
                         }
                         break;
-                    
-                    case 7:
+
+                    case 8:
                         logger.info("User selected to exit the application.");
                         coapObserver.stopAllObservation();
                         server.stop();

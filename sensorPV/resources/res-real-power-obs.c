@@ -39,11 +39,11 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
         (int)P[power_data_counter],
         (int)((P[power_data_counter] - (int)P[power_data_counter]) * 10000));
 
-    struct tm *tm_info = localtime(&power_data_timestamp[power_data_counter]);
-    LOG_INFO("Timestamp: %02d-%02d-%04d %02d:%02d:%02d | Real PV: %d.%04d kW\n",
+    struct tm *tm_info = gmtime(&power_data_timestamp[power_data_counter]);
+    LOG_INFO("Timestamp: %02d-%02d-%04d %02d:%02d:%02d | Real PV: %d,%04d kW\n",
         tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900, tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec,
-        (int)P[power_data_counter]/1000,
-        (int)((P[power_data_counter]/1000 - (int)P[power_data_counter]/1000)* 10000));
+        (int)(P[power_data_counter]/1000),
+        (int)((P[power_data_counter] / 1000.0 - ((int)(P[power_data_counter]/1000))) * 10000));
 
     coap_set_header_content_format(response, TEXT_PLAIN);
     coap_set_payload(response, buffer, length);

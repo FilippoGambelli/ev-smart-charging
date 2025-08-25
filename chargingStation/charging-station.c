@@ -21,7 +21,7 @@
 #define RES_CHARGER_REGISTER_URI "/registration/charger"
 #define RES_CAR_REGISTER_URI "/registration/car"
 
-#define CHARGER_MAX_POWER 22.0 // In Wh
+#define CHARGER_MAX_POWER 22.0 // In kWh
 
 static uint8_t my_id = 0;   // Stores the ID assigned by the server after registration
 

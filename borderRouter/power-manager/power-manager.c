@@ -201,8 +201,7 @@ int compare_charging_stations(const void *a, const void *b) {
 
     // Sort by priority (1 comes before 0)
     if (cs1->priority != cs2->priority) {
-        return (cs2->priority - cs1->priority);  
-        // Return positive if cs2 > cs1 (so priority=1 comes first)
+        return (cs2->priority - cs1->priority);
     }
 
     // If priority is the same, sort by remaining_time_seconds (descending)

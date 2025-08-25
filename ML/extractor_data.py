@@ -1,25 +1,20 @@
 import pandas as pd
-import pytz
 
 # Time range for filtering
 TIME_START = "2023-05-15 09:00:00"
 TIME_FINISH = "2023-05-16 17:00:00"
 
-# Define timezone for Italy
-italy_tz = pytz.timezone('Europe/Rome')
-
-
 def load_and_filter_csv(file_path, time_col='time'):
     df = pd.read_csv(file_path)
-    
-    # Convert time to datetime with timezone handling
-    df[time_col] = pd.to_datetime(df[time_col]).dt.tz_localize('UTC').dt.tz_convert(italy_tz)
-    
-    time_start = italy_tz.localize(pd.to_datetime(TIME_START))
-    time_finish = italy_tz.localize(pd.to_datetime(TIME_FINISH))
-    
+
+    # Converte solo in datetime, senza timezone
+    df[time_col] = pd.to_datetime(df[time_col])
+
+    time_start = pd.to_datetime(TIME_START)
+    time_finish = pd.to_datetime(TIME_FINISH)
+
     df_filtered = df[(df[time_col] >= time_start) & (df[time_col] <= time_finish)]
-    
+
     return df_filtered
 
 
@@ -35,7 +30,7 @@ def write_c_array(file_path, columns, variables, df_filtered, chunk_size=100, he
             chunks = [data_list[i:i+chunk_size] for i in range(0, len(data_list), chunk_size)]
             data_str = '{\n' + ',\n'.join(', '.join(map(str, chunk)) for chunk in chunks) + '\n}'
             
-            c_type = 'static const time_t' if col == 'time' else 'static const int'
+            c_type = 'static const time_t' if col == 'time' else 'static const float'
             f.write(f"{c_type} {var}[] = {data_str};\n\n")
         
         time_var = variables[columns.index('time')]

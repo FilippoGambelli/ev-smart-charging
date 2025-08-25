@@ -44,6 +44,7 @@ public class UserInterface {
     
         System.out.println("\n==== EV SMART CHARGING SYSTEM ====");
         System.out.println(++i + ". Add new plate to database");
+        System.out.println(++i + ". Start/Stop ML model");
         System.out.println(++i + ". Update ML prediction interval");
         System.out.println(++i + ". View status smart grid");
         System.out.println(++i + ". View status charging stations");
@@ -53,6 +54,22 @@ public class UserInterface {
         System.out.print("Choose an option (1-" + i + "): ");
 
         maxOption = i;
+    }
+
+    public void startStopMLModel(CoapObserver coapObserver) {
+        System.out.println("\n[Only for demonstration] Start/Stop ML Model");
+        System.out.println("1. Start ML Model");
+        System.out.println("2. Stop ML Model");
+        System.out.print("Choose an option (1-2): ");
+        int choice = getUserInput();
+
+        if (choice == 1) {
+            coapObserver.startMLModel();
+            System.out.println("ML model started.");
+        } else if (choice == 2) {
+            coapObserver.stopMLModel();
+            System.out.println("ML model stopped.");
+        }
     }
 
     public void viewStatusChargingStations() {

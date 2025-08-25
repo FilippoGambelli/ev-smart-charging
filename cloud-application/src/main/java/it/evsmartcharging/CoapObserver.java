@@ -20,7 +20,7 @@ public class CoapObserver {
 
     private static final Logger logger = LoggerFactory.getLogger(CoapObserver.class);
 
-    private boolean ML_RUNNING = true;
+    private volatile boolean ML_RUNNING = true;
     
     private final DatabaseManager databaseConnection;
 
@@ -70,7 +70,8 @@ public class CoapObserver {
                         String tsString = obj.get("Time").getAsString();
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
                         LocalDateTime ldt = LocalDateTime.parse(tsString, formatter);
-                        timestamp = Timestamp.valueOf(ldt);
+                        Instant instant = ldt.atZone(java.time.ZoneOffset.UTC).toInstant();
+                        timestamp = Timestamp.from(instant);
                     }
 
                     // Parse solar parameters, default to null if missing
@@ -152,7 +153,6 @@ public class CoapObserver {
                                 long epochSeconds = Long.parseLong(value);
                                 Instant instant = Instant.ofEpochSecond(epochSeconds);
                                 timestamp = Timestamp.from(instant);
-
                                 break;
 
                             case "realPV":
@@ -173,48 +173,10 @@ public class CoapObserver {
                     }
 
                     if(!ML_RUNNING && realPV > 0){
-                        ML_RUNNING = true;
-                        try {
-                            String mlUri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
-                            CoapClient mlClient = new CoapClient(mlUri);
-
-                            // Prepare payload
-                            String payload = "runMLModel=1";
-                            logger.info("Sending PUT to {} with payload: {}", mlUri, payload);
-
-                            // Execute PUT
-                            CoapResponse mlResponse = mlClient.put(payload, 0); // 0 = text/plain
-                            if (mlResponse != null) {
-                                logger.info("PUT response from {}: {}", mlUri, mlResponse.getResponseText());
-                            } else {
-                                logger.warn("No response received from {}", mlUri);
-                            }
-
-                        } catch (Exception e) {
-                            logger.error("Error sending PUT to ML prediction interval: {}", e.getMessage(), e);
-                        }
+                        // startMLModel(); [Only for demonstration]
                     }
                     else if (ML_RUNNING && databaseConnection.countTrailingZerosInRealPower() >= 360) {       // 30 minutes of zeros
-                        ML_RUNNING = false;
-                        try {
-                            String mlUri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
-                            CoapClient mlClient = new CoapClient(mlUri);
-
-                            // Prepare payload
-                            String payload = "runMLModel=0";
-                            logger.info("Sending PUT to {} with payload: {}", mlUri, payload);
-
-                            // Execute PUT
-                            CoapResponse mlResponse = mlClient.put(payload, 0); // 0 = text/plain
-                            if (mlResponse != null) {
-                                logger.info("PUT response from {}: {}", mlUri, mlResponse.getResponseText());
-                            } else {
-                                logger.warn("No response received from {}", mlUri);
-                            }
-
-                        } catch (Exception e) {
-                            logger.error("Error sending PUT to ML prediction interval: {}", e.getMessage(), e);
-                        }
+                        stopMLModel();
                     }
                 } catch (Exception e) {
                     logger.error("Error parsing real power observation data: {}", e.getMessage(), e);
@@ -228,6 +190,67 @@ public class CoapObserver {
         });
 
         logger.info("Started observation for /real_power_obs");
+    }
+
+    public void startMLModel() {
+        if (ML_RUNNING) {
+            return;
+        }
+
+        try {
+            String mlUri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
+            CoapClient mlClient = new CoapClient(mlUri);
+
+            String payload = "runMLModel=1";
+            logger.info("Sending PUT request to {} with payload: {}", mlUri, payload);
+
+            CoapResponse mlResponse = mlClient.put(payload, 0);
+
+            if (mlResponse != null) {
+                if (mlResponse.isSuccess()) {
+                    ML_RUNNING = true;
+                    logger.info("ML model started successfully. Response code: {}, payload: {}", mlResponse.getCode(), mlResponse.getResponseText());
+                } else {
+                    ML_RUNNING = false;
+                    logger.warn("Failed to start ML model. Response code: {}, payload: {}", mlResponse.getCode(), mlResponse.getResponseText());
+                }
+            } else {
+                logger.error("No response received from {}", mlUri);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error while sending PUT to ML prediction interval: {}", e.getMessage(), e);
+        }
+    }
+
+    public void stopMLModel() {
+        if (!ML_RUNNING) {
+            return;
+        }
+
+        try {
+            String mlUri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
+            CoapClient mlClient = new CoapClient(mlUri);
+
+            String payload = "runMLModel=0";
+            logger.info("Sending PUT request to {} with payload: {}", mlUri, payload);
+
+            CoapResponse mlResponse = mlClient.put(payload, 0);
+
+            if (mlResponse != null) {
+                if (mlResponse.isSuccess()) {
+                    ML_RUNNING = false;
+                    logger.info("ML model stopped successfully. Response code: {}, payload: {}", mlResponse.getCode(), mlResponse.getResponseText());
+                } else {
+                    logger.warn("Failed to stop ML model. Response code: {}, payload: {}", mlResponse.getCode(), mlResponse.getResponseText());
+                }
+            } else {
+                logger.error("No response received from {}", mlUri);
+            }
+
+        } catch (Exception e) {
+            logger.error("Error while sending PUT to ML prediction interval: {}", e.getMessage(), e);
+        }
     }
 
     // Stop observing real power data

@@ -48,7 +48,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
         int idx = solar_data_counter - SEQ_LEN*45 + (1+i)*45; // Index into historical solar data
 
         t = solar_data_timestamp[idx]; // Get the timestamp for the current index
-        struct tm *tm_info = localtime(&t); // Convert timestamp to local time structure
+        struct tm *tm_info = gmtime(&t); // Convert timestamp to local time structure
 
         // Extract hour, minute, and week-of-year (approximate)
         int hour   = tm_info->tm_hour;
@@ -102,7 +102,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
     // Write the plain text response
     int offset_buf = snprintf((char *)buffer, preferred_size, "trend=%d&firstPrediction=%d,%04d", trend, (int)outputs[0], (int)((outputs[0] - (int)outputs[0]) * 10000));
 
-    LOG_INFO("Received GET - Pred Power Data - Data sent: Trend: %d | First Prediction: %d,%04d kW\n", trend, (int)outputs[0]/1000, (int)((outputs[0]/1000 - (int)outputs[0]/1000) * 10000));
+    LOG_INFO("Received GET - Pred Power Data - Data sent: Trend: %d | First Prediction: %d,%04d kW\n", trend, (int)(outputs[0]/1000), (int)((outputs[0] / 1000.0 - ((int)(outputs[0]/1000))) * 10000));
 
     // Prevent unused variable warnings (required by compiler settings)
     (void)eml_net_activation_function_strs; //printf("%p\n", eml_net_activation_function_strs);

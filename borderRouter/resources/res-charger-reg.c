@@ -37,7 +37,7 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
     if (device_id == 0) {
         // Registration failed
         LOG_INFO("Charger registration failed, no available slots\n");
-        coap_set_status_code(response, SERVICE_UNAVAILABLE_5_03);       // HTTP 503 Service Unavailable
+        coap_set_status_code(response, SERVICE_UNAVAILABLE_5_03);
         return;
     }
 
@@ -57,12 +57,12 @@ static void res_register_post_handler(coap_message_t *request, coap_message_t *r
 
         coap_set_header_content_format(response, TEXT_PLAIN);
         coap_set_payload(response, buffer, offset_buf);
-        coap_set_status_code(response, CREATED_2_01); // HTTP 201 Created
+        coap_set_status_code(response, CREATED_2_01);
 
         LOG_INFO("Charger registered with ID %d | Max Power: %d,%04d kW\n", device_id, (int)maxW_value, (int)((maxW_value - (int)maxW_value) * 10000));
     } else {
         LOG_INFO("Charger registered with ID %d, Max Power not specified\n", device_id);
-        coap_set_status_code(response, BAD_REQUEST_4_00); // HTTP 400 Bad Request
+        coap_set_status_code(response, BAD_REQUEST_4_00);
     }
 }
 
@@ -116,7 +116,7 @@ static void res_register_get_handler(coap_message_t *request, coap_message_t *re
     // Set CoAP response headers and payload
     coap_set_header_content_format(response, APPLICATION_JSON);
     coap_set_payload(response, buffer, pos);
-    coap_set_status_code(response, CONTENT_2_05); // HTTP 200 OK
+    coap_set_status_code(response, CONTENT_2_05);
 
     LOG_INFO("Received GET - Charger Registration - All Chargers Info Sent\n");
 }
