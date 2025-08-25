@@ -22,8 +22,9 @@
   #define LED_SINGLE_OFF(led) leds_single_off(led)
 #endif
 
-static float charging_power = 0;      // in Watts
-static float energy_renewable = 0;    // in Watts
+static float charging_power = 0;        // in Watts
+static float energy_renewable = 0;      // in Watts
+static int time_remaining = 0;          // s
 static bool charging_complete = false;
 
 // Forward declaration of the PUT handler
@@ -56,6 +57,13 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
         params_received++;
     }
 
+    // Get timeRemaining
+    len = coap_get_post_variable(request, "timeRemaining", &text);
+    if(len > 0) {
+        time_remaining = strtof(text, NULL);
+        params_received++;
+    }
+
     // Get chargingComplete flag
     len = coap_get_post_variable(request, "chargingComplete", &text);
     if(len > 0) {
@@ -64,10 +72,11 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
     }
 
     // Check if all parameters were received
-    if(params_received == 3) {
-        LOG_INFO("Received PUT - Charging status - chargingPower: %d,%04d kW | energyRenewable: %d,%04d kW | chargingComplete: %s\n",
+    if(params_received == 4) {
+        LOG_INFO("Received PUT - Charging status - chargingPower: %d,%04d kW | energyRenewable: %d,%04d kW | timeRemaining: %d s | chargingComplete: %s\n",
             (int)charging_power, (int)((charging_power - (int)charging_power) * 10000),
             (int)energy_renewable, (int)((energy_renewable - (int)energy_renewable) * 10000),
+            time_remaining,
             charging_complete ? "true" : "false");
         coap_set_status_code(response, CHANGED_2_04);
     } else {

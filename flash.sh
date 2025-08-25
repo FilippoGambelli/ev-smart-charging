@@ -15,7 +15,8 @@ BASE_DIR="$HOME/contiki-ng/examples/ev-smart-charging"
 PORT_SENSOR="/dev/ttyACM0"
 PORT_GRID="/dev/ttyACM1"
 PORT_BORDER="/dev/ttyACM2"
-PORT_CHARGER="/dev/ttyACM3"
+PORT_CHARGER3="/dev/ttyACM3"
+PORT_CHARGER4="/dev/ttyACM4"
 
 ### FUNCTIONS ###
 
@@ -54,12 +55,17 @@ function flash_all() {
     gnome-terminal --title="Border Router / Central Node" \
     -- bash -c "cd $BASE_DIR/borderRouter && make TARGET=nrf52840 BOARD=dongle PORT=$PORT_BORDER connect-router; exec bash"
 
-    build_and_flash "chargingStation" "charging-station" "$PORT_CHARGER" $do_clean
+    build_and_flash "chargingStation" "charging-station" "$PORT_CHARGER3" $do_clean
     sleep 6
-    gnome-terminal --title="Charging Station" \
-    -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER; exec bash"
+    gnome-terminal --title="Charging Station 1" \
+    -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER3; exec bash"
 
-    sleep 10
+    build_and_flash "chargingStation" "charging-station" "$PORT_CHARGER4" $do_clean
+    sleep 6
+    gnome-terminal --title="Charging Station 2" \
+    -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER4; exec bash"
+
+    sleep 15
 
     gnome-terminal --title="Cloud Application" \
     -- bash -c "cd $BASE_DIR/cloud-application && java -Dcooja=false -jar target/cloud-application-1.0-SNAPSHOT.jar; exec bash"
@@ -75,10 +81,13 @@ function open_logins() {
     gnome-terminal --title="Border Router / Central Node" \
     -- bash -c "cd $BASE_DIR/borderRouter && make TARGET=nrf52840 BOARD=dongle PORT=$PORT_BORDER connect-router; exec bash"
 
-    gnome-terminal --title="Charging Station" \
-    -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER; exec bash"
+    gnome-terminal --title="Charging Station 1" \
+    -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER3; exec bash"
 
-    sleep 10
+    gnome-terminal --title="Charging Station 2" \
+    -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER4; exec bash"
+
+    sleep 15
 
     gnome-terminal --title="Cloud Application" \
     -- bash -c "cd $BASE_DIR/cloud-application && java -Dcooja=false -jar target/cloud-application-1.0-SNAPSHOT.jar; exec bash"

@@ -3,10 +3,20 @@
 #include <string.h>
 #include "coap-engine.h"
 #include "time.h"
+#include "os/dev/leds.h"
 
 #include "sys/log.h"
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
+
+// Helper macros to handle LEDs differently in Cooja vs real hardware
+#ifdef COOJA
+  #define LED_ON(led) leds_on(LEDS_NUM_TO_MASK(led))
+  #define LED_OFF(led) leds_off(LEDS_NUM_TO_MASK(led))
+#else
+  #define LED_ON(led) leds_on(led)
+  #define LED_OFF(led) leds_off(led)
+#endif
 
 static float power_from_grid_now = 0.0;
 static float power_to_grid_now = 0.0;
@@ -82,6 +92,15 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
     if(len > 0) {
         energy_to_grid_total += power_to_grid_now * (elapsed_time / 3600.0);       
         power_to_grid_now = strtof(text, NULL);
+    }
+
+
+    LED_OFF(LEDS_ALL);
+
+    if(power_to_grid_now > 0) {
+        LED_ON(LEDS_GREEN);
+    } else if (power_from_grid_now > 0){
+        LED_ON(LEDS_RED);
     }
 
     LOG_INFO("Received PUT - Status Power Grid - Data updated: Power from grid: %d,%04d kW | Power to grid: %d,%04d kW | Energy from grid total: %d,%04d kWh | Energy to grid total: %d,%04d kWh\n",
