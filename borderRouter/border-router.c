@@ -5,27 +5,35 @@
 #include "contiki-net.h"
 #include "coap-engine.h"
 #include "power-manager/power-manager.h"
-#include "ipv6.h"
 #include "config-ml/config-ml.h"
 #include "coap-callback-api.h"
+#include "coap-blocking-api.h"
+
 
 #include "sys/log.h"
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
 
-#define RES_POWER_OBS_URI "real_power_obs"  // Resource on server to observe
+#define CLOUD_APPLICATION_EP "coap://[fd00::1]:5683/"
+
+#define RES_POWER_OBS_URI "/real_power_obs"          // Resource on server to observe
+#define RES_CLOUD_REGISTER_URI "/registration"
 
 // Real dichiaration of extern variables
 float power_PV_real;
 int power_PV_trend;
 float power_PV_pred;
 
-static coap_observee_t *obs = NULL;  // Keeps track of the current observation
+static coap_observee_t *obs = NULL;     // Keeps track of the current observation
+
+coap_endpoint_t sensor_pv_ep;           // Using the extern variable from the power-manager.h file
+static coap_endpoint_t cloud_application_ep;
 
 extern coap_resource_t res_car_reg;
 extern coap_resource_t res_charger_reg;
 extern coap_resource_t res_ml_pred_interval;
 
+static void reg_handler(coap_message_t *response);
 static void response_handler_pred_power(coap_callback_request_state_t *callback_state);
 static void notification_realpower_callback(coap_observee_t *obs, void *notification, coap_notification_flag_t flag);
 
@@ -33,19 +41,42 @@ PROCESS(border_router, "CoAP Border Router");
 AUTOSTART_PROCESSES(&border_router);
 
 PROCESS_THREAD(border_router, ev, data) {
-    static coap_endpoint_t sensor_pv_ep;
+    static coap_message_t request[1];
+    static coap_callback_request_state_t request_state;
+
+    static char buffer[128];
 
     PROCESS_BEGIN();
 
     coap_activate_resource(&res_charger_reg, "registration/charger");
     coap_activate_resource(&res_car_reg, "registration/car");
     coap_activate_resource(&res_ml_pred_interval, "ml_pred_interval");
-
     LOG_INFO("CoAP resources activated\n");
 
-    
-    // Parse server endpoint string into coap_endpoint_t structure
-    coap_endpoint_parse(SENSOR_PV_EP, strlen(SENSOR_PV_EP), &sensor_pv_ep);
+
+    LOG_INFO("Sending registration to cloud application....\n");
+
+    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 8);
+    coap_set_header_uri_path(request, RES_CLOUD_REGISTER_URI);
+
+    // Request to cloud application
+    coap_endpoint_parse(CLOUD_APPLICATION_EP, strlen(CLOUD_APPLICATION_EP), &cloud_application_ep);
+
+    // Build payload (JSON)
+    snprintf(buffer, sizeof(buffer),
+            "{"
+            "\"nodeType\":\"centralNode\","
+            "\"requiredNodes\":["
+                "\"chargingStation\","
+                "\"smartGrid\""
+            "]"
+            "}"
+        );
+
+    coap_set_header_content_format(request, APPLICATION_JSON);
+    coap_set_payload(request, (uint8_t *)buffer, strlen(buffer));
+    COAP_BLOCKING_REQUEST(&cloud_application_ep, request, reg_handler);
+
     
     LOG_INFO("Starting CoAP observation...\n");
 
@@ -57,8 +88,6 @@ PROCESS_THREAD(border_router, ev, data) {
 
     etimer_set(&e_timer_ml_pred, CLOCK_SECOND * ml_pred_interval);
 
-    static coap_message_t request[1];
-    static coap_callback_request_state_t request_state;
 
     while(1) {
         PROCESS_WAIT_EVENT();
@@ -76,6 +105,43 @@ PROCESS_THREAD(border_router, ev, data) {
 
     PROCESS_END();
 }
+
+
+// Callback function to handle the cloud application's response
+static void reg_handler(coap_message_t *response) {
+    const uint8_t *payload = NULL;
+    size_t len = coap_get_payload(response, &payload);
+    char* ptr;
+
+    if(len > 0 && payload != NULL) {
+        ptr = strstr((char *)payload, "sensorPV=");
+        if(ptr != NULL) {
+            ptr += strlen("sensorPV=");
+            char endpoint_uri[80];
+            snprintf(endpoint_uri, sizeof(endpoint_uri), "coap://[%s]:5683", ptr);
+
+            if (coap_endpoint_parse(endpoint_uri, strlen(endpoint_uri), &sensor_pv_ep)) {
+                LOG_INFO("Sensor PV endpoint from cloud: %s\n", endpoint_uri);
+            } else {
+                LOG_INFO("Failed to parse Sensor PV endpoint\n");
+            }
+        }
+
+        ptr = strstr((char *)payload, "smartGrid=");
+        if(ptr != NULL) {
+            ptr += strlen("smartGrid=");
+            char endpoint_uri[80];
+            snprintf(endpoint_uri, sizeof(endpoint_uri), "coap://[%s]:5683", ptr);
+
+            if (coap_endpoint_parse(endpoint_uri, strlen(endpoint_uri), &smart_grid_ep)) {
+                LOG_INFO("Smart Grid endpoint from cloud: %s\n", endpoint_uri);
+            } else {
+                LOG_INFO("Failed to parse Smart Grid endpoint\n");
+            }
+        }
+    }
+}
+
 
 
 static void response_handler_pred_power(coap_callback_request_state_t *callback_state) {

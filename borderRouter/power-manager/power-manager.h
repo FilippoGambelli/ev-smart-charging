@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include "coap-callback-api.h"
 #include "../config-ml/config-ml.h"
-#include "../ipv6.h"
 
 #include "../resources/info-charging-station.h"
 
@@ -20,6 +19,9 @@
 
 #define RES_CHARGING_STATUS_URI "/charging_status"
 #define RES_SMART_GRID_URI "/status_smart_grid"
+
+extern coap_endpoint_t smart_grid_ep;
+extern coap_endpoint_t sensor_pv_ep;
 
 extern time_t last_execution;
 

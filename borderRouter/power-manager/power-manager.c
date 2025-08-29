@@ -1,7 +1,7 @@
 #include "power-manager.h"
 
 static coap_endpoint_t charging_station_ep;
-static coap_endpoint_t smart_grid_ep;
+coap_endpoint_t smart_grid_ep;              // Using the extern variable from the power-manager.h file
 
 time_t last_execution = 0;
 float total_power_grid_used = 0;
@@ -168,7 +168,6 @@ void send_grid_status(float power_grid, int grid_direction) {
     
 
     coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 2);
-    coap_endpoint_parse(SMART_GRID_EP, strlen(SMART_GRID_EP), &smart_grid_ep);
 
     coap_set_header_uri_path(request, RES_SMART_GRID_URI);
 

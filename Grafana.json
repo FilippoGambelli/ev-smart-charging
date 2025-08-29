@@ -184,12 +184,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Radiation Data",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -296,12 +297,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Sun Height",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -384,7 +386,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  plate AS \"Targa\",\n  priority AS \"Priorità\"\nFROM platePriority",
+          "rawSql": "SELECT\n  plate AS \"Plate\",\n  priority AS \"Priority\"\nFROM platePriority",
           "refId": "A",
           "select": [
             [
@@ -408,8 +410,9 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "License Plate",
       "transform": "table",
+      "transparent": true,
       "type": "table"
     },
     {
@@ -485,12 +488,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Real PV Power",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -554,5 +558,5 @@
   "variables": {
     "list": []
   },
-  "version": 5
+  "version": 2
 }
