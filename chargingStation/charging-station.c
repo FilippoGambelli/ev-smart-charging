@@ -74,7 +74,7 @@ PROCESS_THREAD(charging_station, ev, data){
 
     LOG_INFO("Sending registration to cloud application....\n");
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 7);
+    coap_init_message(request, COAP_TYPE_CON, COAP_POST, coap_get_mid());
     coap_set_header_uri_path(request, RES_CLOUD_REGISTER_URI);
 
     // Request to cloud application
@@ -101,7 +101,7 @@ PROCESS_THREAD(charging_station, ev, data){
         if(my_id == 0 && etimer_expired(&registration_timer)) {
             LOG_INFO("Sending registration request....\n");
 
-            coap_init_message(request, COAP_TYPE_CON, COAP_POST, 4);
+            coap_init_message(request, COAP_TYPE_CON, COAP_POST, coap_get_mid());
             coap_set_header_uri_path(request, RES_CHARGER_REGISTER_URI);
 
             snprintf(buffer, sizeof(buffer), "maxPower=%d,%04d", (int)CHARGER_MAX_POWER, (int)((CHARGER_MAX_POWER - (int)CHARGER_MAX_POWER) * 10000));
@@ -120,7 +120,7 @@ PROCESS_THREAD(charging_station, ev, data){
             if(btn->press_duration_seconds < 3) {
                 LOG_INFO("Sending vehicle connection request....\n");
 
-                coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 5);
+                coap_init_message(request, COAP_TYPE_CON, COAP_PUT, coap_get_mid());
                 coap_set_header_uri_path(request, RES_CAR_REGISTER_URI);
 
                 // Build payload
@@ -148,7 +148,7 @@ PROCESS_THREAD(charging_station, ev, data){
             } else {
                 LOG_INFO("Sending vehicle disconnection request....\n");
 
-                coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 6);
+                coap_init_message(request, COAP_TYPE_CON, COAP_PUT, coap_get_mid());
                 coap_set_header_uri_path(request, RES_CAR_REGISTER_URI);
 
                 // Build payload

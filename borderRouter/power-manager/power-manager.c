@@ -146,7 +146,7 @@ void send_charging_status(uip_ipaddr_t *addr, float assigned_power, float renewa
     memcpy(&charging_station_ep.ipaddr, addr, sizeof(uip_ipaddr_t));
     charging_station_ep.port = UIP_HTONS(5683);
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 1);
+    coap_init_message(request, COAP_TYPE_CON, COAP_PUT, coap_get_mid());
     coap_set_header_uri_path(request, RES_CHARGING_STATUS_URI);
 
     snprintf(buffer_req, sizeof(buffer_req),
@@ -167,7 +167,7 @@ void send_grid_status(float power_grid, int grid_direction) {
     static coap_callback_request_state_t request_state;
     
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_PUT, 2);
+    coap_init_message(request, COAP_TYPE_CON, COAP_PUT, coap_get_mid());
 
     coap_set_header_uri_path(request, RES_SMART_GRID_URI);
 

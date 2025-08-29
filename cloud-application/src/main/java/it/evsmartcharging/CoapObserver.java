@@ -27,9 +27,14 @@ public class CoapObserver {
     // Observation relations for solar and real power data
     private CoapObserveRelation relationSolarData;
     private CoapObserveRelation relationRealPowerData;
+
+    private String SENSOR_PV_EP;
+    private String CENTRAL_NODE_EP;
     
-    public CoapObserver(DatabaseManager databaseManager) {
+    public CoapObserver(DatabaseManager databaseManager, String SENSOR_PV_EP, String CENTRAL_NODE_EP) {
         this.databaseConnection = databaseManager;
+        this.SENSOR_PV_EP = SENSOR_PV_EP;
+        this.CENTRAL_NODE_EP = CENTRAL_NODE_EP;
         logger.info("CoapObserver initialized with DatabaseManager");
     }
 
@@ -49,7 +54,7 @@ public class CoapObserver {
 
     // Start observing solar data
     public void startObservationSolarData(){
-        String uri = Config.SENSOR_PV_EP + "/solar_obs";
+        String uri = SENSOR_PV_EP + "/solar_obs";
         logger.info("Initializing CoAP client for solar data at {}", uri);
 
         CoapClient client = new CoapClient(uri);
@@ -123,7 +128,7 @@ public class CoapObserver {
 
     // Start observing real power data
     public void startObservationRealPowerData() {
-        String uri = Config.SENSOR_PV_EP + "/real_power_obs";
+        String uri = SENSOR_PV_EP + "/real_power_obs";
         logger.info("Initializing CoAP client for real power data at {}", uri);
 
         CoapClient client = new CoapClient(uri);
@@ -198,7 +203,7 @@ public class CoapObserver {
         }
 
         try {
-            String mlUri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
+            String mlUri = CENTRAL_NODE_EP + "/ml_pred_interval";
             CoapClient mlClient = new CoapClient(mlUri);
 
             String payload = "runMLModel=1";
@@ -229,7 +234,7 @@ public class CoapObserver {
         }
 
         try {
-            String mlUri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
+            String mlUri = CENTRAL_NODE_EP + "/ml_pred_interval";
             CoapClient mlClient = new CoapClient(mlUri);
 
             String payload = "runMLModel=0";

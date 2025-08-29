@@ -184,6 +184,20 @@ public class DatabaseManager {
         return trailingZeros;
     }
 
+    public void insertDevice(int id, String nodeType, String ep) {
+        String sql = "INSERT INTO device (id, nodeType, EP) VALUES (?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE EP = VALUES(EP)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.setString(2, nodeType);
+            pstmt.setString(3, ep);
+            pstmt.executeUpdate();
+            logger.info("Inserted/Updated device: ID={}, nodeType={}, EP={}", id, nodeType, ep);
+        } catch (SQLException e) {
+            logger.error("Insert into Device failed: {}", e.getMessage(), e);
+        }
+    }
+
     public void closeConnection() {
         if (connection != null) {
             try {

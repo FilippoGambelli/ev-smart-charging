@@ -142,7 +142,7 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
         static char query[32];
         static coap_callback_request_state_t request_state;
 
-        coap_init_message(request, COAP_TYPE_CON, COAP_GET, 3);
+        coap_init_message(request, COAP_TYPE_CON, COAP_GET, coap_get_mid());
         coap_set_header_uri_path(request, "plate");
         
         snprintf(query, sizeof(query), "plate=%s", plate);

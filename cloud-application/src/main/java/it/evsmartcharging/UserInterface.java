@@ -28,12 +28,17 @@ public class UserInterface {
     private Scanner scanner;
     private int maxOption;
 
+    private String CENTRAL_NODE_EP;
+    private String SMART_GRID_EP;
+
     private DatabaseManager databaseManager;
 
-    public UserInterface(DatabaseManager databaseManager) {
+    public UserInterface(DatabaseManager databaseManager, String CENTRAL_NODE_EP, String SMART_GRID_EP) {
         try {
             scanner = new Scanner(System.in);
             this.databaseManager = databaseManager;
+            this.CENTRAL_NODE_EP = CENTRAL_NODE_EP;
+            this.SMART_GRID_EP = SMART_GRID_EP;
         } catch (Exception e) {
             logger.error("Failed to start application: {}", e.getMessage(), e);
         }
@@ -76,7 +81,7 @@ public class UserInterface {
         System.out.println("\nCharging Station Status\n");
         try {
             // Create the CoAP client with the IPv6 address of your device
-            String uri = Config.CENTRAL_NODE_EP + "/registration/charger";
+            String uri = CENTRAL_NODE_EP + "/registration/charger";
             CoapClient client = new CoapClient(uri);
 
             // Perform GET request
@@ -135,7 +140,7 @@ public class UserInterface {
         System.out.println("\nSmart Grid Status");
         try {
             // Create the CoAP client with the IPv6 address of your device
-            String uri = Config.SMART_GRID_EP + "/status_smart_grid";
+            String uri = SMART_GRID_EP + "/status_smart_grid";
             CoapClient client = new CoapClient(uri);
 
             // Perform GET request
@@ -277,7 +282,7 @@ public class UserInterface {
         if (confirm.equals("y")) {
             try {
                 // Create the CoAP client with the IPv6 address of your device
-                String uri = Config.CENTRAL_NODE_EP + "/ml_pred_interval";
+                String uri = CENTRAL_NODE_EP + "/ml_pred_interval";
                 CoapClient client = new CoapClient(uri);
 
                 // Prepare the request payload in key=value format as expected by the server

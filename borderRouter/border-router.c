@@ -56,7 +56,7 @@ PROCESS_THREAD(border_router, ev, data) {
 
     LOG_INFO("Sending registration to cloud application....\n");
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 8);
+    coap_init_message(request, COAP_TYPE_CON, COAP_POST, coap_get_mid());
     coap_set_header_uri_path(request, RES_CLOUD_REGISTER_URI);
 
     // Request to cloud application
@@ -67,7 +67,7 @@ PROCESS_THREAD(border_router, ev, data) {
             "{"
             "\"nodeType\":\"centralNode\","
             "\"requiredNodes\":["
-                "\"chargingStation\","
+                "\"sensorPV\","
                 "\"smartGrid\""
             "]"
             "}"
@@ -94,7 +94,7 @@ PROCESS_THREAD(border_router, ev, data) {
 
         if(ev == PROCESS_EVENT_TIMER && data == &e_timer_ml_pred){
             if(run_ml_model) {
-                coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+                coap_init_message(request, COAP_TYPE_CON, COAP_GET, coap_get_mid());
                 coap_set_header_uri_path(request, "pred_power");
                 coap_send_request(&request_state, &sensor_pv_ep, request, response_handler_pred_power);
                 LOG_INFO("Sent GET request to obtain Predicted Power\n");
@@ -111,27 +111,33 @@ PROCESS_THREAD(border_router, ev, data) {
 static void reg_handler(coap_message_t *response) {
     const uint8_t *payload = NULL;
     size_t len = coap_get_payload(response, &payload);
-    char* ptr;
 
-    if(len > 0 && payload != NULL) {
-        ptr = strstr((char *)payload, "sensorPV=");
-        if(ptr != NULL) {
-            ptr += strlen("sensorPV=");
+    if(len == 0 || payload == NULL) {
+        LOG_INFO("No payload received\n");
+        return;
+    }
+
+    char payload_copy[256];
+    memset(payload_copy, 0, sizeof(payload_copy));
+    strncpy(payload_copy, (char *)payload, sizeof(payload_copy) - 1);
+
+    char *token = strtok(payload_copy, "&");
+    while(token != NULL) {
+        if(strncmp(token, "sensorPV=", 9) == 0) {
+            char *value = token + 9;
             char endpoint_uri[80];
-            snprintf(endpoint_uri, sizeof(endpoint_uri), "coap://[%s]:5683", ptr);
+            snprintf(endpoint_uri, sizeof(endpoint_uri), "coap://[%s]:5683", value);
 
             if (coap_endpoint_parse(endpoint_uri, strlen(endpoint_uri), &sensor_pv_ep)) {
                 LOG_INFO("Sensor PV endpoint from cloud: %s\n", endpoint_uri);
             } else {
                 LOG_INFO("Failed to parse Sensor PV endpoint\n");
             }
-        }
 
-        ptr = strstr((char *)payload, "smartGrid=");
-        if(ptr != NULL) {
-            ptr += strlen("smartGrid=");
+        } else if(strncmp(token, "smartGrid=", 10) == 0) {
+            char *value = token + 10;
             char endpoint_uri[80];
-            snprintf(endpoint_uri, sizeof(endpoint_uri), "coap://[%s]:5683", ptr);
+            snprintf(endpoint_uri, sizeof(endpoint_uri), "coap://[%s]:5683", value);
 
             if (coap_endpoint_parse(endpoint_uri, strlen(endpoint_uri), &smart_grid_ep)) {
                 LOG_INFO("Smart Grid endpoint from cloud: %s\n", endpoint_uri);
@@ -139,10 +145,10 @@ static void reg_handler(coap_message_t *response) {
                 LOG_INFO("Failed to parse Smart Grid endpoint\n");
             }
         }
+
+        token = strtok(NULL, "&");
     }
 }
-
-
 
 static void response_handler_pred_power(coap_callback_request_state_t *callback_state) {
     coap_message_t *response = callback_state->state.response;

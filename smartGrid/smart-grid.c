@@ -36,7 +36,7 @@ PROCESS_THREAD(smart_grid, ev, data){
 
     LOG_INFO("Sending registration to cloud application....\n");
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 10);
+    coap_init_message(request, COAP_TYPE_CON, COAP_POST, coap_get_mid());
     coap_set_header_uri_path(request, RES_CLOUD_REGISTER_URI);
 
     // Request to cloud application
@@ -45,13 +45,14 @@ PROCESS_THREAD(smart_grid, ev, data){
     // Build payload (JSON)
     snprintf(buffer, sizeof(buffer),
             "{"
-            "\"nodeType\":\"chargingStation\","
+            "\"nodeType\":\"smartGrid\","
             "\"requiredNodes\":[]"
             "}"
         );
 
     coap_set_header_content_format(request, APPLICATION_JSON);
     coap_set_payload(request, (uint8_t *)buffer, strlen(buffer));
+
     COAP_BLOCKING_REQUEST(&cloud_application_ep, request, reg_handler);
 
     while(1) {
@@ -64,7 +65,7 @@ PROCESS_THREAD(smart_grid, ev, data){
 
 // Callback function to handle the cloud application's response
 static void reg_handler(coap_message_t *response) {
-        if(response) {
+    if(response) {
         uint8_t code = response->code;
 
         if(code == CREATED_2_01) {

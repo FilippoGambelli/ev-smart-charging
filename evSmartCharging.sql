@@ -22025,6 +22025,15 @@ INSERT INTO realPower (timestamp, realPower) VALUES
 /*!40000 ALTER TABLE `realPower` ENABLE KEYS */;
 UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `device`;
+
+CREATE TABLE `device` (
+  `id` INT NOT NULL,
+  `nodeType` VARCHAR(50) NOT NULL,
+  `EP` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`ID`, `nodeType`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 --
 -- Table structure for table `solarData`
 --
