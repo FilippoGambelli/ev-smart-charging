@@ -219,7 +219,7 @@
       <notes>ID 1 -&gt; Border router / central node
 ID 2 -&gt; Sensor PV
 ID 3 -&gt; Smart grid
-ID 4, ID 5, ID 6 -&gt; Charging station</notes>
+ID 4, ID 5, ID 6, ID 7 -&gt; Charging station</notes>
       <decorations>true</decorations>
     </plugin_config>
     <bounds x="400" y="0" height="106" width="1448" z="2" />

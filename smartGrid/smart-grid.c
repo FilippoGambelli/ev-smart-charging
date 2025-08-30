@@ -1,7 +1,7 @@
 #include "contiki.h"
 #include "coap-engine.h"
 #include "coap-blocking-api.h"
-
+#include <locale.h>
 
 // Log module configuration
 #include "sys/log.h"
@@ -26,6 +26,8 @@ PROCESS_THREAD(smart_grid, ev, data){
     static char buffer[128];
 
     PROCESS_BEGIN();
+
+    setlocale(LC_ALL, "C");
 
     LOG_INFO("Starting Smart Grid\n");
 

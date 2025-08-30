@@ -8,7 +8,7 @@
 #include "config-ml/config-ml.h"
 #include "coap-callback-api.h"
 #include "coap-blocking-api.h"
-
+#include <locale.h>
 
 #include "sys/log.h"
 #define LOG_MODULE "App"
@@ -47,6 +47,8 @@ PROCESS_THREAD(border_router, ev, data) {
     static char buffer[128];
 
     PROCESS_BEGIN();
+
+    setlocale(LC_ALL, "C");
 
     coap_activate_resource(&res_charger_reg, "registration/charger");
     coap_activate_resource(&res_car_reg, "registration/car");

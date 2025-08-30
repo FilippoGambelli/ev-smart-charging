@@ -9,6 +9,7 @@
 #include "os/dev/button-hal.h"
 #include "car-pool/car-pool.h"
 #include "os/dev/leds.h"
+#include <locale.h>
 
 // Helper macros to handle LEDs differently in Cooja vs real hardware
 #ifdef COOJA
@@ -65,6 +66,8 @@ PROCESS_THREAD(charging_station, ev, data){
     static char buffer[128];
 
     PROCESS_BEGIN();
+
+    setlocale(LC_ALL, "C");
 
     LOG_INFO("Charging station started\n");
 

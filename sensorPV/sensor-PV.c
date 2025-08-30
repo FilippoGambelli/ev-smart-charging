@@ -3,7 +3,7 @@
 #include "sys/etimer.h"
 #include "coap-blocking-api.h"
 #include "os/dev/leds.h"
-
+#include <locale.h>
 
 // Log module configuration
 #include "sys/log.h"
@@ -47,6 +47,8 @@ PROCESS_THREAD(sensorPV, ev, data){
     static struct etimer e_timer_real_power_data;
 
     PROCESS_BEGIN();
+
+    setlocale(LC_ALL, "C");
 
     LOG_INFO("Starting Sensor PV\n");
 
