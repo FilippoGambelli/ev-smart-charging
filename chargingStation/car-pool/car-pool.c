@@ -8,9 +8,10 @@
 
 // Definition of a pool of realistic cars
 static car_t car_pool[] = {
-    {22.0000f, 70.0000f, 20.00f, 80.00f, "XY987ZT"},
+    {22.0000f, 70.5000f, 20.00f, 80.00f, "XY987ZT"},
     {22.0000f, 85.0000f, 89.50f, 90.00f, "ZZ999YY"},
-    {11.0000f, 40.0000f, 10.00f, 50.00f, "AB123CD"}
+    {11.0000f, 40.0000f, 10.00f, 50.00f, "AB123CD"},
+    {22.0000f, 85.0000f, 10.00f, 90.00f, "BT919AN"},
 };
 
 #define CAR_POOL_SIZE (sizeof(car_pool)/sizeof(car_pool[0]))

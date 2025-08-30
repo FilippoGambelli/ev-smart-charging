@@ -100,7 +100,7 @@ static void res_get_handler(coap_message_t *request, coap_message_t *response, u
     int trend = (trend_val >= 0.0f) ? 1 : -1;
 
     // Write the plain text response
-    int offset_buf = snprintf((char *)buffer, preferred_size, "trend=%d&firstPrediction=%d,%04d", trend, (int)outputs[0], (int)((outputs[0] - (int)outputs[0]) * 10000));
+    int offset_buf = snprintf((char *)buffer, preferred_size, "trend=%d&firstPrediction=%d.%04d", trend, (int)outputs[0], (int)((outputs[0] - (int)outputs[0]) * 10000));
 
     LOG_INFO("Received GET - Pred Power Data - Data sent: Trend: %d | First Prediction: %d,%04d kW\n", trend, (int)(outputs[0]/1000), (int)((outputs[0] / 1000.0 - ((int)(outputs[0]/1000))) * 10000));
 

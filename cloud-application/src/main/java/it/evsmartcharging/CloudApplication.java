@@ -102,16 +102,6 @@ public class CloudApplication {
                             System.out.println("\nML Model is not running!");
                         }
                         break;
-
-                    case 8:
-                        logger.info("User selected to exit the application.");
-                        coapObserver.stopAllObservation();
-                        server.stop();
-                        server.destroy();
-                        databaseManager.closeConnection();
-                        userInterface.closeScanner();
-                        logger.info("System shutting down. Goodbye!");
-                        return;
                 
                     default:
                         break;

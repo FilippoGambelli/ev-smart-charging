@@ -2,12 +2,20 @@
 #include "coap-engine.h"
 #include "sys/etimer.h"
 #include "coap-blocking-api.h"
+#include "os/dev/leds.h"
 
 
 // Log module configuration
 #include "sys/log.h"
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
+
+// Helper macros to handle LEDs differently in Cooja vs real hardware
+#ifdef COOJA
+  #define LED_ON(led) leds_on(LEDS_NUM_TO_MASK(led))
+#else
+  #define LED_ON(led) leds_on(led)
+#endif
 
 #define CLOUD_APPLICATION_EP "coap://[fd00::1]:5683/"
 
@@ -74,18 +82,18 @@ PROCESS_THREAD(sensorPV, ev, data){
     etimer_set(&e_timer_solar_data, CLOCK_SECOND * SOLAR_DATA_INTERVAL);
     etimer_set(&e_timer_real_power_data, CLOCK_SECOND * REAL_POWER_INTERVAL);
 
+    LED_ON(LEDS_GREEN);
+
     while(1) {
         PROCESS_WAIT_EVENT();
-
+        
         // Handle solar data timer event
         if(ev == PROCESS_EVENT_TIMER && data == &e_timer_solar_data){
-            LOG_INFO("Event triggered - Solar Data\n");
             res_solar_obs.trigger();      // Notify observers of solar data
             etimer_reset(&e_timer_solar_data);
         }
         // Handle real power data timer event
         else if(ev == PROCESS_EVENT_TIMER && data == &e_timer_real_power_data){
-            LOG_INFO("Event triggered - Real Power Data\n");
             res_real_power_obs.trigger(); // Notify observers of real power
             etimer_reset(&e_timer_real_power_data);
         }

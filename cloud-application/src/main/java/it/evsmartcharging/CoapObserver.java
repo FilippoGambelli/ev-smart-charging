@@ -21,6 +21,7 @@ public class CoapObserver {
     private static final Logger logger = LoggerFactory.getLogger(CoapObserver.class);
 
     private volatile boolean ML_RUNNING = true;
+    private static int counterRealPower_zero = 0;
     
     private final DatabaseManager databaseConnection;
 
@@ -162,6 +163,12 @@ public class CoapObserver {
 
                             case "realPV":
                                 realPV = Float.parseFloat(value);
+                                if(realPV == 0){
+                                    counterRealPower_zero++;
+                                }
+                                else{
+                                    counterRealPower_zero = 0;
+                                }
                                 break;
 
                             default:
@@ -180,7 +187,7 @@ public class CoapObserver {
                     if(!ML_RUNNING && realPV > 0){
                         // startMLModel(); [Only for demonstration]
                     }
-                    else if (ML_RUNNING && databaseConnection.countTrailingZerosInRealPower() >= 360) {       // 30 minutes of zeros
+                    else if (ML_RUNNING && counterRealPower_zero >= 360) {       // 30 minutes of zeros
                         stopMLModel();
                     }
                 } catch (Exception e) {

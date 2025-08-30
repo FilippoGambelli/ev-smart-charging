@@ -145,7 +145,7 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="38.61581857989123" y="68.12388955896682" />
+          <pos x="32.49175649259617" y="68.12388955896682" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.contikimote.interfaces.ContikiMoteID
@@ -155,11 +155,21 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="57.36103742429514" y="59.364526235363044" />
+          <pos x="45.583994948727714" y="62.66209812852192" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.contikimote.interfaces.ContikiMoteID
           <id>6</id>
+        </interface_config>
+      </mote>
+      <mote>
+        <interface_config>
+          org.contikios.cooja.interfaces.Position
+          <pos x="53.41312894586171" y="54.36021466580367" />
+        </interface_config>
+        <interface_config>
+          org.contikios.cooja.contikimote.interfaces.ContikiMoteID
+          <id>7</id>
         </interface_config>
       </mote>
     </motetype>
@@ -173,9 +183,9 @@
       <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.LEDVisualizerSkin</skin>
-      <viewport>5.015078641527055 0.0 0.0 5.015078641527055 17.929577732704715 -103.74655142572567</viewport>
+      <viewport>4.245548074037235 0.0 0.0 4.245548074037235 24.068435452078603 -75.81163195138079</viewport>
     </plugin_config>
-    <bounds x="1" y="1" height="400" width="400" z="1" />
+    <bounds x="1" y="1" height="400" width="400" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.LogListener
@@ -184,7 +194,7 @@
       <formatted_time />
       <coloring />
     </plugin_config>
-    <bounds x="400" y="107" height="714" width="1448" />
+    <bounds x="400" y="107" height="714" width="1448" z="1" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.TimeLine
@@ -195,6 +205,7 @@
       <mote>3</mote>
       <mote>4</mote>
       <mote>5</mote>
+      <mote>6</mote>
       <showRadioRXTX />
       <showRadioHW />
       <showLEDs />

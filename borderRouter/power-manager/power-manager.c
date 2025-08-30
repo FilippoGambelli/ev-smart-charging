@@ -3,7 +3,7 @@
 static coap_endpoint_t charging_station_ep;
 coap_endpoint_t smart_grid_ep;              // Using the extern variable from the power-manager.h file
 
-time_t last_execution = 0;
+unsigned long last_execution = 0;
 float total_power_grid_used = 0;
 float solar_available = 0;
 
@@ -11,13 +11,13 @@ void power_manager_update_charging_station(){
 
     LOG_INFO("Starting power manager logic...\n");
 
-    int elapsed_time = 0;
-    time_t now = time(NULL);
+    unsigned long now = clock_seconds();
+    unsigned long elapsed_time;
 
     if (last_execution == 0) {   // First execution
         elapsed_time = 0;
     } else {
-        elapsed_time = difftime(now, last_execution);
+        elapsed_time = now - last_execution;    
     }
     last_execution = now;       // Update last execution time
 
@@ -100,10 +100,10 @@ void power_manager_update_charging_station(){
         char buffer[1024];
         int len = snprintf(buffer, sizeof(buffer),
             "Charger %u:\n"
-            "\t\t\t SOC current: %d,%04d %% \t\t SOC target: %d,%04d %%\n"
-            "\t\t\t Remaining energy: %d,%04d kWh \t\t Remaining time: %d s\n"
-            "\t\t\t Vehicle max capacity: %d,%04d kWh \t Required power: %d,%04d kW\n"
-            "\t\t\t Power PV real: %d,%04d kW \t\t Power Assigned: %d,%04d kW\n",
+            "\t\t\t SOC current: %d.%04d %% \t\t SOC target: %d.%04d %%\n"
+            "\t\t\t Remaining energy: %d.%04d kWh \t\t Remaining time: %d s\n"
+            "\t\t\t Vehicle max capacity: %d.%04d kWh \t Required power: %d.%04d kW\n"
+            "\t\t\t Power PV real: %d.%04d kW \t\t Power Assigned: %d.%04d kW\n",
             EV_charger[i].id,
             (int)EV_charger[i].soc_current, (int)((EV_charger[i].soc_current - (int)EV_charger[i].soc_current) * 10000),
             (int)EV_charger[i].soc_target, (int)((EV_charger[i].soc_target - (int)EV_charger[i].soc_target) * 10000),
@@ -116,13 +116,13 @@ void power_manager_update_charging_station(){
 
         if (run_ml_model) {
             len += snprintf(buffer + len, sizeof(buffer) - len,
-                "\t\t\t Power PV trend: %s \t\t Power PV pred: %d,%04d kW\n",
+                "\t\t\t Power PV trend: %s \t\t Power PV pred: %d.%04d kW\n",
                 power_PV_trend == 1 ? "increasing" : "decreasing",
                 (int)power_PV_pred, (int)((power_PV_pred - (int)power_PV_pred) * 10000));
         }
 
         snprintf(buffer + len, sizeof(buffer) - len,
-            "\t\t\t Renewable energy: %d,%04d kW\n\n",
+            "\t\t\t Renewable energy: %d.%04d kW\n\n",
             (int)(EV_charger[i].assigned_power - EV_charger[i].grid_power_used),
             (int)((EV_charger[i].assigned_power - EV_charger[i].grid_power_used - (int)(EV_charger[i].assigned_power - EV_charger[i].grid_power_used)) * 10000));
 
@@ -150,7 +150,7 @@ void send_charging_status(uip_ipaddr_t *addr, float assigned_power, float renewa
     coap_set_header_uri_path(request, RES_CHARGING_STATUS_URI);
 
     snprintf(buffer_req, sizeof(buffer_req),
-            "chargingPower=%d,%04d&energyRenewable=%d,%04d&timeRemaining=%d&chargingComplete=%d",
+            "chargingPower=%d.%04d&energyRenewable=%d.%04d&timeRemaining=%d&chargingComplete=%d",
             (int)assigned_power, (int)((assigned_power - (int)assigned_power) * 10000),
             (int)renewable_energy, (int)((renewable_energy - (int)renewable_energy) * 10000),
             time_remaining,
@@ -173,10 +173,10 @@ void send_grid_status(float power_grid, int grid_direction) {
 
     // Prepare the payload: power value and direction (-1 = input, 1 = output)
     if(grid_direction == 1){
-        snprintf(buffer_req, sizeof(buffer_req), "power_to_grid_now=%d,%04d&power_from_grid_now=0",  (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
+        snprintf(buffer_req, sizeof(buffer_req), "power_to_grid_now=%d.%04d&power_from_grid_now=0.0",  (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
         LOG_INFO("Sent PUT - Power to grid now: %d,%04d kW\n", (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
     } else {
-        snprintf(buffer_req, sizeof(buffer_req), "power_from_grid_now=%d,%04d&power_to_grid_now=0",  (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
+        snprintf(buffer_req, sizeof(buffer_req), "power_from_grid_now=%d.%04d&power_to_grid_now=0.0",  (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
         LOG_INFO("Sent PUT - Power from grid now: %d,%04d kW\n", (int)power_grid, (int)((power_grid - (int)power_grid) * 10000));
     }
 

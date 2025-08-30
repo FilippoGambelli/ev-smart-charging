@@ -23,7 +23,7 @@
 extern coap_endpoint_t smart_grid_ep;
 extern coap_endpoint_t sensor_pv_ep;
 
-extern time_t last_execution;
+extern unsigned long last_execution;
 
 extern float power_PV_real;             // kW        
 extern int power_PV_trend;              // 1 -1

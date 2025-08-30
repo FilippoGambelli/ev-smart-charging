@@ -23,7 +23,7 @@ static float power_to_grid_now = 0.0;
 static float energy_from_grid_total = 0.0;
 static float energy_to_grid_total = 0.0;
 
-static int last_execution = 0;
+static unsigned long last_execution = 0;
 
 // Forward declarations
 static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
@@ -69,15 +69,14 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
     size_t len = 0;
     const char *text = NULL;
 
-    int elapsed_time = 0;
-    time_t now = time(NULL);
+    unsigned long now = clock_seconds();
+    unsigned long elapsed_time;
 
-    if (last_execution == 0) {   // First execution
+    if (last_execution == 0) {  // First execution
         elapsed_time = 0;
     } else {
-        elapsed_time = difftime(now, last_execution);
+        elapsed_time = now - last_execution;
     }
-    // Update last execution time
     last_execution = now;
 
     // Update power_from_grid_now
@@ -93,7 +92,6 @@ static void res_put_handler(coap_message_t *request, coap_message_t *response, u
         energy_to_grid_total += power_to_grid_now * (elapsed_time / 3600.0);       
         power_to_grid_now = strtof(text, NULL);
     }
-
 
     LED_OFF(LEDS_ALL);
 

@@ -19,8 +19,8 @@ static coap_endpoint_t cloud_application_ep;
 
 static int EV_charger_last_idx = -1;
 
-#define PRIORITY_CHARGING_FACTOR 1.4 // Factor for priority charging
-#define STANDARD_CHARGING_FACTOR 1.7 // Factor for standard charging
+#define PRIORITY_CHARGING_FACTOR 1.2 // Factor for priority charging
+#define STANDARD_CHARGING_FACTOR 1.4 // Factor for standard charging
 
 static void res_connection_put_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static int get_device_idx_by_addr(const uip_ipaddr_t *src_addr);

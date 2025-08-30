@@ -5,7 +5,7 @@
 #include "os/dev/leds.h"
 
 /* Log configuration */
-#include "coap-log.h"
+#include "sys/log.h"
 #define LOG_MODULE "App"
 #define LOG_LEVEL  LOG_LEVEL_APP
 

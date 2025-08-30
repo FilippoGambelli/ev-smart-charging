@@ -20,7 +20,7 @@
 #endif
 
 /* Log configuration */
-#include "coap-log.h"
+#include "sys/log.h"
 #define LOG_MODULE "App"
 #define LOG_LEVEL  LOG_LEVEL_APP
 
@@ -104,7 +104,7 @@ PROCESS_THREAD(charging_station, ev, data){
             coap_init_message(request, COAP_TYPE_CON, COAP_POST, coap_get_mid());
             coap_set_header_uri_path(request, RES_CHARGER_REGISTER_URI);
 
-            snprintf(buffer, sizeof(buffer), "maxPower=%d,%04d", (int)CHARGER_MAX_POWER, (int)((CHARGER_MAX_POWER - (int)CHARGER_MAX_POWER) * 10000));
+            snprintf(buffer, sizeof(buffer), "maxPower=%d.%04d", (int)CHARGER_MAX_POWER, (int)((CHARGER_MAX_POWER - (int)CHARGER_MAX_POWER) * 10000));
 
             LOG_INFO("Data: maxPower: %d,%04d kW\n", (int)CHARGER_MAX_POWER, (int)((CHARGER_MAX_POWER - (int)CHARGER_MAX_POWER) * 10000));
 
@@ -127,7 +127,7 @@ PROCESS_THREAD(charging_station, ev, data){
                 const car_t* selected_car = get_next_car(my_id);
                 
                 snprintf(buffer, sizeof(buffer), 
-                    "type=connection&carMaxPower=%d,%04d&carMaxCapacity=%d,%04d&currentCharge=%d,%04d&desiredCharge=%d,%04d&plate=%s",
+                    "type=connection&carMaxPower=%d.%04d&carMaxCapacity=%d.%04d&currentCharge=%d.%04d&desiredCharge=%d.%04d&plate=%s",
                     (int)selected_car->carMaxPower, (int)((selected_car->carMaxPower - (int)selected_car->carMaxPower) * 10000),
                     (int)selected_car->carCapacity, (int)((selected_car->carCapacity - (int)selected_car->carCapacity) * 10000),
                     (int)selected_car->currentCharge, (int)((selected_car->currentCharge - (int)selected_car->currentCharge) * 10000),

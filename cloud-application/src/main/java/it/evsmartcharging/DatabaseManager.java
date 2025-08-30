@@ -155,35 +155,6 @@ public class DatabaseManager {
         return results;
     }
 
-    public int countTrailingZerosInRealPower() {
-        String sql = "SELECT realPower FROM realPower ORDER BY timestamp ASC";
-        int trailingZeros = 0;
-
-        try (Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql)) {
-
-            // Read all values into a list
-            List<Float> pValues = new ArrayList<>();
-            while (rs.next()) {
-                pValues.add(rs.getFloat("realPower"));
-            }
-
-            // Count trailing zeros starting from the end
-            for (int i = pValues.size() - 1; i >= 0; i--) {
-                if (pValues.get(i) == 0) {
-                    trailingZeros++;
-                } else {
-                    break;
-                }
-            }
-
-        } catch (SQLException e) {
-            logger.error("Select from realPower failed: {}", e.getMessage(), e);
-        }
-
-        return trailingZeros;
-    }
-
     public void insertDevice(int id, String nodeType, String ep) {
         String sql = "INSERT INTO device (id, nodeType, EP) VALUES (?, ?, ?) " +
                     "ON DUPLICATE KEY UPDATE EP = VALUES(EP)";
