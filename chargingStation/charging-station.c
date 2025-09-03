@@ -36,7 +36,10 @@
 
 
 #define CHARGER_MAX_POWER 22.0 // In kWh
+
 static uint8_t my_id = 0;   // Stores the ID assigned by the server after registration
+
+static bool car_connected = false; // Indicates if a car is currently connected
 
 static struct etimer registration_timer;
 
@@ -120,7 +123,7 @@ PROCESS_THREAD(charging_station, ev, data){
         if(ev == button_hal_release_event && my_id > 0) {
             button_hal_button_t *btn = (button_hal_button_t *)data;
             
-            if(btn->press_duration_seconds < 3) {
+            if(btn->press_duration_seconds < 3 && !car_connected) {
                 LOG_INFO("Sending vehicle connection request....\n");
 
                 coap_init_message(request, COAP_TYPE_CON, COAP_PUT, coap_get_mid());
@@ -148,7 +151,7 @@ PROCESS_THREAD(charging_station, ev, data){
                 coap_set_payload(request, (uint8_t *)buffer, strlen(buffer));
 
                 COAP_BLOCKING_REQUEST(&central_node_ep, request, vehicles_handler); 
-            } else {
+            } else if(btn->press_duration_seconds >= 3 && car_connected) {
                 LOG_INFO("Sending vehicle disconnection request....\n");
 
                 coap_init_message(request, COAP_TYPE_CON, COAP_PUT, coap_get_mid());
@@ -234,6 +237,7 @@ static void vehicles_handler(coap_message_t *response) {
             LED_OFF(LEDS_ALL);
             LED_SINGLE_OFF(LEDS_YELLOW);
             LOG_INFO("Update car status successful\n");
+            car_connected = !car_connected; // Toggle car connection status
         } else {
             LOG_INFO("Update car status failed\n");
         }
