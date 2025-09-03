@@ -88,6 +88,8 @@ function open_logins() {
     gnome-terminal --title="Charging Station 2" \
     -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER4; exec bash"
 
+    sleep 6
+
     echo ">>> All terminals opened, system is running."
 }
 

@@ -1,471 +1,118 @@
-2025-08-22 02:48:19.576 [main] INFO  it.evsmartcharging.CloudApplication - Starting system ...
-2025-08-22 02:48:19.596 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 02:48:20.664 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 02:48:20.666 [main] INFO  it.evsmartcharging.CoapObserver - CoapObserver initialized with DatabaseManager
-2025-08-22 02:48:20.667 [main] INFO  it.evsmartcharging.CoapObserver - Starting all CoAP observations...
-2025-08-22 02:48:20.668 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for solar data at coap://[fd00::202:2:2:2]:5683/res_solar_obs
-2025-08-22 02:48:20.835 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_solar_obs
-2025-08-22 02:48:20.838 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for real power data at coap://[fd00::202:2:2:2]:5683/res_real_power_obs
-2025-08-22 02:48:20.841 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_real_power_obs
-2025-08-22 02:48:20.875 [main] INFO  i.evsmartcharging.CoAPResourcePlate - CoAPResourcePlate initialized with name: plate
-2025-08-22 02:48:20.905 [main] INFO  it.evsmartcharging.CloudApplication - CoAP server started on default port 5683.
-2025-08-22 02:48:20.924 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 02:48:21.103 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 02:48:21.263 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:00:20.0, Gb=587.2631, Gd=188.429, Gr=15.5971, HSun=53.4082, T=20.9222, WS=1.5522, P_predicted=0.0
-2025-08-22 02:48:21.275 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:00:20.0, Gb=587.2631, Gd=188.429, Gr=15.5971, HSun=53.4082, T=20.9222, WS=1.5522
-2025-08-22 02:48:21.293 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:35.0, P_real=73156.48
-2025-08-22 02:48:21.295 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:35.0, realPV=73156.48
-2025-08-22 02:48:22.722 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:40.0, P_real=73205.12
-2025-08-22 02:48:22.728 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:40.0, realPV=73205.12
-2025-08-22 02:48:22.763 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:00:40.0, Gb=590.2596, Gd=187.588, Gr=15.6358, HSun=53.4631, T=20.9293, WS=1.5511, P_predicted=0.0
-2025-08-22 02:48:22.766 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:00:40.0, Gb=590.2596, Gd=187.588, Gr=15.6358, HSun=53.4631, T=20.9293, WS=1.5511
-2025-08-22 02:48:25.225 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:45.0, P_real=73253.76
-2025-08-22 02:48:25.225 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:45.0, realPV=73253.76
-2025-08-22 02:48:27.736 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:50.0, P_real=73302.4
-2025-08-22 02:48:27.737 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:50.0, realPV=73302.4
-2025-08-22 02:48:30.236 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:55.0, P_real=73351.04
-2025-08-22 02:48:30.237 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:55.0, realPV=73351.04
-2025-08-22 02:48:32.745 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:00.0, P_real=73399.68
-2025-08-22 02:48:32.746 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:00.0, realPV=73399.68
-2025-08-22 02:48:32.836 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55, P_predicted=0.0
-2025-08-22 02:48:32.837 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55
-2025-08-22 02:48:35.210 [pool-2-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: XY987ZT from /fd00:0:0:0:201:1:1:1
-2025-08-22 02:48:35.247 [pool-2-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 0 for plate XY987ZT
-2025-08-22 02:48:35.306 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:05.0, P_real=73448.32
-2025-08-22 02:48:35.306 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:05.0, realPV=73448.32
-2025-08-22 02:48:37.766 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:10.0, P_real=73496.96
-2025-08-22 02:48:37.767 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:10.0, realPV=73496.96
-2025-08-22 02:48:40.248 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:15.0, P_real=73545.6
-2025-08-22 02:48:40.249 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:15.0, realPV=73545.6
-2025-08-22 02:48:42.765 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:20.0, P_real=73594.24
-2025-08-22 02:48:42.766 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:20.0, realPV=73594.24
-2025-08-22 02:48:42.814 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:20.0, Gb=596.2524, Gd=185.906, Gr=15.7132, HSun=53.5729, T=20.9437, WS=1.5489, P_predicted=0.0
-2025-08-22 02:48:42.815 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:20.0, Gb=596.2524, Gd=185.906, Gr=15.7132, HSun=53.5729, T=20.9437, WS=1.5489
-2025-08-22 02:48:45.275 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:25.0, P_real=73642.88
-2025-08-22 02:48:45.276 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:25.0, realPV=73642.88
-2025-08-22 02:48:47.766 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:30.0, P_real=73691.52
-2025-08-22 02:48:47.767 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:30.0, realPV=73691.52
-2025-08-22 02:48:50.267 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:35.0, P_real=73740.16
-2025-08-22 02:48:50.269 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:35.0, realPV=73740.16
-2025-08-22 02:48:52.790 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:40.0, P_real=73788.8
-2025-08-22 02:48:52.791 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:40.0, realPV=73788.8
-2025-08-22 02:48:52.848 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:40.0, Gb=599.2489, Gd=185.065, Gr=15.7519, HSun=53.6278, T=20.9508, WS=1.5478, P_predicted=0.0
-2025-08-22 02:48:52.850 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:40.0, Gb=599.2489, Gd=185.065, Gr=15.7519, HSun=53.6278, T=20.9508, WS=1.5478
-2025-08-22 02:48:55.290 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:45.0, P_real=73837.44
-2025-08-22 02:48:55.292 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:45.0, realPV=73837.44
-2025-08-22 02:48:57.789 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:50.0, P_real=73886.08
-2025-08-22 02:48:57.791 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:50.0, realPV=73886.08
-2025-08-22 02:49:00.278 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:55.0, P_real=73934.72
-2025-08-22 02:49:00.279 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:55.0, realPV=73934.72
-2025-08-22 02:49:02.796 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:00.0, P_real=73983.36
-2025-08-22 02:49:02.796 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:00.0, realPV=73983.36
-2025-08-22 02:49:02.850 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:00.0, Gb=602.2453, Gd=184.224, Gr=15.7907, HSun=53.6827, T=20.958, WS=1.5467, P_predicted=0.0
-2025-08-22 02:49:02.853 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:00.0, Gb=602.2453, Gd=184.224, Gr=15.7907, HSun=53.6827, T=20.958, WS=1.5467
-2025-08-22 02:49:05.286 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:05.0, P_real=74032.0
-2025-08-22 02:49:05.292 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:05.0, realPV=74032.0
-2025-08-22 02:49:07.796 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:10.0, P_real=74080.64
-2025-08-22 02:49:07.800 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:10.0, realPV=74080.64
-2025-08-22 02:49:10.299 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:15.0, P_real=74129.28
-2025-08-22 02:49:10.300 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:15.0, realPV=74129.28
-2025-08-22 02:49:12.813 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:20.0, P_real=74177.92
-2025-08-22 02:49:12.813 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:20.0, realPV=74177.92
-2025-08-22 02:49:12.941 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456, P_predicted=0.0
-2025-08-22 02:49:12.941 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456
-2025-08-22 02:49:15.331 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:25.0, P_real=74226.56
-2025-08-22 02:49:15.331 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:25.0, realPV=74226.56
-2025-08-22 02:51:27.695 [Thread-0] ERROR it.evsmartcharging.CoapObserver - Error during solar observation!
-2025-08-22 02:51:30.269 [Thread-0] ERROR it.evsmartcharging.CoapObserver - Error during observation for /res_real_power_obs!
-2025-08-22 02:56:28.808 [pool-2-thread-1] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: ZZ999YY from /fd00:0:0:0:201:1:1:1
-2025-08-22 02:56:28.823 [pool-2-thread-1] WARN  i.evsmartcharging.CoAPResourcePlate - Priority not found for plate: ZZ999YY
-2025-08-22 03:07:26.819 [pool-2-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: XY987ZT from /fd00:0:0:0:201:1:1:1
-2025-08-22 03:07:26.827 [pool-2-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 0 for plate XY987ZT
-2025-08-22 03:17:31.105 [pool-2-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: XY987ZT from /fd00:0:0:0:201:1:1:1
-2025-08-22 03:17:31.125 [pool-2-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 0 for plate XY987ZT
-2025-08-22 03:19:01.560 [main] INFO  it.evsmartcharging.CloudApplication - Starting system ...
-2025-08-22 03:19:01.562 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 03:19:02.689 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 03:19:02.690 [main] INFO  it.evsmartcharging.CoapObserver - CoapObserver initialized with DatabaseManager
-2025-08-22 03:19:02.691 [main] INFO  it.evsmartcharging.CoapObserver - Starting all CoAP observations...
-2025-08-22 03:19:02.691 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for solar data at coap://[fd00::202:2:2:2]:5683/res_solar_obs
-2025-08-22 03:19:02.830 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_solar_obs
-2025-08-22 03:19:02.831 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for real power data at coap://[fd00::202:2:2:2]:5683/res_real_power_obs
-2025-08-22 03:19:02.838 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_real_power_obs
-2025-08-22 03:19:02.876 [main] INFO  i.evsmartcharging.CoAPResourcePlate - CoAPResourcePlate initialized with name: plate
-2025-08-22 03:19:02.911 [main] INFO  it.evsmartcharging.CloudApplication - CoAP server started on default port 5683.
-2025-08-22 03:19:02.920 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 03:19:03.232 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 03:19:03.279 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:00:20.0, Gb=587.2631, Gd=188.429, Gr=15.5971, HSun=53.4082, T=20.9222, WS=1.5522, P_predicted=0.0
-2025-08-22 03:19:03.295 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:00:20.0, Gb=587.2631, Gd=188.429, Gr=15.5971, HSun=53.4082, T=20.9222, WS=1.5522
-2025-08-22 03:19:03.316 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:30.0, P_real=73107.84
-2025-08-22 03:19:03.316 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:30.0, realPV=73107.84
-2025-08-22 03:19:03.692 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:35.0, P_real=73156.48
-2025-08-22 03:19:03.695 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:35.0, realPV=73156.48
-2025-08-22 03:19:06.117 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:40.0, P_real=73205.12
-2025-08-22 03:19:06.118 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:40.0, realPV=73205.12
-2025-08-22 03:19:06.164 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:00:40.0, Gb=590.2596, Gd=187.588, Gr=15.6358, HSun=53.4631, T=20.9293, WS=1.5511, P_predicted=0.0
-2025-08-22 03:19:06.165 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:00:40.0, Gb=590.2596, Gd=187.588, Gr=15.6358, HSun=53.4631, T=20.9293, WS=1.5511
-2025-08-22 03:19:08.622 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:45.0, P_real=73253.76
-2025-08-22 03:19:08.624 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:45.0, realPV=73253.76
-2025-08-22 03:19:11.142 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:50.0, P_real=73302.4
-2025-08-22 03:19:11.143 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:50.0, realPV=73302.4
-2025-08-22 03:19:13.641 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:55.0, P_real=73351.04
-2025-08-22 03:19:13.643 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:55.0, realPV=73351.04
-2025-08-22 03:19:16.162 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:00.0, P_real=73399.68
-2025-08-22 03:19:16.166 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:00.0, realPV=73399.68
-2025-08-22 03:19:16.209 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55, P_predicted=0.0
-2025-08-22 03:19:16.210 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55
-2025-08-22 03:19:18.656 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:05.0, P_real=73448.32
-2025-08-22 03:19:18.656 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:05.0, realPV=73448.32
-2025-08-22 03:19:20.922 [pool-1-thread-2] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: XY987ZT from /fd00:0:0:0:201:1:1:1
-2025-08-22 03:19:20.988 [pool-1-thread-2] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 0 for plate XY987ZT
-2025-08-22 03:19:21.173 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:10.0, P_real=73496.96
-2025-08-22 03:19:21.174 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:10.0, realPV=73496.96
-2025-08-22 03:19:23.667 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:15.0, P_real=73545.6
-2025-08-22 03:19:23.667 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:15.0, realPV=73545.6
-2025-08-22 03:19:26.202 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:20.0, P_real=73594.24
-2025-08-22 03:19:26.203 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:20.0, realPV=73594.24
-2025-08-22 03:19:26.246 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:20.0, Gb=596.2524, Gd=185.906, Gr=15.7132, HSun=53.5729, T=20.9437, WS=1.5489, P_predicted=0.0
-2025-08-22 03:19:26.250 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:20.0, Gb=596.2524, Gd=185.906, Gr=15.7132, HSun=53.5729, T=20.9437, WS=1.5489
-2025-08-22 03:19:28.672 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:25.0, P_real=73642.88
-2025-08-22 03:19:28.682 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:25.0, realPV=73642.88
-2025-08-22 03:19:31.181 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:30.0, P_real=73691.52
-2025-08-22 03:19:31.181 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:30.0, realPV=73691.52
-2025-08-22 03:19:33.685 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:35.0, P_real=73740.16
-2025-08-22 03:19:33.685 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:35.0, realPV=73740.16
-2025-08-22 03:19:36.179 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:40.0, P_real=73788.8
-2025-08-22 03:19:36.180 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:40.0, realPV=73788.8
-2025-08-22 03:19:36.233 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:40.0, Gb=599.2489, Gd=185.065, Gr=15.7519, HSun=53.6278, T=20.9508, WS=1.5478, P_predicted=0.0
-2025-08-22 03:19:36.234 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:40.0, Gb=599.2489, Gd=185.065, Gr=15.7519, HSun=53.6278, T=20.9508, WS=1.5478
-2025-08-22 03:19:38.677 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:45.0, P_real=73837.44
-2025-08-22 03:19:38.678 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:45.0, realPV=73837.44
-2025-08-22 03:19:41.197 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:50.0, P_real=73886.08
-2025-08-22 03:19:41.198 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:50.0, realPV=73886.08
-2025-08-22 03:19:43.705 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:55.0, P_real=73934.72
-2025-08-22 03:19:43.706 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:55.0, realPV=73934.72
-2025-08-22 03:19:46.205 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:00.0, P_real=73983.36
-2025-08-22 03:19:46.206 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:00.0, realPV=73983.36
-2025-08-22 03:19:46.230 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:00.0, Gb=602.2453, Gd=184.224, Gr=15.7907, HSun=53.6827, T=20.958, WS=1.5467, P_predicted=0.0
-2025-08-22 03:19:46.230 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:00.0, Gb=602.2453, Gd=184.224, Gr=15.7907, HSun=53.6827, T=20.958, WS=1.5467
-2025-08-22 03:19:48.743 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:05.0, P_real=74032.0
-2025-08-22 03:19:48.746 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:05.0, realPV=74032.0
-2025-08-22 03:19:51.256 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:10.0, P_real=74080.64
-2025-08-22 03:19:51.257 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:10.0, realPV=74080.64
-2025-08-22 03:19:53.768 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:15.0, P_real=74129.28
-2025-08-22 03:19:53.772 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:15.0, realPV=74129.28
-2025-08-22 03:19:56.228 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:20.0, P_real=74177.92
-2025-08-22 03:19:56.229 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:20.0, realPV=74177.92
-2025-08-22 03:19:56.321 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456, P_predicted=0.0
-2025-08-22 03:19:56.325 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456
-2025-08-22 03:19:58.734 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:25.0, P_real=74226.56
-2025-08-22 03:19:58.735 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:25.0, realPV=74226.56
-2025-08-22 03:20:01.290 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:30.0, P_real=74275.2
-2025-08-22 03:20:01.291 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:30.0, realPV=74275.2
-2025-08-22 03:22:15.195 [Thread-0] ERROR it.evsmartcharging.CoapObserver - Error during solar observation!
-2025-08-22 03:22:26.628 [Thread-0] ERROR it.evsmartcharging.CoapObserver - Error during observation for /res_real_power_obs!
-2025-08-22 03:26:44.511 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: XY987ZT from /fd00:0:0:0:201:1:1:1
-2025-08-22 03:26:44.536 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 0 for plate XY987ZT
-2025-08-22 03:32:47.749 [pool-1-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: XY987ZT from /fd00:0:0:0:201:1:1:1
-2025-08-22 03:32:47.763 [pool-1-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 0 for plate XY987ZT
-2025-08-22 09:00:28.231 [main] INFO  it.evsmartcharging.CloudApplication - Starting system ...
-2025-08-22 09:00:28.234 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 09:00:28.778 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 09:00:28.779 [main] INFO  it.evsmartcharging.CoapObserver - CoapObserver initialized with DatabaseManager
-2025-08-22 09:00:28.779 [main] INFO  it.evsmartcharging.CoapObserver - Starting all CoAP observations...
-2025-08-22 09:00:28.779 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for solar data at coap://[fd00::202:2:2:2]:5683/res_solar_obs
-2025-08-22 09:00:28.895 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_solar_obs
-2025-08-22 09:00:28.896 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for real power data at coap://[fd00::202:2:2:2]:5683/res_real_power_obs
-2025-08-22 09:00:28.900 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_real_power_obs
-2025-08-22 09:00:28.937 [main] INFO  i.evsmartcharging.CoAPResourcePlate - CoAPResourcePlate initialized with name: plate
-2025-08-22 09:00:28.944 [main] INFO  it.evsmartcharging.CloudApplication - CoAP server started on default port 5683.
-2025-08-22 09:00:28.949 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 09:00:28.995 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 09:24:18.443 [main] INFO  it.evsmartcharging.CloudApplication - Starting system ...
-2025-08-22 09:24:18.446 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 09:24:19.248 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 09:24:19.250 [main] INFO  it.evsmartcharging.CoapObserver - CoapObserver initialized with DatabaseManager
-2025-08-22 09:24:19.250 [main] INFO  it.evsmartcharging.CoapObserver - Starting all CoAP observations...
-2025-08-22 09:24:19.252 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for solar data at coap://[fd00::202:2:2:2]:5683/res_solar_obs
-2025-08-22 09:24:19.362 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_solar_obs
-2025-08-22 09:24:19.382 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for real power data at coap://[fd00::202:2:2:2]:5683/res_real_power_obs
-2025-08-22 09:24:19.384 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_real_power_obs
-2025-08-22 09:24:19.394 [main] INFO  i.evsmartcharging.CoAPResourcePlate - CoAPResourcePlate initialized with name: plate
-2025-08-22 09:24:19.444 [main] INFO  it.evsmartcharging.CloudApplication - CoAP server started on default port 5683.
-2025-08-22 09:24:19.453 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 09:24:19.562 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 09:24:38.871 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:00:20.0, Gb=587.2631, Gd=188.429, Gr=15.5971, HSun=53.4082, T=20.9222, WS=1.5522, P_predicted=0.0
-2025-08-22 09:24:38.877 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:00:20.0, Gb=587.2631, Gd=188.429, Gr=15.5971, HSun=53.4082, T=20.9222, WS=1.5522
-2025-08-22 09:24:40.393 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:35.0, P_real=73156.48
-2025-08-22 09:24:40.394 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:35.0, realPV=73156.48
-2025-08-22 09:24:43.336 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:40.0, P_real=73205.12
-2025-08-22 09:24:43.337 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:40.0, realPV=73205.12
-2025-08-22 09:24:43.372 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:00:40.0, Gb=590.2596, Gd=187.588, Gr=15.6358, HSun=53.4631, T=20.9293, WS=1.5511, P_predicted=0.0
-2025-08-22 09:24:43.373 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:00:40.0, Gb=590.2596, Gd=187.588, Gr=15.6358, HSun=53.4631, T=20.9293, WS=1.5511
-2025-08-22 09:24:48.308 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:45.0, P_real=73253.76
-2025-08-22 09:24:48.309 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:45.0, realPV=73253.76
-2025-08-22 09:24:53.344 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:50.0, P_real=73302.4
-2025-08-22 09:24:53.345 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:50.0, realPV=73302.4
-2025-08-22 09:24:58.289 [pool-1-thread-2] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: AB123CD from /fd00:0:0:0:201:1:1:1
-2025-08-22 09:24:58.430 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:55.0, P_real=73351.04
-2025-08-22 09:24:58.433 [pool-1-thread-2] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 1 for plate AB123CD
-2025-08-22 09:24:58.436 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:55.0, realPV=73351.04
-2025-08-22 09:25:03.365 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:00.0, P_real=73399.68
-2025-08-22 09:25:03.368 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:00.0, realPV=73399.68
-2025-08-22 09:25:03.447 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55, P_predicted=0.0
-2025-08-22 09:25:03.464 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55
-2025-08-22 09:25:52.539 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:05.0, P_real=73448.32
-2025-08-22 09:25:52.556 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:05.0, realPV=73448.32
-2025-08-22 09:25:56.915 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: ZZ999YY from /fd00:0:0:0:201:1:1:1
-2025-08-22 09:25:56.925 [pool-1-thread-3] WARN  i.evsmartcharging.CoAPResourcePlate - Priority not found for plate: ZZ999YY
-2025-08-22 09:25:57.537 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:10.0, P_real=73496.96
-2025-08-22 09:25:57.540 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:10.0, realPV=73496.96
-2025-08-22 09:25:59.646 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: ZZ999YY from /fd00:0:0:0:201:1:1:1
-2025-08-22 09:25:59.653 [pool-1-thread-3] WARN  i.evsmartcharging.CoAPResourcePlate - Priority not found for plate: ZZ999YY
-2025-08-22 09:26:02.540 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:15.0, P_real=73545.6
-2025-08-22 09:26:02.541 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:15.0, realPV=73545.6
-2025-08-22 09:26:05.539 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55, P_predicted=0.0
-2025-08-22 09:26:05.545 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55
-2025-08-22 09:26:07.557 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:20.0, P_real=73594.24
-2025-08-22 09:26:07.557 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:20.0, realPV=73594.24
-2025-08-22 09:26:07.633 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:20.0, Gb=596.2524, Gd=185.906, Gr=15.7132, HSun=53.5729, T=20.9437, WS=1.5489, P_predicted=0.0
-2025-08-22 09:26:07.642 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:20.0, Gb=596.2524, Gd=185.906, Gr=15.7132, HSun=53.5729, T=20.9437, WS=1.5489
-2025-08-22 09:26:12.568 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:25.0, P_real=73642.88
-2025-08-22 09:26:12.569 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:25.0, realPV=73642.88
-2025-08-22 09:26:17.558 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:30.0, P_real=73691.52
-2025-08-22 09:26:17.558 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:30.0, realPV=73691.52
-2025-08-22 09:26:57.718 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:35.0, P_real=73740.16
-2025-08-22 09:26:57.718 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:35.0, realPV=73740.16
-2025-08-22 09:27:02.681 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:40.0, P_real=73788.8
-2025-08-22 09:27:02.683 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:40.0, realPV=73788.8
-2025-08-22 09:27:02.905 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:40.0, Gb=599.2489, Gd=185.065, Gr=15.7519, HSun=53.6278, T=20.9508, WS=1.5478, P_predicted=0.0
-2025-08-22 09:27:02.906 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:40.0, Gb=599.2489, Gd=185.065, Gr=15.7519, HSun=53.6278, T=20.9508, WS=1.5478
-2025-08-22 09:27:07.704 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:45.0, P_real=73837.44
-2025-08-22 09:27:07.705 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:45.0, realPV=73837.44
-2025-08-22 09:27:12.713 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:50.0, P_real=73886.08
-2025-08-22 09:27:12.714 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:50.0, realPV=73886.08
-2025-08-22 09:27:15.498 [pool-1-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: ZZ999YY from /fd00:0:0:0:201:1:1:1
-2025-08-22 09:27:15.503 [pool-1-thread-4] WARN  i.evsmartcharging.CoAPResourcePlate - Priority not found for plate: ZZ999YY
-2025-08-22 09:27:17.717 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:55.0, P_real=73934.72
-2025-08-22 09:27:17.718 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:55.0, realPV=73934.72
-2025-08-22 09:27:22.757 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:00.0, P_real=73983.36
-2025-08-22 09:27:22.758 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:00.0, realPV=73983.36
-2025-08-22 09:27:22.790 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:00.0, Gb=602.2453, Gd=184.224, Gr=15.7907, HSun=53.6827, T=20.958, WS=1.5467, P_predicted=0.0
-2025-08-22 09:27:22.791 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:00.0, Gb=602.2453, Gd=184.224, Gr=15.7907, HSun=53.6827, T=20.958, WS=1.5467
-2025-08-22 09:27:27.711 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:05.0, P_real=74032.0
-2025-08-22 09:27:27.711 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:05.0, realPV=74032.0
-2025-08-22 09:27:32.717 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:10.0, P_real=74080.64
-2025-08-22 09:27:32.718 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:10.0, realPV=74080.64
-2025-08-22 09:27:37.733 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:15.0, P_real=74129.28
-2025-08-22 09:27:37.733 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:15.0, realPV=74129.28
-2025-08-22 09:27:43.062 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:20.0, P_real=74177.92
-2025-08-22 09:27:43.064 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:20.0, realPV=74177.92
-2025-08-22 09:27:43.300 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456, P_predicted=0.0
-2025-08-22 09:27:43.300 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456
-2025-08-22 09:27:48.072 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:25.0, P_real=74226.56
-2025-08-22 09:27:48.072 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:25.0, realPV=74226.56
-2025-08-22 09:27:53.082 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:30.0, P_real=74275.2
-2025-08-22 09:27:53.082 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:30.0, realPV=74275.2
-2025-08-22 09:27:57.430 [pool-1-thread-2] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: GH789JK from /fd00:0:0:0:201:1:1:1
-2025-08-22 09:27:57.436 [pool-1-thread-2] WARN  i.evsmartcharging.CoAPResourcePlate - Priority not found for plate: GH789JK
-2025-08-22 09:27:58.100 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:35.0, P_real=74323.84
-2025-08-22 09:27:58.101 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:35.0, realPV=74323.84
-2025-08-22 09:28:03.105 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:40.0, P_real=74372.48
-2025-08-22 09:28:03.106 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:40.0, realPV=74372.48
-2025-08-22 09:28:03.201 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:40.0, Gb=608.2382, Gd=182.542, Gr=15.8681, HSun=53.7924, T=20.9723, WS=1.5444, P_predicted=0.0
-2025-08-22 09:28:03.203 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:40.0, Gb=608.2382, Gd=182.542, Gr=15.8681, HSun=53.7924, T=20.9723, WS=1.5444
-2025-08-22 09:28:08.100 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:45.0, P_real=74421.12
-2025-08-22 09:28:08.103 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:45.0, realPV=74421.12
-2025-08-22 09:28:13.129 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:50.0, P_real=74469.76
-2025-08-22 09:28:13.132 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:50.0, realPV=74469.76
-2025-08-22 09:30:28.963 [Thread-0] ERROR it.evsmartcharging.CoapObserver - Error during solar observation!
-2025-08-22 09:30:41.623 [Thread-0] ERROR it.evsmartcharging.CoapObserver - Error during observation for /res_real_power_obs!
-2025-08-22 09:30:58.798 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: GH789JK from /fd00:0:0:0:201:1:1:1
-2025-08-22 09:30:58.805 [pool-1-thread-3] WARN  i.evsmartcharging.CoAPResourcePlate - Priority not found for plate: GH789JK
-2025-08-22 09:31:01.255 [pool-1-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: AB123CD from /fd00:0:0:0:201:1:1:1
-2025-08-22 09:31:01.259 [pool-1-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 1 for plate AB123CD
-2025-08-22 09:31:04.354 [pool-1-thread-1] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: ZZ999YY from /fd00:0:0:0:201:1:1:1
-2025-08-22 09:31:04.377 [pool-1-thread-1] WARN  i.evsmartcharging.CoAPResourcePlate - Priority not found for plate: ZZ999YY
-2025-08-22 15:33:23.791 [main] INFO  it.evsmartcharging.CloudApplication - Starting system ...
-2025-08-22 15:33:23.793 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 15:33:24.276 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 15:33:24.277 [main] INFO  it.evsmartcharging.CoapObserver - CoapObserver initialized with DatabaseManager
-2025-08-22 15:33:24.277 [main] INFO  it.evsmartcharging.CoapObserver - Starting all CoAP observations...
-2025-08-22 15:33:24.278 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for solar data at coap://[fd00::202:2:2:2]:5683/res_solar_obs
-2025-08-22 15:33:24.319 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_solar_obs
-2025-08-22 15:33:24.319 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for real power data at coap://[fd00::202:2:2:2]:5683/res_real_power_obs
-2025-08-22 15:33:24.320 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_real_power_obs
-2025-08-22 15:33:24.325 [main] INFO  i.evsmartcharging.CoAPResourcePlate - CoAPResourcePlate initialized with name: plate
-2025-08-22 15:33:24.334 [main] INFO  it.evsmartcharging.CloudApplication - CoAP server started on default port 5683.
-2025-08-22 15:33:24.436 [Thread-0] ERROR it.evsmartcharging.CoapObserver - Error parsing real power observation data: For input string: "74226,5625"
-java.lang.NumberFormatException: For input string: "74226,5625"
-	at java.base/jdk.internal.math.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:2054)
-	at java.base/jdk.internal.math.FloatingDecimal.parseFloat(FloatingDecimal.java:122)
-	at java.base/java.lang.Float.parseFloat(Float.java:455)
-	at it.evsmartcharging.CoapObserver$2.onLoad(CoapObserver.java:163)
-	at org.eclipse.californium.core.CoapClient$ObserveMessageObserverImpl.deliver(CoapClient.java:1068)
-	at org.eclipse.californium.core.CoapClient$MessageObserverImpl.succeeded(CoapClient.java:996)
-	at org.eclipse.californium.core.CoapClient$MessageObserverImpl.onResponse(CoapClient.java:975)
-	at org.eclipse.californium.core.coap.Request.setResponse(Request.java:509)
-	at org.eclipse.californium.core.network.EndpointManager$ClientMessageDeliverer.deliverResponse(EndpointManager.java:267)
-	at org.eclipse.californium.core.network.stack.CoapStack$StackTopAdapter.receiveResponse(CoapStack.java:193)
-	at org.eclipse.californium.core.network.stack.AbstractLayer.receiveResponse(AbstractLayer.java:98)
-	at org.eclipse.californium.core.network.stack.ObserveLayer.receiveResponse(ObserveLayer.java:137)
-	at org.eclipse.californium.core.network.stack.AbstractLayer.receiveResponse(AbstractLayer.java:98)
-	at org.eclipse.californium.core.network.stack.BlockwiseLayer.receiveResponse(BlockwiseLayer.java:324)
-	at org.eclipse.californium.core.network.stack.AbstractLayer.receiveResponse(AbstractLayer.java:98)
-	at org.eclipse.californium.core.network.stack.ReliabilityLayer.receiveResponse(ReliabilityLayer.java:269)
-	at org.eclipse.californium.core.network.stack.AbstractLayer.receiveResponse(AbstractLayer.java:98)
-	at org.eclipse.californium.core.network.stack.CoapStack.receiveResponse(CoapStack.java:135)
-	at org.eclipse.californium.core.network.CoapEndpoint$InboxImpl.receiveMessage(CoapEndpoint.java:656)
-	at org.eclipse.californium.core.network.CoapEndpoint$InboxImpl.access$700(CoapEndpoint.java:562)
-	at org.eclipse.californium.core.network.CoapEndpoint$InboxImpl$1.run(CoapEndpoint.java:574)
-	at org.eclipse.californium.core.network.CoapEndpoint$5.run(CoapEndpoint.java:721)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
-	at java.base/java.lang.Thread.run(Thread.java:829)
-2025-08-22 15:33:24.467 [Thread-0] ERROR it.evsmartcharging.CoapObserver - Error parsing real power observation data: For input string: "74226,5625"
-java.lang.NumberFormatException: For input string: "74226,5625"
-	at java.base/jdk.internal.math.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:2054)
-	at java.base/jdk.internal.math.FloatingDecimal.parseFloat(FloatingDecimal.java:122)
-	at java.base/java.lang.Float.parseFloat(Float.java:455)
-	at it.evsmartcharging.CoapObserver$2.onLoad(CoapObserver.java:163)
-	at org.eclipse.californium.core.CoapClient$ObserveMessageObserverImpl.deliver(CoapClient.java:1068)
-	at org.eclipse.californium.core.CoapClient$MessageObserverImpl.succeeded(CoapClient.java:996)
-	at org.eclipse.californium.core.CoapClient$MessageObserverImpl.onResponse(CoapClient.java:975)
-	at org.eclipse.californium.core.coap.Request.setResponse(Request.java:509)
-	at org.eclipse.californium.core.network.EndpointManager$ClientMessageDeliverer.deliverResponse(EndpointManager.java:267)
-	at org.eclipse.californium.core.network.stack.CoapStack$StackTopAdapter.receiveResponse(CoapStack.java:193)
-	at org.eclipse.californium.core.network.stack.AbstractLayer.receiveResponse(AbstractLayer.java:98)
-	at org.eclipse.californium.core.network.stack.ObserveLayer.receiveResponse(ObserveLayer.java:137)
-	at org.eclipse.californium.core.network.stack.AbstractLayer.receiveResponse(AbstractLayer.java:98)
-	at org.eclipse.californium.core.network.stack.BlockwiseLayer.receiveResponse(BlockwiseLayer.java:324)
-	at org.eclipse.californium.core.network.stack.AbstractLayer.receiveResponse(AbstractLayer.java:98)
-	at org.eclipse.californium.core.network.stack.ReliabilityLayer.receiveResponse(ReliabilityLayer.java:269)
-	at org.eclipse.californium.core.network.stack.AbstractLayer.receiveResponse(AbstractLayer.java:98)
-	at org.eclipse.californium.core.network.stack.CoapStack.receiveResponse(CoapStack.java:135)
-	at org.eclipse.californium.core.network.CoapEndpoint$InboxImpl.receiveMessage(CoapEndpoint.java:656)
-	at org.eclipse.californium.core.network.CoapEndpoint$InboxImpl.access$700(CoapEndpoint.java:562)
-	at org.eclipse.californium.core.network.CoapEndpoint$InboxImpl$1.run(CoapEndpoint.java:574)
-	at org.eclipse.californium.core.network.CoapEndpoint$5.run(CoapEndpoint.java:721)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
-	at java.base/java.lang.Thread.run(Thread.java:829)
-2025-08-22 15:33:26.900 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456, P_predicted=0.0
-2025-08-22 15:33:26.901 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456
-2025-08-22 15:33:27.153 [main] INFO  it.evsmartcharging.CloudApplication - User select option number 2
-2025-08-22 15:33:27.153 [main] INFO  it.evsmartcharging.CloudApplication - User selected to update the ML prediction interval.
-2025-08-22 15:33:27.776 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:30.0, P_real=74275.2
-2025-08-22 15:33:27.776 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:30.0, realPV=74275.2
-2025-08-22 15:33:32.781 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:35.0, P_real=74323.84
-2025-08-22 15:33:32.782 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:35.0, realPV=74323.84
-2025-08-22 15:33:37.780 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:40.0, P_real=74372.48
-2025-08-22 15:33:37.780 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:40.0, realPV=74372.48
-2025-08-22 15:33:37.845 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:40.0, Gb=608.2382, Gd=182.542, Gr=15.8681, HSun=53.7924, T=20.9723, WS=1.5444, P_predicted=0.0
-2025-08-22 15:33:37.847 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:40.0, Gb=608.2382, Gd=182.542, Gr=15.8681, HSun=53.7924, T=20.9723, WS=1.5444
-2025-08-22 15:33:42.842 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:45.0, P_real=74421.12
-2025-08-22 15:33:42.842 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:45.0, realPV=74421.12
-2025-08-22 15:33:47.788 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:50.0, P_real=74469.76
-2025-08-22 15:33:47.789 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:50.0, realPV=74469.76
-2025-08-22 15:33:52.858 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:55.0, P_real=74518.4
-2025-08-22 15:33:52.869 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:55.0, realPV=74518.4
-2025-08-22 15:33:57.828 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:03:00.0, P_real=74567.04
-2025-08-22 15:33:57.835 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:03:00.0, realPV=74567.04
-2025-08-22 15:33:57.893 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:03:00.0, Gb=611.2347, Gd=181.701, Gr=15.9068, HSun=53.8473, T=20.9795, WS=1.5433, P_predicted=0.0
-2025-08-22 15:33:57.896 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:03:00.0, Gb=611.2347, Gd=181.701, Gr=15.9068, HSun=53.8473, T=20.9795, WS=1.5433
-2025-08-22 15:34:02.814 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:03:05.0, P_real=74615.68
-2025-08-22 15:34:02.816 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:03:05.0, realPV=74615.68
-2025-08-22 15:34:07.846 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:03:10.0, P_real=74664.32
-2025-08-22 15:34:07.847 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:03:10.0, realPV=74664.32
-2025-08-22 15:34:12.858 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:03:15.0, P_real=74712.96
-2025-08-22 15:34:12.858 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:03:15.0, realPV=74712.96
-2025-08-22 15:35:17.095 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:25.0, P_real=73059.2
-2025-08-22 15:35:17.097 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:25.0, realPV=73059.2
-2025-08-22 15:35:21.506 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:30.0, P_real=73107.84
-2025-08-22 15:35:21.507 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:30.0, realPV=73107.84
-2025-08-22 15:35:26.516 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:35.0, P_real=73156.48
-2025-08-22 15:35:26.517 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:35.0, realPV=73156.48
-2025-08-22 15:35:30.235 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:00:20.0, Gb=587.2631, Gd=188.429, Gr=15.5971, HSun=53.4082, T=20.9222, WS=1.5522, P_predicted=0.0
-2025-08-22 15:35:30.235 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:00:20.0, Gb=587.2631, Gd=188.429, Gr=15.5971, HSun=53.4082, T=20.9222, WS=1.5522
-2025-08-22 15:35:31.514 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:40.0, P_real=73205.12
-2025-08-22 15:35:31.515 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:40.0, realPV=73205.12
-2025-08-22 15:35:31.605 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:00:40.0, Gb=590.2596, Gd=187.588, Gr=15.6358, HSun=53.4631, T=20.9293, WS=1.5511, P_predicted=0.0
-2025-08-22 15:35:31.607 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:00:40.0, Gb=590.2596, Gd=187.588, Gr=15.6358, HSun=53.4631, T=20.9293, WS=1.5511
-2025-08-22 15:35:36.527 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:45.0, P_real=73253.76
-2025-08-22 15:35:36.529 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:45.0, realPV=73253.76
-2025-08-22 15:35:41.555 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:50.0, P_real=73302.4
-2025-08-22 15:35:41.556 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:50.0, realPV=73302.4
-2025-08-22 15:35:46.566 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:00:55.0, P_real=73351.04
-2025-08-22 15:35:46.567 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:00:55.0, realPV=73351.04
-2025-08-22 15:35:51.577 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:00.0, P_real=73399.68
-2025-08-22 15:35:51.578 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:00.0, realPV=73399.68
-2025-08-22 15:35:51.704 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55, P_predicted=0.0
-2025-08-22 15:35:51.705 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:00.0, Gb=593.256, Gd=186.747, Gr=15.6745, HSun=53.518, T=20.9365, WS=1.55
-2025-08-22 15:35:56.577 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:05.0, P_real=73448.32
-2025-08-22 15:35:56.581 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:05.0, realPV=73448.32
-2025-08-22 15:36:01.621 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:10.0, P_real=73496.96
-2025-08-22 15:36:01.622 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:10.0, realPV=73496.96
-2025-08-22 15:36:06.601 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:15.0, P_real=73545.6
-2025-08-22 15:36:06.601 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:15.0, realPV=73545.6
-2025-08-22 15:36:11.641 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:20.0, P_real=73594.24
-2025-08-22 15:36:11.642 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:20.0, realPV=73594.24
-2025-08-22 15:36:14.902 [main] ERROR it.evsmartcharging.CloudApplication - Failed to start application: For input string: ""
-java.lang.NumberFormatException: For input string: ""
-	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
-	at java.base/java.lang.Integer.parseInt(Integer.java:662)
-	at java.base/java.lang.Integer.parseInt(Integer.java:770)
-	at it.evsmartcharging.UserInterface.getUserInput(UserInterface.java:167)
-	at it.evsmartcharging.CloudApplication.main(CloudApplication.java:36)
-2025-08-22 15:36:19.892 [main] INFO  it.evsmartcharging.CloudApplication - Starting system ...
-2025-08-22 15:36:19.894 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
-2025-08-22 15:36:20.394 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
-2025-08-22 15:36:20.394 [main] INFO  it.evsmartcharging.CoapObserver - CoapObserver initialized with DatabaseManager
-2025-08-22 15:36:20.394 [main] INFO  it.evsmartcharging.CoapObserver - Starting all CoAP observations...
-2025-08-22 15:36:20.395 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for solar data at coap://[fd00::202:2:2:2]:5683/res_solar_obs
-2025-08-22 15:36:20.440 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_solar_obs
-2025-08-22 15:36:20.440 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for real power data at coap://[fd00::202:2:2:2]:5683/res_real_power_obs
-2025-08-22 15:36:20.446 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /res_real_power_obs
-2025-08-22 15:36:20.463 [main] INFO  i.evsmartcharging.CoAPResourcePlate - CoAPResourcePlate initialized with name: plate
-2025-08-22 15:36:20.470 [main] INFO  it.evsmartcharging.CloudApplication - CoAP server started on default port 5683.
-2025-08-22 15:36:20.618 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:20.0, Gb=596.2524, Gd=185.906, Gr=15.7132, HSun=53.5729, T=20.9437, WS=1.5489, P_predicted=0.0
-2025-08-22 15:36:20.621 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:20.0, Gb=596.2524, Gd=185.906, Gr=15.7132, HSun=53.5729, T=20.9437, WS=1.5489
-2025-08-22 15:36:20.633 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:25.0, P_real=73642.88
-2025-08-22 15:36:20.634 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:25.0, realPV=73642.88
-2025-08-22 15:36:21.680 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:30.0, P_real=73691.52
-2025-08-22 15:36:21.681 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:30.0, realPV=73691.52
-2025-08-22 15:36:25.235 [main] INFO  it.evsmartcharging.CloudApplication - User select option number 2
-2025-08-22 15:36:25.235 [main] INFO  it.evsmartcharging.CloudApplication - User selected to update the ML prediction interval.
-2025-08-22 15:36:26.696 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:35.0, P_real=73740.16
-2025-08-22 15:36:26.696 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:35.0, realPV=73740.16
-2025-08-22 15:36:31.759 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:40.0, P_real=73788.8
-2025-08-22 15:36:31.760 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:40.0, realPV=73788.8
-2025-08-22 15:36:31.861 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:01:40.0, Gb=599.2489, Gd=185.065, Gr=15.7519, HSun=53.6278, T=20.9508, WS=1.5478, P_predicted=0.0
-2025-08-22 15:36:31.861 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:01:40.0, Gb=599.2489, Gd=185.065, Gr=15.7519, HSun=53.6278, T=20.9508, WS=1.5478
-2025-08-22 15:36:36.701 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:45.0, P_real=73837.44
-2025-08-22 15:36:36.701 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:45.0, realPV=73837.44
-2025-08-22 15:36:41.715 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:50.0, P_real=73886.08
-2025-08-22 15:36:41.719 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:50.0, realPV=73886.08
-2025-08-22 15:36:46.742 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:01:55.0, P_real=73934.72
-2025-08-22 15:36:46.742 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:01:55.0, realPV=73934.72
-2025-08-22 15:36:51.953 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:00.0, P_real=73983.36
-2025-08-22 15:36:51.955 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:00.0, realPV=73983.36
-2025-08-22 15:36:52.002 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:00.0, Gb=602.2453, Gd=184.224, Gr=15.7907, HSun=53.6827, T=20.958, WS=1.5467, P_predicted=0.0
-2025-08-22 15:36:52.002 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:00.0, Gb=602.2453, Gd=184.224, Gr=15.7907, HSun=53.6827, T=20.958, WS=1.5467
-2025-08-22 15:36:56.801 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:05.0, P_real=74032.0
-2025-08-22 15:36:56.801 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:05.0, realPV=74032.0
-2025-08-22 15:37:01.777 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:10.0, P_real=74080.64
-2025-08-22 15:37:01.778 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:10.0, realPV=74080.64
-2025-08-22 15:37:06.776 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:15.0, P_real=74129.28
-2025-08-22 15:37:06.777 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:15.0, realPV=74129.28
-2025-08-22 15:37:11.803 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:20.0, P_real=74177.92
-2025-08-22 15:37:11.804 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:20.0, realPV=74177.92
-2025-08-22 15:37:11.878 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456, P_predicted=0.0
-2025-08-22 15:37:11.879 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted solar data into database: timestamp=2023-05-21 11:02:20.0, Gb=605.2418, Gd=183.383, Gr=15.8294, HSun=53.7376, T=20.9652, WS=1.5456
-2025-08-22 15:37:16.792 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:25.0, P_real=74226.56
-2025-08-22 15:37:16.793 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:25.0, realPV=74226.56
-2025-08-22 15:37:21.802 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-21 09:02:30.0, P_real=74275.2
-2025-08-22 15:37:21.802 [Thread-0] INFO  it.evsmartcharging.CoapObserver - Inserted real power data into database: timestamp=2023-05-21 09:02:30.0, realPV=74275.2
+2025-09-03 02:07:40.670 [main] INFO  it.evsmartcharging.CloudApplication - Starting system ...
+2025-09-03 02:07:40.672 [main] INFO  it.evsmartcharging.DatabaseManager - Initializing database connection
+2025-09-03 02:07:41.077 [main] INFO  it.evsmartcharging.DatabaseManager - Database connection established successfully
+2025-09-03 02:07:41.086 [main] INFO  i.evsmartcharging.CoAPResourcePlate - CoAPResourcePlate initialized with name: plate
+2025-09-03 02:07:41.111 [main] INFO  it.evsmartcharging.CloudApplication - CoAP server started on default port 5683.
+2025-09-03 02:07:41.113 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:43.121 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:45.127 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:47.132 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:49.163 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:51.168 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:53.172 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:55.174 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:55.273 [pool-1-thread-2] INFO  i.e.CoAPResourceRegistration - Received registration request from fd00:0:0:0:f6ce:36ed:6111:3651: {"nodeType":"centralNode","requiredNodes":["sensorPV","smartGrid"]}
+2025-09-03 02:07:55.297 [pool-1-thread-2] INFO  it.evsmartcharging.DatabaseManager - Inserted/Updated device: ID=0, nodeType=centralNode, EP=fd00:0:0:0:f6ce:36ed:6111:3651
+2025-09-03 02:07:57.179 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:07:59.187 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:01.192 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:03.225 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:05.250 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:07.273 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:09.287 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:11.292 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:13.317 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:15.325 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:17.380 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:18.426 [pool-1-thread-2] INFO  i.e.CoAPResourceRegistration - Received registration request from fd00:0:0:0:f6ce:36a2:c608:75a9: {"nodeType":"sensorPV","requiredNodes":[]}
+2025-09-03 02:08:18.428 [pool-1-thread-2] INFO  it.evsmartcharging.DatabaseManager - Inserted/Updated device: ID=0, nodeType=sensorPV, EP=fd00:0:0:0:f6ce:36a2:c608:75a9
+2025-09-03 02:08:19.384 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:21.438 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:23.550 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:25.575 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:27.577 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:29.618 [main] WARN  it.evsmartcharging.CloudApplication - Not all nodes are registered yet. Waiting 2 seconds before retrying...
+2025-09-03 02:08:30.907 [pool-1-thread-1] INFO  i.e.CoAPResourceRegistration - Received registration request from fd00:0:0:0:f6ce:36b5:69d4:b7c7: {"nodeType":"smartGrid","requiredNodes":[]}
+2025-09-03 02:08:30.913 [pool-1-thread-1] INFO  it.evsmartcharging.DatabaseManager - Inserted/Updated device: ID=0, nodeType=smartGrid, EP=fd00:0:0:0:f6ce:36b5:69d4:b7c7
+2025-09-03 02:08:30.916 [pool-1-thread-1] INFO  i.e.CoAPResourceRegistration - Pending registration for centralNode completed. Sent response: sensorPV=fd00:0:0:0:f6ce:36a2:c608:75a9&smartGrid=fd00:0:0:0:f6ce:36b5:69d4:b7c7
+2025-09-03 02:08:31.621 [main] INFO  it.evsmartcharging.CloudApplication - All required nodes are registered. Starting observation.
+2025-09-03 02:08:31.622 [main] INFO  it.evsmartcharging.CoapObserver - CoapObserver initialized with DatabaseManager
+2025-09-03 02:08:31.623 [main] INFO  it.evsmartcharging.CoapObserver - Starting all CoAP observations...
+2025-09-03 02:08:31.623 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for solar data at coap://[fd00:0:0:0:f6ce:36a2:c608:75a9]:5683/solar_obs
+2025-09-03 02:08:31.631 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /solar_obs
+2025-09-03 02:08:31.631 [main] INFO  it.evsmartcharging.CoapObserver - Initializing CoAP client for real power data at coap://[fd00:0:0:0:f6ce:36a2:c608:75a9]:5683/real_power_obs
+2025-09-03 02:08:31.631 [main] INFO  it.evsmartcharging.CoapObserver - Started observation for /real_power_obs
+2025-09-03 02:08:31.739 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:00, Gb=556.4382, Gd=322.9382, Gr=16.9083, HSun=64.5616, T=18.555, WS=1.5549
+2025-09-03 02:08:31.766 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:10, realPower=82740.875
+2025-09-03 02:08:33.589 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:15, realPower=82736.91
+2025-09-03 02:08:38.679 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:20, realPower=82732.945
+2025-09-03 02:08:38.755 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:00:20, Gb=555.7927, Gd=323.4031, Gr=16.905, HSun=64.5805, T=18.5585, WS=1.5562
+2025-09-03 02:08:43.563 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:25, realPower=82728.984
+2025-09-03 02:08:45.220 [pool-1-thread-4] INFO  i.e.CoAPResourceRegistration - Received registration request from fd00:0:0:0:f6ce:3664:b7a7:3379: {"nodeType":"chargingStation","requiredNodes":["centralNode"]}
+2025-09-03 02:08:45.223 [pool-1-thread-4] INFO  it.evsmartcharging.DatabaseManager - Inserted/Updated device: ID=0, nodeType=chargingStation, EP=fd00:0:0:0:f6ce:3664:b7a7:3379
+2025-09-03 02:08:48.588 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:30, realPower=82725.02
+2025-09-03 02:08:53.557 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:35, realPower=82721.055
+2025-09-03 02:08:58.617 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:40, realPower=82717.09
+2025-09-03 02:08:58.692 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:00:40, Gb=555.147, Gd=323.8677, Gr=16.9018, HSun=64.5996, T=18.562, WS=1.5572
+2025-09-03 02:09:02.142 [pool-1-thread-2] INFO  i.e.CoAPResourceRegistration - Received registration request from fd00:0:0:0:f6ce:3669:a96a:5b65: {"nodeType":"chargingStation","requiredNodes":["centralNode"]}
+2025-09-03 02:09:02.144 [pool-1-thread-2] INFO  it.evsmartcharging.DatabaseManager - Inserted/Updated device: ID=1, nodeType=chargingStation, EP=fd00:0:0:0:f6ce:3669:a96a:5b65
+2025-09-03 02:09:03.583 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:45, realPower=82713.13
+2025-09-03 02:09:08.546 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:50, realPower=82709.164
+2025-09-03 02:09:13.582 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:00:55, realPower=82705.2
+2025-09-03 02:09:18.648 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01, realPower=82701.24
+2025-09-03 02:09:18.719 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:01, Gb=554.5015, Gd=324.3324, Gr=16.8985, HSun=64.6184, T=18.5655, WS=1.5585
+2025-09-03 02:09:23.581 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:05, realPower=82697.27
+2025-09-03 02:09:28.649 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:10, realPower=82693.31
+2025-09-03 02:09:33.608 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:15, realPower=82689.35
+2025-09-03 02:09:38.583 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:20, realPower=82685.38
+2025-09-03 02:09:38.640 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:01:20, Gb=553.8558, Gd=324.7972, Gr=16.8952, HSun=64.6373, T=18.569, WS=1.5597
+2025-09-03 02:09:38.851 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: XY987ZT
+2025-09-03 02:09:38.859 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 0 for plate XY987ZT
+2025-09-03 02:09:38.860 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Response sent for plate XY987ZT: 2.05
+2025-09-03 02:09:43.565 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:25, realPower=82681.42
+2025-09-03 02:09:48.563 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:30, realPower=82677.46
+2025-09-03 02:09:53.600 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:35, realPower=82673.5
+2025-09-03 02:09:58.590 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:40, realPower=82669.53
+2025-09-03 02:09:58.649 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:01:40, Gb=553.2103, Gd=325.2619, Gr=16.8918, HSun=64.6564, T=18.5725, WS=1.5607
+2025-09-03 02:10:03.572 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:45, realPower=82665.57
+2025-09-03 02:10:08.608 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:50, realPower=82661.61
+2025-09-03 02:10:13.567 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:01:55, realPower=82657.64
+2025-09-03 02:10:16.140 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: ZZ999YY
+2025-09-03 02:10:16.141 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 1 for plate ZZ999YY
+2025-09-03 02:10:16.141 [pool-1-thread-3] INFO  i.evsmartcharging.CoAPResourcePlate - Response sent for plate ZZ999YY: 2.05
+2025-09-03 02:10:18.617 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02, realPower=82653.68
+2025-09-03 02:10:18.689 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:02, Gb=552.5646, Gd=325.7267, Gr=16.8887, HSun=64.6753, T=18.576, WS=1.562
+2025-09-03 02:10:23.678 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:05, realPower=82649.72
+2025-09-03 02:10:28.565 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:10, realPower=82645.75
+2025-09-03 02:10:33.555 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:15, realPower=82641.79
+2025-09-03 02:10:38.743 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:20, realPower=82637.83
+2025-09-03 02:10:38.826 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:02:20, Gb=551.9191, Gd=326.1914, Gr=16.8854, HSun=64.6942, T=18.5795, WS=1.5632
+2025-09-03 02:10:43.584 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:25, realPower=82633.87
+2025-09-03 02:10:48.587 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:30, realPower=82629.9
+2025-09-03 02:10:52.522 [pool-1-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Received GET request for plate: XY987ZT
+2025-09-03 02:10:52.523 [pool-1-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Returning priority 0 for plate XY987ZT
+2025-09-03 02:10:52.524 [pool-1-thread-4] INFO  i.evsmartcharging.CoAPResourcePlate - Response sent for plate XY987ZT: 2.05
+2025-09-03 02:10:53.590 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:35, realPower=82625.94
+2025-09-03 02:10:58.778 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:40, realPower=82621.98
+2025-09-03 02:10:58.789 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:02:40, Gb=551.2733, Gd=326.656, Gr=16.882, HSun=64.7132, T=18.583, WS=1.5642
+2025-09-03 02:11:03.552 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:45, realPower=82618.01
+2025-09-03 02:11:08.545 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:50, realPower=82614.05
+2025-09-03 02:11:09.403 [main] INFO  it.evsmartcharging.CloudApplication - User select option number 4
+2025-09-03 02:11:09.403 [main] INFO  it.evsmartcharging.CloudApplication - User selected to view the smart grid status.
+2025-09-03 02:11:13.598 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:02:55, realPower=82610.086
+2025-09-03 02:11:18.600 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03, realPower=82606.12
+2025-09-03 02:11:18.646 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:03, Gb=550.6278, Gd=327.1207, Gr=16.8787, HSun=64.7322, T=18.5865, WS=1.5655
+2025-09-03 02:11:21.741 [main] INFO  it.evsmartcharging.CloudApplication - User select option number 3
+2025-09-03 02:11:21.742 [main] INFO  it.evsmartcharging.CloudApplication - User selected to update the ML prediction interval.
+2025-09-03 02:11:23.599 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03:05, realPower=82602.16
+2025-09-03 02:11:28.606 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03:10, realPower=82598.195
+2025-09-03 02:11:33.592 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03:15, realPower=82594.23
+2025-09-03 02:11:38.586 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03:20, realPower=82590.266
+2025-09-03 02:11:38.740 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:03:20, Gb=549.9821, Gd=327.5856, Gr=16.8756, HSun=64.751, T=18.59, WS=1.5667
+2025-09-03 02:11:43.557 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03:25, realPower=82586.305
+2025-09-03 02:11:48.570 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03:30, realPower=82582.34
+2025-09-03 02:11:53.590 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03:35, realPower=82578.375
+2025-09-03 02:11:57.266 [main] INFO  it.evsmartcharging.CloudApplication - User select option number 5
+2025-09-03 02:11:57.267 [main] INFO  it.evsmartcharging.CloudApplication - User selected to view the charging stations status.
+2025-09-03 02:11:58.610 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into realPower: timestamp=2023-05-15T11:03:40, realPower=82574.414
+2025-09-03 02:11:58.711 [Thread-0] INFO  it.evsmartcharging.DatabaseManager - Inserted row into solarData: timestamp=2023-05-15T11:03:40, Gb=549.3366, Gd=328.0502, Gr=16.8722, HSun=64.7701, T=18.5935, WS=1.5678
