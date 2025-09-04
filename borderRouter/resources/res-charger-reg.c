@@ -123,7 +123,15 @@ static void res_register_get_handler(coap_message_t *request, coap_message_t *re
 
 // Register a device by storing its IP address and assigning an ID
 static uint8_t register_device(const uip_ipaddr_t *src_addr) {
-    if(device_count < MAX_DEVICES) {
+    // Check if the device is already registered
+    for (int i = 0; i < device_count; i++) {
+        if (uip_ipaddr_cmp(&EV_charger[i].addr, src_addr)) {
+            return EV_charger[i].id;
+        }
+    }
+
+    // If not found, register a new device (if there is space)
+    if (device_count < MAX_DEVICES) {
         uint8_t new_id = device_count + 1;
         EV_charger[device_count].id = new_id;
         uip_ipaddr_copy(&EV_charger[device_count].addr, src_addr);

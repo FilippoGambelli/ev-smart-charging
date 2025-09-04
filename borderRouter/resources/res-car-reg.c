@@ -42,9 +42,7 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
 
     int idx = get_device_idx_by_addr(&source_addr);
 
-    if (idx >= 0 && EV_charger[idx].id > 0) {
-        LOG_INFO("Charger ID found: %u\n", EV_charger[idx].id);
-    } else {
+    if (idx < 0) {
         LOG_INFO("Charger not registered\n");
         coap_set_status_code(response, BAD_REQUEST_4_00);
         return;
@@ -64,6 +62,8 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
     len = coap_get_post_variable(request, "type", &text);
     if (len > 0) {
         if (strcmp(text, "disconnection") == 0) {
+            LOG_INFO("Vehicle disconnected - ID: %d\n", EV_charger[idx].id);
+
             EV_charger[idx].car_registered = false;
             EV_charger[idx].is_charging = false;
             EV_charger[idx].assigned_power = 0;

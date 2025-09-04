@@ -65,8 +65,9 @@ AUTOSTART_PROCESSES(&charging_station);
 
 PROCESS_THREAD(charging_station, ev, data){
     static coap_message_t request[1];
-
     static char buffer[128];
+
+    button_hal_button_t *btn;
 
     PROCESS_BEGIN();
 
@@ -121,7 +122,7 @@ PROCESS_THREAD(charging_station, ev, data){
 
         // Handle button release events
         if(ev == button_hal_release_event && my_id > 0) {
-            button_hal_button_t *btn = (button_hal_button_t *)data;
+            btn = (button_hal_button_t *)data;
             
             if(btn->press_duration_seconds < 3 && !car_connected) {
                 LOG_INFO("Sending vehicle connection request....\n");
@@ -160,7 +161,7 @@ PROCESS_THREAD(charging_station, ev, data){
                 // Build payload
                 snprintf(buffer, sizeof(buffer), "type=disconnection");
 
-                LOG_INFO("Data: type=disconnection\n");
+                LOG_INFO("Data - Type: disconnection\n");
         
                 coap_set_header_content_format(request, TEXT_PLAIN);
                 coap_set_payload(request, (uint8_t *)buffer, strlen(buffer));

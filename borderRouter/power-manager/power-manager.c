@@ -191,7 +191,6 @@ void response_handler(coap_callback_request_state_t *callback_state) {
     if(!response) {
         return;
     }
-    LOG_INFO("Update resource correctly\n");
 }
 
 int compare_charging_stations(const void *a, const void *b) {

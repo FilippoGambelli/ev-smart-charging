@@ -65,7 +65,7 @@ function flash_all() {
 
 function open_logins() {
     read -p "Open Border Router / Central Node? [Press Enter to continue]" _
-    gnome-terminal --geometry=150x30 --title="Border Router / Central Node" \
+    gnome-terminal --geometry=130x30 --title="Border Router / Central Node" \
     -- bash -c "cd $BASE_DIR/borderRouter && make TARGET=nrf52840 BOARD=dongle PORT=$PORT_BORDER connect-router; exec bash"
 
     read -p "Open Cloud Application? [Press Enter to continue]" _
@@ -73,7 +73,7 @@ function open_logins() {
     -- bash -c "cd $BASE_DIR/cloud-application && java -Dcooja=false -jar target/cloud-application-1.0-SNAPSHOT.jar; exec bash"
 
     read -p "Open Sensor PV? [Press Enter to continue]" _
-    gnome-terminal --title="Sensor PV" \
+    gnome-terminal --geometry=120x30 --title="Sensor PV" \
     -- bash -c "cd $BASE_DIR/sensorPV && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_SENSOR; exec bash"
 
     read -p "Open Smart Grid? [Press Enter to continue]" _
@@ -81,11 +81,11 @@ function open_logins() {
     -- bash -c "cd $BASE_DIR/smartGrid && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_GRID; exec bash"
 
     read -p "Open Charging Station 1? [Press Enter to continue]" _
-    gnome-terminal --geometry=150x30 --title="Charging Station 1" \
+    gnome-terminal --geometry=180x30 --title="Charging Station 1" \
     -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER3; exec bash"
 
     read -p "Open Charging Station 2? [Press Enter to continue]" _
-    gnome-terminal --geometry=150x30 --title="Charging Station 2" \
+    gnome-terminal --geometry=180x30 --title="Charging Station 2" \
     -- bash -c "cd $BASE_DIR/chargingStation && make login TARGET=nrf52840 BOARD=dongle PORT=$PORT_CHARGER4; exec bash"
 
     sleep 6
