@@ -78,12 +78,11 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
             EV_charger[idx].remaining_time_seconds = 0;
             EV_charger[idx].remaining_energy = 0;
 
-            coap_set_status_code(response, CHANGED_2_04);
-            vehicle_count--;
-
             // New vehicle disconnected, update charging stations
             power_manager_update_charging_station();
 
+            coap_set_status_code(response, CHANGED_2_04);
+            coap_set_payload(response, "OK", 2);
             return;
         }
     }
@@ -125,7 +124,6 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
 
     // Only update the device if all five parameters are present
     if (param_count == 5) {
-        vehicle_count++;
         EV_charger[idx].car_registered = true;
         EV_charger[idx].is_charging = false;
 
@@ -154,6 +152,7 @@ static void res_connection_put_handler(coap_message_t *request, coap_message_t *
         coap_send_request(&request_state, &cloud_application_ep, request, cloud_response_handler);
 
         coap_set_status_code(response, CHANGED_2_04);
+        coap_set_payload(response, "OK", 2);
     } else {
         LOG_INFO("Missing parameters, device not updated\n");
         coap_set_status_code(response, BAD_REQUEST_4_00);

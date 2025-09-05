@@ -31,6 +31,5 @@ struct charging_station {
 
 extern  struct charging_station EV_charger[MAX_DEVICES];    // Array to store registered devices
 extern  uint8_t device_count;                               // Current number of registered devices
-extern  uint8_t vehicle_count;                              // Current number of registered vehicles
 
 #endif

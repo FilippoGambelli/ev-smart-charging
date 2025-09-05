@@ -23,7 +23,7 @@ public class CoAPResourceRegistration extends CoapResource {
 
     private final List<PendingRegistration> pendingList = Collections.synchronizedList(new ArrayList<>());
 
-    private int numChargingStation = 0;
+    private int numChargingStation = 1;
 
     public CoAPResourceRegistration(String name, DatabaseManager databaseManager) {
         super(name);

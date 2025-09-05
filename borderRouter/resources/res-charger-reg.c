@@ -19,7 +19,6 @@ static uint8_t register_device(const uip_ipaddr_t *src_addr);
 
 struct charging_station EV_charger[MAX_DEVICES];
 uint8_t device_count = 0;
-uint8_t vehicle_count = 0;
 
 RESOURCE(res_charger_reg,
         "title=\"Register Charger\";rt=\"register_charger\";get_format=\"application/json\";post_format=\"text/plain\"",
